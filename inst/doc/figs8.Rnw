@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\VignetteIndexEntry{Regression Modeling Further Notes -- Chapter 8 Figure}
+
+<<setup, echo=FALSE>>=
+options(continue=" ", prompt=" ")
+@ %
+
+\begin{document}
+
+\title{Figures for Chapter 8}
+\author{John H Maindonald}
+\maketitle
+
+<<fig8_1, eval=TRUE, echo=TRUE>>=
+fig8.1 <- function(plotit=TRUE){
+tau <- (0:5)/2.5; m <- length(tau); n <- 200; SD <- 2
+x0 <- rnorm(n, mean=12.5, sd=SD)  # Generate x-values
+df <- data.frame(sapply(tau, function(xtau)x0+rnorm(n, sd=SD*xtau)))
+  # Columns after the first are x-values with added error
+df$y = 15+2.5*x0
+names(df) <- c(paste("X", tau, sep=""), "y")
+lab <- c(list("0"),
+         lapply(tau[-1], function(x)substitute(A*s[z], list(A=x))))
+form <- formula(paste("y ~ ", paste(paste("X", tau, sep=""),
+                                  collapse="+")))
+library(latticeExtra)
+xlabel <- expression(italic(x)*' ('*italic(z)*' with error)')
+striplabel <- strip.custom(strip.names=TRUE,
+                           var.name="SD(added err)",
+                           sep=expression(" = "),
+                           factor.levels=as.expression(lab))
+gph <- xyplot(form, data=df, outer=TRUE, xlab=xlabel, strip=striplabel,
+               type=c("p", "r"))
+gph+layer(panel.abline(15, 2.5, lty=2))
+}
+@ %
+
+
+<<figs8, eval=TRUE>>=
+if(exists("OpenSesame")){
+library(DAAG)
+library(latticeExtra)
+gph <- fig8.1()
+print(gph)
+}
+@ %
+
+\end{document}
+
+<<restore, eval=TRUE, echo=FALSE>>=
+options(continue="+ ", prompt="> ")
+@ %

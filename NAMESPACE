@@ -1,0 +1,2 @@
+exportPattern("^[[:alpha:]]+")
+importFrom(car, scatterplot, spm, scatterplotMatrix)

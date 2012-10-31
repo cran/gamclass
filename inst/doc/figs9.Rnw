@@ -1,0 +1,129 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\VignetteIndexEntry{Ordination -- Chapter 9 Functions}
+
+<<setup, echo=FALSE>>=
+options(continue=" ", prompt=" ")
+@ %
+
+\begin{document}
+
+\title{Figures for Chapter 9}
+\author{John H Maindonald}
+\maketitle
+
+<<fig9_1, eval=TRUE, echo=TRUE>>=
+fig9.1 <- function(){
+    aupoints <- cmdscale(audists)
+    plot(aupoints, bty="n", xlab="", ylab="")
+    labs <- rownames(aupoints)
+    labpos <- rep(1, length(labs))
+    labpos[labs=="Melbourne"] <- 3
+    labpos[labs=="Canberra"] <- 4
+    text(aupoints, labels=labs, xpd=TRUE, pos=labpos)
+}
+@ %,
+
+<<cfPhysical,  eval=TRUE, echo=TRUE>>=
+comparePhysical <- function(lat=aulatlong$latitude,
+                            long=aulatlong$longitude,
+                            x1=aupoints[,1], x2 = aupoints[,2],
+                            wts=NULL){
+    ## Get best fit in space of (latitude, longitude)
+    if(is.null(wts))wts <- rep(1,length(x1))
+    fitlat <- predict(lm(lat ~ x1+x2, weights=wts))
+    fitlong <- predict(lm(long ~ x1+x2, weights=wts))
+    x <- as.vector(rbind(lat, fitlat, rep(NA,10)))
+    y <- as.vector(rbind(long, fitlong, rep(NA,10)))
+    lines(x, y, col="gray40", lwd=3)
+}
+@ %
+
+<<fig9_2, eval=TRUE, echo=TRUE>>=
+fig9.2 <- function(){
+    if(!require(oz))stop("Package 'oz' must be installed")
+    points(aulatlong, col="red", pch=16, cex=1.5)
+    comparePhysical()
+}
+@ %
+
+<<fig9_3, eval=TRUE, echo=TRUE>>=
+fig9.3 <- function(){
+    library(MASS)
+    if(!require(oz))stop("Package 'oz' must be installed")
+    aupoints.sam <- sammon(audists, trace=FALSE)
+    oz()
+    points(aulatlong, col="red", pch=16, cex=1.5)
+    wt <- apply(as.matrix(audists), 1,function(x)sum(1/x[x>0]))
+    comparePhysical(x1=aupoints.sam$points[,1],
+                    x2 = aupoints.sam$points[,2], wts=wt)
+}
+@ %
+
+<<fig9_4A, eval=TRUE, echo=TRUE>>=
+fig9.4A <- function(seed=47){
+    if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
+    if(!require(ape))stop("Package 'ape' must be installed")
+    ## Calculate distances, using Kimura's K80 model
+    primates.dist <- dist.dna(as.DNAbin(primateDNA), model="K80")
+    primates.cmd <- cmdscale(primates.dist)
+    eqscplot(primates.cmd, xlab="Axis 1", ylab="Axis 2", cex.lab=1.15)
+    lefrt <- 2+2*(primates.cmd[,1] < mean(par()$usr[1:2]))
+    text(primates.cmd[,1], primates.cmd[,2], row.names(primates.cmd),
+         pos=lefrt)
+}
+@ %
+
+<<fig9_4B, eval=TRUE, echo=TRUE>>=
+fig9.4B <- function(seed=47){
+    if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
+    if(!require(ape))stop("Package 'ape' must be installed")
+    primates.dist <- dist.dna(as.DNAbin(primateDNA), model="K80")
+    primates.cmd <- cmdscale(primates.dist)
+    primates.mds <- isoMDS(primates.dist, primates.cmd, k=2, trace=FALSE)
+    eqscplot(primates.mds$points, xlab="Axis 1", ylab="Axis 2",
+             cex.lab=1.15)
+    lefrt <- 2+2*(primates.mds$points[,1] < mean(par()$usr[1:2]))
+    text(primates.mds$points[,1], primates.mds$points[,2],
+         row.names(primates.mds$points), pos=lefrt)
+}
+@ %
+
+<<fig9_5, eval=TRUE, echo=TRUE>>=
+fig9.5 <- function(){
+    library(DAAG)
+    pacific.dist <- dist(x = as.matrix(rockArt[-c(47,54,60,63,92),
+                         28:641]), method = "binary")
+    sum(pacific.dist==1)/length(pacific.dist)
+    ## Now check that in all columns at least one distance < 1
+    symmat <- as.matrix(pacific.dist)
+    checksum <- sum(apply(symmat, 2, function(x) sum(x<1)))
+    checksum <- sum(apply(symmat, 2, function(x) sum(x<1)==0))
+    print(c("No of cols where all distances are one"=checksum))
+    pacific.cmd <- cmdscale(pacific.dist)
+    pacific.mds <- isoMDS(pacific.dist, pacific.cmd, trace=FALSE)
+    plot(pacific.mds$points)
+}
+@ %
+
+
+<<figs9, eval=TRUE>>=
+if(exists("OpenSesame")){
+library(MASS)
+library(DAAG)
+library(latticeExtra)
+fig9.1()
+aupoints <- cmdscale(audists)
+fig9.2()
+fig9.3()
+fig9.4A()
+fig9.4B()
+fig9.5()
+}
+@ %
+\end{document}
+
+<<restore, eval=TRUE, echo=FALSE>>=
+options(continue="+ ", prompt="> ")
+@ %

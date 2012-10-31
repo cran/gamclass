@@ -1,0 +1,148 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+%\VignetteIndexEntry{Generalized Linear Models -- Chapter 5 Figures}
+
+<<setup, echo=F>>=
+options(prompt=" ", continue=" ")
+@ %
+
+\begin{document}
+
+\title{Figures for Chapter 5}
+\author{John H Maindonald}
+\maketitle
+
+<<fig5_1, eval=TRUE, echo=TRUE>>=
+fig5.1 <-
+function (){
+    library(KernSmooth)
+    ylim <- range(bronchit$poll)+c(0,2.5)
+    par(fig=c(0,.525, 0,1))
+    plot(xlab="# cigarettes per day", ylab="Pollution", poll ~ cig,
+         col=c(2,4)[r+1], pch=(3:2)[r+1], data=bronchit, ylim=ylim)
+    legend(x="topright", legend=c("Non-sufferer","Sufferer"), ncol=2,
+           pch=c(3,2), col=c(2,4))
+    mtext(side=3, line=1.0,
+          expression("A: Untransformed "*italic(x)*"-scale"),
+          cex=0.85, adj=0)
+    par(fig=c(.475,1, 0,1), new=TRUE)
+    plot(poll ~ log(cig+1), col=c(2,4)[r+1], pch=(3:2)[r+1],
+         xlab="log(# cigarettes per day + 1)", ylab="",
+         data=bronchit, ylim=ylim)
+    xy1 <- with(subset(bronchit, r==0), cbind(x=log(cig+1), y=poll))
+    xy2 <- with(subset(bronchit, r==1), cbind(x=log(cig+1), y=poll))
+    est1 <- bkde2D(xy1, bandwidth=c(0.7, 3))
+    est2 <- bkde2D(xy2, bandwidth=c(0.7, 3))
+    lev <- pretty(c(est1$fhat, est2$fhat),4)
+    contour(est1$x1, est1$x2, est1$fhat, levels=lev, add=TRUE, col=2)
+    contour(est2$x1, est2$x2, est2$fhat, levels=lev, add=TRUE, col=4,
+            lty=2)
+    legend(x="topright", legend=c("Non-sufferer","Sufferer"), ncol=2,
+           lty=1:2, col=c(2,4))
+    mtext(side=3, line=1.0,
+          expression("B: Log-transformed "*italic(x)*"-scale"),
+          cex=0.85, adj=0)
+    par(fig=c(0,1,0,1))
+}
+@ %
+
+<<fig5_2, eval=TRUE, echo=TRUE>>=
+fig5.2 <-
+function (plotit=TRUE)
+{
+    par(mfrow=c(1,2))
+    cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial,
+                    data=bronchit)
+    termplot(cig2.glm, se=TRUE, ylim=c(-2,4))
+    par(mfrow=c(1,1))
+}
+@ %
+
+<<fig5_3, eval=TRUE, echo=TRUE>>=
+fig5.3 <-
+function ()
+{
+    nassnew <- subset(nassCDS,
+                      !is.na(yearVeh) & yearVeh>=1986 & weight>0)
+    nassnew.glm <- glm(dead ~ seatbelt + airbag + dvcat + yearVeh +
+                       ageOFocc, weights=weight, family = quasibinomial,
+                       data=nassnew)
+    par(mfrow=c(1,2))
+    termplot(nassnew.glm, terms=c("yearVeh","ageOFocc"),
+             smooth=panel.smooth, se=TRUE)
+    par(mfrow=c(1,1))
+    par(fig=c(0,0.5,0,1), new=TRUE)
+    mtext(side=3, line=1.0, "A", adj=0)
+    par(fig=c(0.5,1,0,1), new=TRUE)
+    mtext(side=3, line=1.0, "B", adj=0)
+    par(fig=c(0,1,0,1))
+}
+@ %
+
+<<fig5_4, eval=TRUE, echo=TRUE>>=
+fig5.4 <-
+function (){
+    opar <- par(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0))
+    qqnorm(rpois(30, 5), ylab="", main="")
+    qqnorm(rpois(30, 5), ylab="", main="")
+    par(opar)
+}
+@ %
+
+<<fig5_5, eval=TRUE, echo=TRUE>>=
+fig5.5 <-
+function (){
+    if(!require(car))
+        stop("Package 'car' must be installed")
+    spm(~ . | habitat, data=moths, cex.labels=1.2,
+        smooth=FALSE, reg.line=NA)
+}
+@ %
+
+<<fig5_6, eval=TRUE, echo=TRUE>>=
+fig5.6 <-
+function ()
+{
+    P.glm <- glm(P ~ habitat + log(meters), data=moths,
+                 family=quasipoisson)
+    par(mfrow=c(2,2))
+    plot(P.glm, which=1:4)
+    par(mfrow=c(1,1))
+}
+@ %
+
+
+
+<<fig5_7, eval=TRUE, echo=TRUE>>=
+fig5.7 <-
+function ()
+{
+    library(Ecdat)
+    data(Fair)
+    spm(~age+ym+religious+education+rate+nbaffairs, data=Fair)
+}
+@ %
+
+
+<<figs5, eval=TRUE>>=
+library(DAAG)
+library(SMIR); data(bronchit)
+if(exists("OpenSesame")){
+fig5.1()
+cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial,
+                data=bronchit)
+fig5.2()
+fig5.3()
+fig5.4()
+fig5.5()
+fig5.6()
+fig5.7()
+}
+@ %
+
+\end{document}
+
+<<restore2, eval=TRUE, echo=FALSE>>=
+options(continue="+ ", prompt="> ")
+@ %

@@ -1,21 +1,45 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Limits of Statistical Learning -- Chapter 2 Figures}
-
-<<setup, echo=F>>=
-options(prompt=" ", continue=" ")
-@ %
-
 \begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Limits of Statistical Learning (Set 2)}
 
-\title{Figures for Chapter 2}
+\title{2: The Limits of Statistical Learning}
 \author{John H Maindonald}
 \maketitle
 
-<<setup, eval=TRUE, echo=FALSE>>=
-library(diagram)
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/lims-', cache.path='cache/lims-',
+               fig.align='center', dev='pdf', fig.width=4.25,
+               fig.height=4.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
 @ %
+
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+
+In analyes in the traditions of 'data mining' and 'statistical learning',
+observations are typically
+assumed independent.  There is a greater use of relatively automated
+approaches than is usual in many areas of statistical analysis.  This
+limits the scope of models that are considered and rules out of
+consideration some very important types of analysis. Or, in order to
+fit the data to this type of analysis, some modest amount of preprocessing 
+of the data may be required.  This may be as simple as transforming data 
+values.  Or it may require the creation, from the data as it stands, of 
+summary statistic values to which the methods can then be applied.
+Graphs are shown here that are a useful starting point for discussing
+some of these issues.
+
+\section{Code for Functions that Give the Figures}
 
 <<fig2_1, eval=TRUE, echo=TRUE>>=
 fig2.1 <-
@@ -118,11 +142,8 @@ function (parset = simpleTheme(pch = c(0, 1), cex = 1.2), fontsize = list(text =
 <<fig2_5, eval=TRUE, echo=TRUE>>=
 fig2.5 <-
 function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
-    "black", "gray30"), pch = c(0, 1)), fontsize = list(text = 12,
-    points = 8))
+    "black", "gray30"), pch = c(0, 1)), printit=TRUE)
 {
-    if (!is.null(parset))
-        parset$fontsize <- fontsize
     wr.lm <- lm(log(Time) ~ log(Distance), data = worldRecords)
     resid1 <- resid(wr.lm)
     library(mgcv)
@@ -131,23 +152,34 @@ function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
     wrgamdata <- with(worldRecords, data.frame(distance = Distance,
         roadORtrack = roadORtrack, resid1 = resid1, resid2 = resid(wr.gam),
         hat = hat.gam$fit, se = hat.gam$se.fit))
+    
     ord <- with(wrgamdata, order(distance))
     wrgamdata <- wrgamdata[ord, ]
     library(latticeExtra)
-    gph0 <- xyplot(resid1 ~ distance, groups = roadORtrack, ylim = c(-0.15,
-        0.175), xlab = "", scales = list(x = list(log = 10, alternating = 0),
-        tck = -0.4), data = wrgamdata, type = "p", par.settings = parset,
-        auto.key = list(columns = 2))
-    gph1 <- xyplot(I(hat - 2 * se) + hat + I(hat + 2 * se) ~
-        distance, outer = FALSE, ylim = c(-0.125, 0.175), scales = list(tck = -0.4,
+    gph0 <- xyplot(resid1 ~ distance, groups = roadORtrack, 
+                   ylim = c(-0.15, 0.175), xlab = "", 
+                   scales = list(x = list(log = 10, alternating = 0),
+                   tck = -0.4), data = wrgamdata, type = "p", 
+                   par.settings = parset,
+                   auto.key = list(columns = 2))
+    gph01 <- xyplot(I(hat - 2 * se) + hat + I(hat + 2 * se) ~
+        distance, outer = FALSE, ylim = c(-0.125, 0.175), 
+                    scales = list(tck = -0.4,
         x = list(log = 10, alternating = 2)), data = wrgamdata,
         type = "l", par.settings = parset)
-    gph01 <- update(gph0 + as.layer(gph1), ylab = expression(atop(Smooth %+-%
+    gph1 <- update(gph0 + as.layer(gph01), 
+                   ylab = expression(atop(Smooth %+-%
         2 * SE, "(resid1)")))
-    gph2 <- xyplot(resid2 ~ distance, groups = roadORtrack, scales = list(tck = -0.4,
-        x = list(log = 10)), ylim = c(-0.125, 0.175), ylab = expression(atop("Residuals from smooth",
+    gph2 <- xyplot(resid2 ~ distance, groups = roadORtrack, 
+                   scales = list(tck = -0.4,
+        x = list(log = 10)), ylim = c(-0.125, 0.175), 
+                   ylab = expression(atop("Resids from smooth",
         "(resid2)")), data = wrgamdata, type = c("p"), par.settings = parset)
-    list(upper = gph01 + as.layer(gph0, axes = NULL), lower = gph2)
+    if(printit){
+      print(gph1, position=c(0, 0.425, 1, 1))
+      print(gph2, position=c(0, 0, 1, 0.575) , newpage = FALSE)
+    }
+    invisible(list(upper = gph1, lower = gph2))
 }
 @ %
 
@@ -159,7 +191,7 @@ function (data = loti)
     num <- seq(along = anom)
     AVtodate <- cumsum(anom)/num
     yr <- data$Year
-    plot(anom ~ yr, xlab = "Year", ylab = expression("Difference from 1951-1980 (" *
+    plot(anom ~ yr, xlab = "", ylab = expression("Difference from 1951-1980 (" *
         degree * "C)"))
     lines(AVtodate ~ yr, col = "gray", lwd = 2)
     lastLessYr <- max(yr[anom < AVtodate])
@@ -167,16 +199,8 @@ function (data = loti)
     yarrow <- lastLessy - c(4, 0.75) * strheight("O")
     arrows(lastLessYr, yarrow[1], lastLessYr, yarrow[2], col = "gray",
         lwd = 2)
-    title1 <- expression("Annual global temperature anomalies, in 0.01" *
-        degree * "C,")
-    title(main = title1, line = 2.1)
-    title2 <- expression("from the average (" %~~% 14 * degree *
-        "C) between 1951 and 1980")
-    title(main = title2, line = 0.8)
 }
 @ %
-
-
 
 <<fig2_7, eval=TRUE, echo=TRUE>>=
 fig2.7 <-
@@ -193,20 +217,72 @@ function (statistics = c("airbagAvail", "airbagDeploy", "Restraint"),
 }
 @ %
 
-<<figs2, eval=TRUE>>=
-if(exists("OpenSesame")){
-fig2.1()
-fig2.2()
-fig2.3()
-fig2.4()
-fig2.5()
-fig2.6()
-fig2.7()
+\section{Show for the Figures}
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
+
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<figsAll, eval=doFigs>>=
+pkgs <- c("gamclass","latticeExtra","DAAG")
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  stop(paste("The following packages should be installed:", notAvail))
 }
 @ %
 
-\end{document}
-
-<<restore2, eval=TRUE, echo=FALSE>>=
-options(continue="+ ", prompt="> ")
+<<figs2_1x, eval=doFigs, out.width="0.65\\textwidth">>=
+opar <- par(mar=c(4,4,2.6,.1))
+fig2.1()
+title(main="2.1B: Light speed estimates (line is silly)", 
+      line=1.75, cex.main=1.1)
+mtext(side=3, line=0.5, "For 2.1A, type: fig2.1(data=cvalues)")
+par(opar)
 @ %
+
+<<fig2_2x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.65\\textwidth">>=
+gph <- fig2.2()
+update(gph, main = "2.2: Wage data, broken down by worker")
+@ %
+
+<<fig2_3x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+gph <- fig2.3()
+update(gph, main="2.3: Corn harvest weight by site")
+@ %
+
+<<fig2_4x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+gph <- fig2.4()
+trellis.par.set(clip=list(panel="off",strip="on"))
+print(update(gph, main="2.4: World records, field vs track"),  
+      position = c(0.05, 0, 1, 0.95))
+trellis.par.set(clip=list(panel="on",strip="on"))
+@ %
+
+<<fig2_5x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.65\\textwidth">>=
+gphs <- fig2.5(printit=FALSE)
+print(gphs[["upper"]], position=c(0, 0.415, 1,1)) 
+print(gphs[["lower"]], position=c(0, 0, 1,0.585), newpage=FALSE) 
+@ %
+
+<<fig2_6x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth">>=
+opar <- par(mar=c(3.1,3.1,3.6,0.6))
+fig2.6()
+title1 <- expression("2.6: Annual global temperature anomalies, in 0.01" *
+        degree * "C,")
+title(main = title1, line = 2.1, cex=1.2)
+title2 <- expression("from the average (" %~~% 14 * degree *
+        "C), 1951 to 1980 inclusive")
+title(main = title2, line = 0.8, cex=1.2)
+par(opar)
+@ %
+
+<<fig2_7x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth">>=
+gph <- fig2.7()
+update(gph, main="2.7: Death rate ratios")
+@ %
+
+\end{document}

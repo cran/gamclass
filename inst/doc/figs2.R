@@ -1,15 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Limits of Statistical Learning (Set 2)}
-
-\title{2: The Limits of Statistical Learning}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/lims-', cache.path='cache/lims-',
@@ -22,26 +12,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-In analyes in the traditions of 'data mining' and 'statistical learning',
-observations are typically
-assumed independent.  There is a greater use of relatively automated
-approaches than is usual in many areas of statistical analysis.  This
-limits the scope of models that are considered and rules out of
-consideration some very important types of analysis. Or, in order to
-fit the data to this type of analysis, some modest amount of preprocessing 
-of the data may be required.  This may be as simple as transforming data 
-values.  Or it may require the creation, from the data as it stands, of 
-summary statistic values to which the methods can then be applied.
-Graphs are shown here that are a useful starting point for discussing
-some of these issues.
-
-\section{Code for Functions that Give the Figures}
-
-<<fig2_1, eval=TRUE, echo=TRUE>>=
+## ----fig2_1, eval=TRUE, echo=TRUE----------------------------------------
 fig2.1 <-
 function (form = speed ~ Year, data = subset(cvalues, Year >=
     1862), errors = TRUE, ...)
@@ -62,9 +35,9 @@ function (form = speed ~ Year, data = subset(cvalues, Year >=
     obj <- lm(form, data = data)
     abline(obj)
 }
-@ %
 
-<<fig2_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_2, eval=TRUE, echo=TRUE----------------------------------------
 fig2.2 <-
 function (seed = NULL, N = 10, parset = simpleTheme(pch = 1:N),
     fontsize = list(text = 12, points = 8))
@@ -86,9 +59,9 @@ function (seed = NULL, N = 10, parset = simpleTheme(pch = 1:N),
         type = c("p", "r"))
     gph
 }
-@ %
 
-<<fig2_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_3, eval=TRUE, echo=TRUE----------------------------------------
 fig2.3 <-
 function (parset = simpleTheme(pch = 16, alpha = 0.8, cex = 1.25),
     fontsize = list(text = 12, points = 8))
@@ -102,9 +75,9 @@ function (parset = simpleTheme(pch = 16, alpha = 0.8, cex = 1.25),
         xlab = "Harvest weight of corn")
     gph
 }
-@ %
 
-<<fig2_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_4, eval=TRUE, echo=TRUE----------------------------------------
 fig2.4 <-
 function (parset = simpleTheme(pch = c(0, 1), cex = 1.2), fontsize = list(text = 12,
     points = 8), annotate = TRUE)
@@ -137,9 +110,9 @@ function (parset = simpleTheme(pch = c(0, 1), cex = 1.2), fontsize = list(text =
     }
     gph2
 }
-@ %
 
-<<fig2_5, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_5, eval=TRUE, echo=TRUE----------------------------------------
 fig2.5 <-
 function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
     "black", "gray30"), pch = c(0, 1)), printit=TRUE)
@@ -181,9 +154,9 @@ function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
     }
     invisible(list(upper = gph1, lower = gph2))
 }
-@ %
 
-<<fig2_6, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_6, eval=TRUE, echo=TRUE----------------------------------------
 fig2.6 <-
 function (data = loti)
 {
@@ -200,9 +173,9 @@ function (data = loti)
     arrows(lastLessYr, yarrow[1], lastLessYr, yarrow[2], col = "gray",
         lwd = 2)
 }
-@ %
 
-<<fig2_7, eval=TRUE, echo=TRUE>>=
+
+## ----fig2_7, eval=TRUE, echo=TRUE----------------------------------------
 fig2.7 <-
 function (statistics = c("airbagAvail", "airbagDeploy", "Restraint"),
     restrict = "!is.na(age)&age>=16&age<998")
@@ -215,60 +188,55 @@ function (statistics = c("airbagAvail", "airbagDeploy", "Restraint"),
         scales = list(tck = 0.5), par.settings = simpleTheme(pch = plotchars))
     gph
 }
-@ %
 
-\section{Show for the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figsAll, eval=doFigs>>=
+
+## ----figsAll, eval=doFigs------------------------------------------------
 pkgs <- c("gamclass","latticeExtra","DAAG")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
-@ %
 
-<<figs2_1x, eval=doFigs, out.width="0.65\\textwidth">>=
+
+## ----figs2_1x, eval=doFigs, out.width="0.65\\textwidth"------------------
 opar <- par(mar=c(4,4,2.6,.1))
 fig2.1()
 title(main="2.1B: Light speed estimates (line is silly)", 
       line=1.75, cex.main=1.1)
 mtext(side=3, line=0.5, "For 2.1A, type: fig2.1(data=cvalues)")
 par(opar)
-@ %
 
-<<fig2_2x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.65\\textwidth">>=
+
+## ----fig2_2x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.65\\textwidth"----
 gph <- fig2.2()
 update(gph, main = "2.2: Wage data, broken down by worker")
-@ %
 
-<<fig2_3x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+
+## ----fig2_3x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"--------
 gph <- fig2.3()
 update(gph, main="2.3: Corn harvest weight by site")
-@ %
 
-<<fig2_4x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+
+## ----fig2_4x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"--------
 gph <- fig2.4()
 trellis.par.set(clip=list(panel="off",strip="on"))
 print(update(gph, main="2.4: World records, field vs track"),  
       position = c(0.05, 0, 1, 0.95))
 trellis.par.set(clip=list(panel="on",strip="on"))
-@ %
 
-<<fig2_5x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.65\\textwidth">>=
+
+## ----fig2_5x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.65\\textwidth"----
 gphs <- fig2.5(printit=FALSE)
 print(gphs[["upper"]], position=c(0, 0.415, 1,1)) 
 print(gphs[["lower"]], position=c(0, 0, 1,0.585), newpage=FALSE) 
-@ %
 
-<<fig2_6x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth">>=
+
+## ----fig2_6x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth"----
 opar <- par(mar=c(3.1,3.1,3.6,0.6))
 fig2.6()
 title1 <- expression("2.6: Annual global temperature anomalies, in 0.01" *
@@ -278,11 +246,10 @@ title2 <- expression("from the average (" %~~% 14 * degree *
         "C), 1951 to 1980 inclusive")
 title(main = title2, line = 0.8, cex=1.2)
 par(opar)
-@ %
 
-<<fig2_7x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth">>=
+
+## ----fig2_7x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.75\\textwidth"----
 gph <- fig2.7()
 update(gph, main="2.7: Death rate ratios")
-@ %
 
-\end{document}
+

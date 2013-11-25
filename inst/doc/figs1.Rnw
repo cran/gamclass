@@ -1,18 +1,50 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Overview -- Chapter 1 Figures}
-
-<<setup, echo=FALSE>>=
-options(continue=" ", prompt=" ")
-@ %
-
 \begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Key Ideas and Issues (Set 1 Figures)}
 
-\title{Figures for Chapter 1}
+\title{1: Key Ideas and Issues}
 \author{John H Maindonald}
 \maketitle
 
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/key-', cache.path='cache/key-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+Ideas and issues that the graphs given here are designed to illustrate can be summarized under the headings:
+\begin{itemize}
+  \item Data Issues
+  \begin{itemize}
+ \item Data Exploration
+ \item Source/target issues
+ \item Data validity, accuracy and relevance
+   \end{itemize}
+  \item Models and Model Assumptions
+  \begin{itemize}
+    \item Model assumptions
+    \item Least squares, maximum likelihood and Bayesian estimation
+    \item Simulation from an assumed model
+    \item Model diagnostics
+    \item Weighting biases -- problems for interpretation of model parameters
+  \end{itemize}
+\end{itemize}
+\vspace*{11pt}
+
+\section{Code for Functions that Give the Figures}
 <<fig1_1, eval=TRUE, echo=TRUE>>=
 fig1.1 <-
 function (form = depression ~ weight, data = roller, ...)
@@ -24,7 +56,8 @@ function (form = depression ~ weight, data = roller, ...)
     maxx <- max(x)
     maxy <- max(y)
     plot(form, data = roller, xlim = c(0, 1.04 * maxx), ylim = c(0,
-        1.04 * maxy), xaxs = "i", yaxs = "i", ...)
+         1.04 * maxy), xaxs = "i", yaxs = "i", ...,
+         main="1.1: Depression vs weight")
 }
 @ %
 
@@ -32,14 +65,7 @@ function (form = depression ~ weight, data = roller, ...)
 fig1.2 <-
 function ()
 {
-    library(MASS)
-    par(fig = c(0, 0.5, 0, 1))
-    plot(brain ~ body, data = mammals, pty = "s")
-    mtext(side = 3, line = 0.5, adj = 0, "A: Unlogged data")
-    par(fig = c(0.5, 1, 0, 1), new = TRUE)
-    plot(brain ~ body, data = mammals, log = "xy", pty = "s")
-    mtext(side = 3, line = 0.5, adj = 0, "B: Log scales on both axes")
-    par(fig = c(0, 1, 0, 1))
+print("Run the separate functions fig1.2A() and fig1.2B()")
 }
 @ %
 
@@ -49,7 +75,7 @@ function ()
 {
     require(MASS)
     plot(brain ~ body, data = mammals, pty = "s")
-    mtext(side = 3, line = 0.5, adj = 0, "A: Unlogged data")
+    mtext(side = 3, line = 0.5, adj = 0, "1.2A: Unlogged data")
 }
 @ %
 
@@ -59,7 +85,7 @@ function ()
 {
     library(MASS)
     plot(brain ~ body, data = mammals, log = "xy", pty = "s")
-    mtext(side = 3, line = 0.5, adj = 0, "B: Log scales on both axes")
+    mtext(side = 3, line = 0.5, adj = 0, "1.2B: Log scales on both axes")
 }
 @ %
 
@@ -67,7 +93,9 @@ function ()
 fig1.3 <-
 function ()
 {
+    opar <- par(mar=rep(0.6,4), oma=c(0,0,2,0))
     pairs(log(mammals), labels = c("log(body)", "log(brain)"))
+    mtext(side=3, line=0.75, outer=TRUE, "1.3: Pairs plot")
 }
 @ %
 
@@ -88,7 +116,7 @@ function (parset = simpleTheme(pch = 1:10, alpha = 0.6, cex = 1),
                   xlab = "Axis 1", ylab = "Axis 2",
                   aspect = 1, scales = list(tck = 0.4),
                   par.settings = parset,
-                  title = "Plot shows first two linear discriminant scores")
+                  title = "1.4: Plot of first two linear discriminant scores")
     gph
 }
 @ %
@@ -101,13 +129,13 @@ function ()
     if(!require(diagram))stop("Package 'diagram' must be installed")
     openplotmat(xlim = c(-0.1, 1.1))
     textellipse(mid=c(.5, .8), radx=0.6, rady=0.25,
-                lab="Source Population", adj=c(.5,-2),
+                lab="Source", adj=c(.5,-2),
                 box.col="gray95")
     textellipse(mid=c(.5, .7), radx=0.3, rady=0.1,
                 lab="Source Sample", adj=c(.5,.5),
                 box.col="gray90")
     textellipse(mid=c(.5, .2), radx=0.6, rady=0.25,
-                lab="Target Population", adj=c(.5,-2),
+                lab="Target", adj=c(.5,-2),
                 box.col="gray95")
     textellipse(mid=c(.5, .1), radx=0.3, rady=0.1,
                 lab="Target Sample?", adj=c(.5,.5),
@@ -127,7 +155,7 @@ function ()
     plot(depression ~ weight, data = roller, xlab = "Roller weight (t)",
         ylab = "Depression in lawn (mm)", pch = 4, xlim = c(0,
             max(roller$weight) * 1.01), ylim = c(0, ymax * 1.01),
-        xaxs = "i", yaxs = "i")
+        xaxs = "i", yaxs = "i", main="")
     abline(roller.obj)
     b <- summary(roller.obj)$coef
     topleft <- par()$usr[c(1, 4)]
@@ -150,48 +178,19 @@ function ()
         yhat)][1])
     ypos <- 0.5 * (roller$depression[ns] + yhat[ns])
     text(roller$weight[ns], ypos, "-ve residual", pos = 4, cex = 0.8)
+    mtext(side=3, line=0.75, 
+          "1.6: Lawn roller plot + line & annotation")
 }
 
 @ %
 
-<<plotSimScat, eval=TRUE, echo=TRUE>>=
-plotSimScat <-
-    function(obj, sigma=NULL, layout=c(4,1), type=c("p","r"),
-             show=c("points","residuals")){
-        nsim <- prod(layout)
-        if(is.null(sigma))sigma <- summary(obj)[["sigma"]]
-        hat <- fitted(obj)
-        xnam <- all.vars(formula(obj))[2]
-        ynam <- all.vars(formula(obj))[1]
-        df <- data.frame(sapply(1:nsim,
-                             function(x)rnorm(length(hat), sd=sigma)))
-        if(show[1]=="points")df <- df + hat
-        simnam <- names(df) <- paste("Simulation", 1:nsim, sep="")
-        df[, c(xnam, ynam)] <- model.frame(obj)[, c(xnam, ynam)]
-        if(show[1]!="points"){df[, "Residuals"] <- df[, ynam] - hat
-                           ynam <- "Residuals"
-                           legadd <- "residuals"
-                       } else legadd <- "data"
-        leg <- list(text=paste(c("Simulated", "Actual"), legadd),
-                    columns=2)
-        formula <- formula(paste(paste(simnam, collapse="+"),
-                                 "~", xnam))
-        parset <- simpleTheme(pch=c(16,16), lty=2,
-                              col=c("black","gray"))
-        gph <- xyplot(formula, data=df, outer=TRUE,
-                      par.settings=parset, auto.key=leg, lty=2,
-                      layout=layout, type=type)
-        formxy <- formula(paste(ynam, "~", xnam))
-        addgph <- xyplot(formxy, data=df, pch=16, col="gray")
-        gph+as.layer(addgph, under=TRUE)
-    }
-@ %
 
 <<fig1_7, eval=TRUE, echo=TRUE>>=
 fig1.7 <- function(){
     obj <- lm(depression ~ weight, data=roller)
-    gph <- plotSimScat(obj, sigma=6.4, layout=c(4,1))
-    gph <- update(gph, xlab="Roller weight (t)", ylab="Depression (mm)")
+    gph <- plotSimScat(obj, sigma=6.4, layout=c(4,1), aspect=1)
+    gph <- update(gph, xlab="Roller weight (t)", ylab="Depression (mm)",
+                  main="1.7: Lawn roller data")
     gph
 }
 @ %
@@ -205,69 +204,79 @@ fig1.8 <- function(){
                   type=c("p","r"),
                   par.settings=pset)
     gph <- update(gph, xlab="Male record times",
-                  ylab="Female record times")
+                  ylab="Female record times",
+                  main="1.8: f vs m times")
     gph
 }
 @ %
 
 <<fig1_9, eval=TRUE, echo=TRUE>>=
-fig1.9 <- function(){
-    pset <- simpleTheme(col.line="gray")
-    gph <- xyplot(timef~time,
-                  data=nihills,
-                  aspect=1,
-                  type=c("p","r"),
-                  par.settings=pset)
-    gph <- update(gph, xlab="Male record times",
-                  ylab="Female record times")
+fig1.9 <- function(obj=mftime.lm){
+    gph <- plotSimScat(obj, layout=c(4,1), aspect=1)
+    update(gph, xlab="Record times for males (h)",
+           ylab="Record times for females (h)",
+           main="1.9: f vs m times, simulation")
 }
 @ %
 
 <<fig1_10, eval=TRUE, echo=TRUE>>=
-fig1.10 <- function(){
-     plot(mftime.lm, which=1, sub.caption="")
+fig1.10 <- function(obj=mftime.lm){
+    plot(obj, which=1, caption=NULL,
+         sub.caption=NULL,
+         main="1.10: Diagnostic plot 1")
 }
 @ %
 
 <<fig1_11, eval=TRUE, echo=TRUE>>=
-fig1.11 <- function(){
-    obj <- lm(timef ~ time, data=nihills)
-    gph <- plotSimScat(obj=mftime.lm, show="residuals",
+fig1.11 <- function(obj=mftime.lm){
+    gph <- plotSimScat(obj, show="residuals",
                        type=c("p","smooth"), layout=c(4,1))
-    gph <- update(gph, xlab="Time (h) for males", ylab="Residuals")
+    gph <- update(gph, xlab="Time (h) for males", ylab="Residuals",
+                  title="1.11: Diagnostic plot 1; 4 simulations",
+                  aspect=1)
     gph
 }
 @ %
 
 <<fig1_12, eval=TRUE, echo=TRUE>>=
-fig1.12 <- function(){
-    plot(mftime.lm, which=2, sub.caption="")
+fig1.12 <- function(obj=mftime.lm){
+    plot(obj, which=2, caption=NULL,
+         sub.caption=NULL,
+         main="1.12: Diagnostic plot 2")
 }
 @ %
 
 <<fig1_13, eval=TRUE, echo=TRUE>>=
 fig1.13 <- function(){
-    gph <- plotSimDiags(obj=mftime.lm, which=2, layout=c(4,1))
+    gph <- plotSimDiags(obj=mftime.lm, which=2, layout=c(4,1),
+                        aspect=1,
+               title="1.13: Diagnostic plot 2; 4 simulations")
     gph
 }
 @ %
 
 <<fig1_14, eval=TRUE, echo=TRUE>>=
-fig1.14 <- function(){
-    plot(mftime.lm, which=3, sub.caption="")
+fig1.14 <- function(obj=mftime.lm){
+    plot(obj, which=3, caption=NULL,
+         sub.caption=NULL,
+         main="1.14: Diagnostic plot 3")
 }
 @ %
 
 <<fig1_15, eval=TRUE, echo=TRUE>>=
-fig1.15 <- function(){
-    gph <- plotSimDiags(obj=mftime.lm, which=3, layout=c(4,1))
+fig1.15 <- function(obj=mftime.lm){
+    gph <- plotSimDiags(obj, which=3, layout=c(4,1),
+                        aspect=1,
+           title="1.15: Diagnostic plot 3; 4 simulations")
     gph
 }
 @ %
 
 <<fig1_16, eval=TRUE, echo=TRUE>>=
 fig1.16 <- function(){
-    plot(mftime.lm, which=5, sub.caption="")
+    plot(mftime.lm, which=5, caption=NULL,
+         sub.caption=NULL,
+         main="1.16: Leverage plot")
 }
 @ %
 
@@ -276,7 +285,8 @@ fig1.17 <- function(){
     pset <- simpleTheme(lty=c(1,2))
     key <- list(text=c("Males", "Females"), columns=2)
     gph <- densityplot(~ time+timef, data=nihills, par.settings=pset,
-                       ylab="Time (h)", auto.key=key)
+                       ylab="Time (h)", auto.key=key,
+           main="1.17: Overlaid F and M densities")
     gph
 }
 @ %
@@ -291,7 +301,8 @@ fig1.18 <- function(){
                   type=c("p","r"),
                   par.settings=pset)
     gph <- update(gph, xlab="Male record times",
-                  ylab="Female record times")
+                  ylab="Female record times",
+           main="1.18: F vs M record times; log10 scales")
     gph
 }
 @ %
@@ -299,8 +310,10 @@ fig1.18 <- function(){
 <<fig1_19, eval=TRUE, echo=TRUE>>=
 fig1.19 <- function(){
     obj <- lm(log(timef) ~ log(time), data=nihills)
-    opar <- par(mfrow=c(1,4), mex=0.75, mar=c(4.1,4.1,2.1,0.6), pty="s")
-    plot(obj, cex.caption=0.8)
+    opar <- par(mfrow=c(1,4), mex=0.75, oma=c(0,0,2,0),
+                mar=c(4.1,4.1,2.1,0.6), pty="s")
+    plot(obj, cex.caption=0.75, cex.main=1.2,
+         sub.caption="1.19: F vs M record times, diagnostic plots")
     par(opar)
 }
 @ %
@@ -322,36 +335,109 @@ fig1.20 <- function(){
                          panel.stripplot(x,y,...)
                          ltext(x,y,paste(c(3,9,15,7,22,12)), pos=1,
                                cex=0.8)
-                     }, auto.key=list(columns=2, points=TRUE, cex=1.0))
+                     }, auto.key=list(columns=2, points=TRUE, cex=1.0),
+                     title="1.20: Pain reduction scores")
     gph
 }
 @ %
 
-<<figs6, eval=TRUE>>=
-if(exists("OpenSesame")){
+\section{Code for the Figures}
+
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
+
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<figs1-setup, eval=doFigs, warn.conflicts=FALSE>>=
 library(DAAG)
-library(latticeExtra)
+mftime.lm <- lm(timef ~ time, data=nihills)
+@ %
+
+<<fig1_1x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig1.1()
+@ %
+
+<<fig1_2x, eval=doFigs, echo=TRUE>>=
 fig1.2()
+@ %
+
+<<fig1_2ABx, eval=doFigs, echo=TRUE, out.width="0.47\\textwidth">>=
 fig1.2A()
 fig1.2B()
+@ %
+
+<<fig1_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.6\\textwidth">>=
 fig1.3()
+@ %
+
+<<fig1_4x, eval=doFigs, echo=TRUE, , fig.width=5, fig.height=5.5, out.width="0.75\\textwidth">>=
 fig1.4()
+@ %
+
+<<fig1_5x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig1.5()
+@ %
+
+<<fig1_6x, eval=doFigs, echo=TRUE, fig.width=3.8, fig.height=4, out.width="0.65\\textwidth">>=
 fig1.6()
+@ %
+
+<<fig1_7x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5>>=
 fig1.7()
+@ %
+
+<<fig1_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig1.8()
+@ %
+
+<<fig1_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5>>=
 fig1.9()
-mftime.lm <- lm(timef ~ time, data=nihills)
+@ %
+
+<<fig1_10x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig1.10()
+@ %
+
+<<fig1_11x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5>>=
 fig1.11()
+@ %
+
+<<fig1_12x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig1.12()
+@ %
+
+<<fig1_13x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5>>=
 fig1.13()
-}
 @ %
 
+<<fig1_14x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig1.14()
+@ %
+
+<<fig1_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5>>=
+fig1.15()
+@ %
+
+<<fig1_16x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig1.16()
+@ %
+
+<<fig1_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig1.17()
+@ %
+
+<<fig1_18x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig1.18()
+@ %
+
+<<fig1_19x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=2>>=
+fig1.19()
+@ %
+
+<<fig1_20x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.8\\textwidth">>=
+fig1.20()
+@ %
 \end{document}
-
-<<restore2, eval=TRUE, echo=FALSE>>=
-options(continue="+ ", prompt="> ")
-@ %

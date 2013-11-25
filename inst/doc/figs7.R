@@ -1,14 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Discrimination and Classification (Set 7)}
-\title{7: Discrimination and Classification}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/class-', cache.path='cache/class-',
@@ -22,25 +13,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-The methods illustrated here have the character of regression models
-where the outcome is categorical, one of $g$ classes.  For example,
-the \texttt{fgl} dataset has measurements of each on nine physical
-properties, for 214 samples of glass that are classified into
-six different glass types.
-
-\paragraph{Note:} The versions of Figures 7.9 and 7.10 that are shown in Section
-\ref{fig7:show} are for a substantially reduced number of points, relative to the
-text {\em Statistically Informed Data Mining}.\footnote{Display of the
-figures can be suppressed, when processing this vignette through {\em knitr},
-by placing an object \texttt{doFigs=FALSE} in the workspace.}.
-
-\section{Code for the Figures}
-
-<<fig7_1, eval=TRUE, echo=TRUE>>=
+## ----fig7_1, eval=TRUE, echo=TRUE----------------------------------------
 fig7.1 <- function(plotit=TRUE){
     fgl.lda <- lda(type ~ ., data=fgl)
     scores <- predict(fgl.lda)$x
@@ -52,9 +27,9 @@ fig7.1 <- function(plotit=TRUE){
                   par.settings=simpleTheme(alpha=0.6, pch=1:6))
     gph
 }
-@ %
 
-<<fig7_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_2, eval=TRUE, echo=TRUE----------------------------------------
 fig7.2 <- function(){
     gph <- xyplot(length ~ breadth, groups=species, data=cuckoos,
                   type=c("p"), auto.key=list(space="right"), aspect=1,
@@ -73,9 +48,9 @@ fig7.2 <- function(){
                                     panel.abline(av2, -ld2[2]/ld2[1], lty=2))
     gph + addlayer
 }
-@ %
 
-<<fig7_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_3, eval=TRUE, echo=TRUE----------------------------------------
 fig7.3 <- function(){
     ## This will show decision boundaries
     gph <- xyplot(length ~ breadth, groups=species, data=cuckoos,
@@ -99,9 +74,9 @@ fig7.3 <- function(){
                                      data=Xcon), axes=FALSE)
     gph + addlayer1 + addlayer2
 }
-@ %
 
-<<meuse>>=
+
+## ----meuse---------------------------------------------------------------
     if(!exists('bronchit')){
         cat("Will try to load dataset 'bronchit' from package 'SMIR'")
         if(!require(SMIR))stop("Package 'SMIR' is not installed") else {
@@ -111,9 +86,9 @@ fig7.3 <- function(){
              rfac <- factor(r, labels=c("abs","pres")))
         }
 }
-@ %
 
-<<fig7_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_4, eval=TRUE, echo=TRUE----------------------------------------
 fig7.4 <- function(seed=47){
   opar <- par(xpd=TRUE)
   ## xpd=TRUE allows labels to extend outside of figure region
@@ -122,17 +97,17 @@ fig7.4 <- function(seed=47){
     text(b.rpart)
   par(opar)
 }
-@ %
 
-<<fig7_5, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_5, eval=TRUE, echo=TRUE----------------------------------------
 fig7.5 <- function(){
     b001.rpart <- rpart(rfac ~ cig+poll, cp=0.001, minsplit=15,
                     data=bronchit)
     plotcp(b001.rpart)
 }
-@ %
 
-<<fig7_6, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_6, eval=TRUE, echo=TRUE----------------------------------------
 fig7.6 <-
 function () {
 plot.root <- function(text='Reduction in "error" (Gini) = 20.55',
@@ -158,9 +133,9 @@ plot.root <- function(text='Reduction in "error" (Gini) = 20.55',
               cutoff="poll<58.55", left="98/16", rt="68/30",
               treetop=0.6, treebot=0.1)
 }
-@ %
 
-<<fig7_7, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_7, eval=TRUE, echo=TRUE----------------------------------------
 fig7.7 <-
 function ()
 {
@@ -178,9 +153,9 @@ function ()
     par(mfrow=c(1,1))
     par(opar)
 }
-@ %
 
-<<fig7_8, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_8, eval=TRUE, echo=TRUE----------------------------------------
 fig7.8 <- function(){
     bronchit <-
       within(bronchit,
@@ -195,9 +170,9 @@ fig7.8 <- function(){
                   auto.key=list(columns=2))
     gph
     }
-@ %
 
-<<fig7_9, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_9, eval=TRUE, echo=TRUE----------------------------------------
 fig7.9 <- function(nn0 = c(3596, 900, 600, 400, 270, 180, 120, 90, 60, 40),
                    repeats=5, seed=NULL, testlong=NULL, plotit=TRUE){
 if(!is.null(seed))set.seed(seed)
@@ -239,7 +214,8 @@ axis(1, at=log(nn0), labels=paste(nn0), las=3)
 invisible(testlong)
 }
 
-<<fig7_10, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_10, eval=TRUE, echo=TRUE---------------------------------------
 fig7.10 <- function(nn0 = c(3596, 900, 600, 400, 270, 180, 120, 90, 60, 40),
                     repeats=5, seed=NULL, heldlong=NULL, plotit=TRUE){
 if(!is.null(seed))set.seed(seed)  
@@ -285,7 +261,8 @@ axis(1, at=log(nn0), labels=paste(nn0), las=3)
 invisible(heldlong)
 }
 
-<<compareTargets, eval=TRUE, echo=TRUE>>=
+
+## ----compareTargets, eval=TRUE, echo=TRUE--------------------------------
 compareTargets <-
 function(rfobj, prior1, prior2){
     nam1 <- deparse(substitute(prior1))
@@ -298,9 +275,9 @@ function(rfobj, prior1, prior2){
     names(errvec) <- c("error-good", "error-bad", nam1, nam2)
     errvec
   }
-@ %
 
-<<bestsize, eval=TRUE, echo=TRUE>>=
+
+## ----bestsize, eval=TRUE, echo=TRUE--------------------------------------
 bestsize <- function(n0=226, mtry=9, nselect=400,
                      x=tictrain[, -c(1,86)], y=tictrain[, 86],
                      xtest=tictest[, -c(1,86)], ytest=tictest[, 86])
@@ -315,9 +292,9 @@ bestsize <- function(n0=226, mtry=9, nselect=400,
   buy
 }
 
-@ %
 
-<<ldaErr, eval=TRUE, echo=TRUE>>=
+
+## ----ldaErr, eval=TRUE, echo=TRUE----------------------------------------
 ldaErr <- function(train.lda=spam01.lda, train=spam01, test=spam2,
                    traingp=spam01[,'type'], testgp=spam2[,'type']){
     trainCV.lda <- update(train.lda, CV=TRUE)
@@ -334,9 +311,9 @@ ldaErr <- function(train.lda=spam01.lda, train=spam01, test=spam2,
                                 prior=prior01, printit=NULL)$overall)
      ldaRates
 }
-@ %
 
-<<rpartErr, eval=TRUE, echo=TRUE>>=
+
+## ----rpartErr, eval=TRUE, echo=TRUE--------------------------------------
 rpartErr <- function(train.rp=spam01.rp, train=spam01, test=spam2,
                      outcome='type'){
     cptab <- train.rp$cptable
@@ -349,9 +326,9 @@ rpartErr <- function(train.rp=spam01.rp, train=spam01, test=spam2,
                          prior=rnprop)$overall
     c(cverror=xcv, trainerror=trainerr, testerror=testerr)
 }
-@ %
 
-<<rfErr, eval=TRUE, echo=TRUE>>=
+
+## ----rfErr, eval=TRUE, echo=TRUE-----------------------------------------
 rfErr <- function(train.rf=spam01.rf, train=spam01, test=spam2,
                   outcome='type'){
     trainClass <- predict(train.rf, newdata=spam01, type="class")
@@ -364,9 +341,9 @@ rfErr <- function(train.rf=spam01.rf, train=spam01, test=spam2,
                                  prior=rnprop)$overall)
     rfRates
 }
-@ %
 
-<<fig7_11, eval=TRUE, echo=TRUE>>=
+
+## ----fig7_11, eval=TRUE, echo=TRUE---------------------------------------
 fig7.11 <- function(){
 form <- paste("~", paste(paste("V", 2:10, sep= ""),
                          collapse="+"))
@@ -375,31 +352,26 @@ gph <- bwplot(formula(paste("Class", form)),
               data=Vowel, outer=TRUE, layout=c(3,3))
 gph
 }
-@ %
 
-\section{Show the Figures}\label{fig7:show}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<figs7-setup, eval=TRUE>>=
+## ----figs7-setup, eval=TRUE----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs7-pkgs, eval=doFigs>>=
+
+## ----figs7-pkgs, eval=doFigs---------------------------------------------
 pkgs <- c("DAAG","rpart","randomForest","MASS","mgcv")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
-@ %
 
-<<fig7_1x, eval=doFigs, fig.width=5, fig.height=5.5, echo=TRUE,  out.width="0.65\\textwidth">>=
+
+## ----fig7_1x, eval=doFigs, fig.width=5, fig.height=5.5, echo=TRUE,  out.width="0.65\\textwidth"----
 fig7.1()
-@ %
 
-<<figs7-cuckoos, eval=doFigs>>=
+
+## ----figs7-cuckoos, eval=doFigs------------------------------------------
     if(!exists('cuckoos.lda')){
         cuckoos <- within(cuckoos,
                           levels(species) <- abbreviate(levels(species), 8))
@@ -407,16 +379,17 @@ fig7.1()
         cuckoos.qda <- qda(species ~ length + breadth,
                            data=cuckoos)
     }
-@ %
 
-<<fig7_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth">>=
+
+## ----fig7_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth"----
 fig7.2()
-@ %
 
-<<fig7_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth">>=
+
+## ----fig7_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth"----
 fig7.3()
 
-<<bronchit, eval=doFigs, echo=TRUE>>=
+
+## ----bronchit, eval=doFigs, echo=TRUE------------------------------------
 if(!exists("bronchit") & (!require(SMIR)))
     stop("The 'bronchit' datsaset, from SMIR, is required")
    if(!exists("bronchit")){
@@ -425,30 +398,30 @@ library(SMIR); data(bronchit)
 bronchit <-
   within(bronchit,
          rfac <- factor(r, labels=c("abs","pres")))
-@ %
 
-<<fig7_4x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth">>=
+
+## ----fig7_4x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth"----
 fig7.4()
-@ %
 
-<<fig7_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth">>=
+
+## ----fig7_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth"----
 fig7.5()
-@ %
 
-<<fig7_6x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.5>>=
+
+## ----fig7_6x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.5------
 fig7.6()
-@ %
 
-<<fig7_7x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5>>=
+
+## ----fig7_7x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5----------
 fig7.7()
-@ %
 
-<<fig7_8x, eval=doFigs, fig.width=5, fig.height=5, echo=TRUE, out.width="0.65\\textwidth">>=
+
+## ----fig7_8x, eval=doFigs, fig.width=5, fig.height=5, echo=TRUE, out.width="0.65\\textwidth"----
 set.seed(31)
 fig7.8()
-@ %
 
-<<spam, eval=doFigs, echo=TRUE>>=
+
+## ----spam, eval=doFigs, echo=TRUE----------------------------------------
 if(!exists("spam")){
   cat("Will try to load dataset 'spam' from package 'kernlab'")
   if(!require(kernlab))stop("Package 'kernlab' is not installed")}
@@ -467,9 +440,9 @@ rpartError <- rpartErr()
 set.seed(29)
 spam01.rf <- randomForest(type ~ ., data=spam01)
 rfError <- rfErr()
-@ %
 
-<<ticShown, eval=doFigs, echo=TRUE>>=
+
+## ----ticShown, eval=doFigs, echo=TRUE------------------------------------
 if(!exists('ticShown') | !exists('ticHeld')){
         cat("Will try to load dataset 'ticdata' from package 'kernlab'")
         if(!require(kernlab))stop("Package 'kernlab' is not installed") else {
@@ -483,9 +456,9 @@ if(!exists('tictrain') | !exists('tictest')){
 tictrain <- ticShown[1:3822, ]
 tictest <- ticShown[-(1:3822), ]
 }
-@ %
 
-<<testLong, eval=doFigs, echo=TRUE>>=
+
+## ----testLong, eval=doFigs, echo=TRUE------------------------------------
 ## Generated with seed=29
 testLong <-
 structure(list(test = c(61, 63, 65, 66, 65, 65, 67, 67, 63, 62, 
@@ -500,9 +473,9 @@ structure(list(test = c(61, 63, 65, 66, 65, 65, 67, 67, 63, 62,
 3L, 3L, 3L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 
 4L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("test", 
 "n0", "gp"), row.names = c(NA, -50L), class = "data.frame")
-@ %
 
-<<fig7_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=4>>=
+
+## ----fig7_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=4--------
 opar <- par(mar=c(3.6,3.6,2.6, 0.6))
 note <- paste("This plots stored results (seed=29), plus one further data point.",
               "\nType 'fig7.9(seed=31)' for graph shown in the text.")
@@ -518,9 +491,9 @@ plot(test.gam, se=T, residuals=T, pch=1, xaxt="n",
 axis(1, at=log(nn0), labels=paste(nn0), las=3)
 mtext(side=3, line=0.5, note, col="blue")
 par(opar)
-@ %
 
-<<heldlong, eval=doFigs, echo=TRUE>>=
+
+## ----heldlong, eval=doFigs, echo=TRUE------------------------------------
 ## Generated with seed=43
 heldLong <-
 structure(list(insure = c(108, 114, 120, 119, 121, 116, 114, 
@@ -536,9 +509,9 @@ structure(list(insure = c(108, 114, 120, 119, 121, 116, 114,
 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 5L, 
 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("insure", "n0", "gp"
 ), row.names = c(NA, -50L), class = "data.frame")
-@ %
 
-<<fig7_10x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=4>>=
+
+## ----fig7_10x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=4-------
 opar <- par(mar=c(3.6,3.6,2.6, 0.6))
 note <- paste("This plots stored results (seed=43), plus one further data point.",
               "\nType 'fig7.10(seed=47)' for graph shown in the text.")
@@ -554,19 +527,17 @@ plot(held.gam, se=T, residuals=T, pch=1, xaxt="n",
 axis(1, at=log(nn0), labels=paste(nn0), las=3)
 mtext(side=3, line=0.5, note, col="blue")
 par(opar)
-@ %
 
-<<Vowel, eval=doFigs>>=
+
+## ----Vowel, eval=doFigs--------------------------------------------------
     if(!exists('Vowel')){
         cat("Will try to load dataset 'Vowel' from package 'mlbench'")
         if(!require(mlbench))stop("Package 'mlbench' is not installed") else
             data(Vowel)
     }
-@ %
 
-<<fig7_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=8, out.width="0.97\\textwidth">>=
+
+## ----fig7_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=8, out.width="0.97\\textwidth"----
 fig7.11()
-@ %
 
-\end{document}
 

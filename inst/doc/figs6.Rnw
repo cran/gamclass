@@ -1,22 +1,49 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Generalized Additive Models -- Chapter 6 Functions}
-
-<<setup, echo=FALSE>>=
-options(continue=" ", prompt=" ")
-@ %
-
 \begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Generalized Additive Models (Set 6)}
 
-\title{Figures for Chapter 6}
+\title{6: Generalized Additive Models}
 \author{John H Maindonald}
 \maketitle
 
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/gam-', cache.path='cache/gam-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+
+Generalized Additive Models (GAMs) extend linear and generalized
+linear models to include smooth functions of explanatory variables,
+where the smoothness may be determined automatically. The graphs shown
+here illustrate some of the possibilities.\footnote{Display of the
+figures can be suppressed, when processing this vignette through {\em knitr}, 
+by placing an object \texttt{doFigs=FALSE} is the workspace.}
+
+\paragraph{Note:}  Figure 6.9 shows the results of simulations.
+The version of this figure that is shown in Section \ref{fig6:show}
+is, in order to keep to a minimum the time taken to process the vignette, 
+for 25 simulations only.  This is useful mainly as a check that the
+code does what is expected of it.  More realistically, specify
+500 or 1000 (as in the text) simulations.
+
+\section{Code for the Figures}
+
 <<fig6_1, eval=TRUE, echo=TRUE>>=
 fig6.1 <- function(plotit=TRUE){
-    library(lattice); library(grid)
-    library(DAAG)
     matohms <- data.frame(model.matrix(with(fruitohms, ~ poly(juice, 4))))
     names(matohms) <- c("Intercept", paste("poly4",1:4, sep=""))
     form <- formula(paste(paste(names(matohms), collapse="+"), "~ juice"))
@@ -31,7 +58,7 @@ fig6.1 <- function(plotit=TRUE){
                    panel=function(x,y,...){
                        llines(smooth.spline(x,y))},
                    outer=TRUE,
-                   legend=list(top=list(fun=textGrob,
+                   legend=list(top=list(fun=grid::textGrob,
                                args=list(label="A: Basis functions",
                                just="left", x=0))))
     b <- coef(lm(I(ohms/1000) ~ poly(juice,4), data=fruitohms))
@@ -56,7 +83,7 @@ fig6.1 <- function(plotit=TRUE){
                    panel=function(x,y,...){
                        llines(smooth.spline(x,y))},
                    outer=TRUE,
-                   legend=list(top=list(fun=textGrob,
+                   legend=list(top=list(fun=grid::textGrob,
                          args=list(label="B: Contribution to fitted curve",
                                    just="left", x=0))))
     if(plotit){
@@ -69,27 +96,23 @@ fig6.1 <- function(plotit=TRUE){
 
 <<fig6_2, eval=TRUE, echo=TRUE>>=
 fig6.2 <- function(){
-    library(splines)
-    library(DAAG)
     plot(ohms ~ juice, data=fruitohms, ylim=c(0, max(ohms)*1.02))
     ## 3 (=2+1) degrees of freedom natural spline
-    fitns2 <- fitted(lm(ohms ~ ns(juice, df=2), data=fruitohms))
+    fitns2 <- fitted(lm(ohms ~ splines::ns(juice, df=2), data=fruitohms))
     lines(fitns2 ~ juice, data=fruitohms, col="gray40")
     ## 4 (=3+1) degrees of freedom natural spline
-    fitns3 <- fitted(lm(ohms ~ ns(juice, df=3), data=fruitohms))
+    fitns3 <- fitted(lm(ohms ~ splines::ns(juice, df=3), data=fruitohms))
     lines(fitns3 ~ juice, data=fruitohms, lty=2, lwd=2, col="gray40")
     legend("topright", title="D.f. for cubic regression natural spline",
            legend=c("3  [ns(juice, 2)]",
            "4  [ns(juice, 3)]"),
            lty=c(1,2), lwd=c(1,2), cex=0.8)
-    library(splines)
-    library(DAAG)
     plot(ohms ~ juice, data=fruitohms, ylim=c(0, max(ohms)*1.02))
     ## 3 (=2+1) degrees of freedom natural spline
-    fitns2 <- fitted(lm(ohms ~ ns(juice, df=2), data=fruitohms))
+    fitns2 <- fitted(lm(ohms ~ splines::ns(juice, df=2), data=fruitohms))
     lines(fitns2 ~ juice, data=fruitohms, col="gray40")
     ## 4 (=3+1) degrees of freedom natural spline
-    fitns3 <- fitted(lm(ohms ~ ns(juice, df=3), data=fruitohms))
+    fitns3 <- fitted(lm(ohms ~ splines::ns(juice, df=3), data=fruitohms))
     lines(fitns3 ~ juice, data=fruitohms, lty=2, lwd=2, col="gray40")
     legend("topright", title="D.f. for cubic regression natural spline",
            legend=c("3  [ns(juice, 2)]",
@@ -99,11 +122,16 @@ fig6.2 <- function(){
 @ %
 
 <<fig6_3, eval=TRUE, echo=TRUE>>=
-fig6.3 <- function(plotit=TRUE){
-    library(lattice)
-    library(grid)        # Supplies the function textGrob
-    matohms2 <- model.matrix(with(fruitohms, ~ ns(juice, 2)))
-    matohms3 <- model.matrix(with(fruitohms, ~ ns(juice, 3)))
+fig6.3 <- function(){
+    ohms.lm <- lm(ohms ~ ns(juice, df=3), data=fruitohms)
+    termplot(ohms.lm, partial=TRUE, se=TRUE)
+}
+@ %
+
+<<fig6_4, eval=TRUE, echo=TRUE>>=
+fig6.4 <- function(plotit=TRUE){
+    matohms2 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 2)))
+    matohms3 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 3)))
     m <- dim(matohms3)[1]
     longdf1 <- data.frame(juice=rep(fruitohms$juice,4),
                          basis2 = c(as.vector(matohms2),rep(NA,m)),
@@ -125,11 +153,11 @@ fig6.3 <- function(plotit=TRUE){
                       y2 <- longdf1$basis2[subscripts]
                       if(!any(is.na(y2))) llines(smooth.spline(x,y2),lty=1)},
                   outer=TRUE,
-                  legend=list(top=list(fun=textGrob,
-                              args=list(label="A: Basis functions",
+                  legend=list(top=list(fun=grid::textGrob,
+                              args=list(label="A:Basis functions",
                               just="left", x=0))))
-    b2 <- coef(lm(I(ohms/1000) ~ ns(juice,2), data=fruitohms))
-    b3 <- coef(lm(I(ohms/1000) ~ ns(juice,3), data=fruitohms))
+    b2 <- coef(lm(I(ohms/1000) ~ splines::ns(juice,2), data=fruitohms))
+    b3 <- coef(lm(I(ohms/1000) ~ splines::ns(juice,3), data=fruitohms))
     spline2 <- as.vector(sweep(matohms2, 2, b2, "*"))
     spline3 <- as.vector(sweep(matohms3, 2, b3, "*"))
     longdf2 <- data.frame(juice=rep(fruitohms$juice,4),
@@ -152,7 +180,7 @@ fig6.3 <- function(plotit=TRUE){
                       y2 <- longdf2$spline2[subscripts]
                       if(!any(is.na(y2))) llines(smooth.spline(x,y2),lty=1)},
                   outer=TRUE,
-                  legend=list(top=list(fun=textGrob,
+                  legend=list(top=list(fun=grid::textGrob,
                               args=list(label="B: Contribution fo fitted curve",
                               just="left", x=0))))
     if(plotit){
@@ -163,27 +191,25 @@ fig6.3 <- function(plotit=TRUE){
 }
 @ %
 
-<<fig6_4, eval=TRUE, echo=TRUE>>=
-fig6.4 <- function(){
-    library(mgcv)
+<<fig6_5, eval=TRUE, echo=TRUE>>=
+fig6.5 <- function(){
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
     wr.gam <- gam(res ~ s(log(Distance)), data=worldRecords)
     plot(wr.gam, residuals=TRUE, pch=1, las=1, ylab="Fitted smooth")
 }
 @ %
 
-<<fig6_5, eval=TRUE, echo=TRUE>>=
-fig6.5 <-
+<<fig6_6, eval=TRUE, echo=TRUE>>=
+fig6.6 <-
 function () {
-    library(mgcv)
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
     wr.gam <- gam(res ~ s(log(Distance)), data=worldRecords)
     gam.check(wr.gam)
 }
 @ %
 
-<<fig6_6, eval=TRUE, echo=TRUE>>=
-fig6.6 <-
+<<fig6_7, eval=TRUE, echo=TRUE>>=
+fig6.7 <-
 function ()
 {
     opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
@@ -199,53 +225,10 @@ function ()
 }
 @ %
 
-<<fig6_7, eval=TRUE, echo=TRUE>>=
-fig6.7 <- function(){
-    cat('Run the separate functions fig6.7A() and fig6.7B()\n')
-    }
-@ %
-
-<<fig6_7A, eval=TRUE, echo=TRUE>>=
-fig6.7A <- function(){
-    library(sp)
-    data(meuse)
-    meuse$ffreq <- factor(meuse$ffreq)
-    meuse$soil <- factor(meuse$soil)
-    ## Model 2ML: s(elev, dist) (smooth surface), plus factors
-    formxML <- log(lead) ~ s(elev, dist) + ffreq + soil
-    meusexML.gam <- gam(formxML, method="ML", data=meuse)
-    opar <- par(mar=c(4.1,3.6,2.1, 1.6), mex=0.8,
-                oma=c(0,0,2.1,0), mfrow=c(3,1))
-    plot(meusexML.gam)
-    termplot(meusexML.gam, terms="ffreq", se=TRUE)
-    mtext(side=3, line=0.65, "A: One pattern of change", outer=TRUE,
-          cex=0.8, adj=0)
-    termplot(meusexML.gam, terms="soil", se=TRUE)
-    par(opar)
-}
-@ %
-
-<<fig6_7B, eval=TRUE, echo=TRUE>>=
-fig6.7B <- function(){
-    opar <- par(mar=c(4.1,3.6,2.1, 1.6), mex=0.8,
-                oma=c(0,0,2.1,0), mfrow=c(3,1))
-    formxxML <- log(lead) ~ s(elev, dist, by=ffreq) + ffreq + soil
-    meusexxML.gam <- gam(formxxML, method="ML", data=meuse)
-    plot(meusexxML.gam)
-    mtext(side=3, line=0.65, "B: Contours change with ffreq", outer=TRUE,
-          cex=0.8, adj=0)
-    par(opar)
-}
-@ %
-
 <<fig6_8, eval=TRUE, echo=TRUE>>=
 fig6.8 <- function(){
-    library(sp)
-    data(meuse)
-    meuse$ffreq <- factor(meuse$ffreq)
-    meuse$soil <- factor(meuse$soil)
     meuse.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
-                     data=meuse)
+                           data=meuse)
     opar <- par(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0),
                 oma=c(0,0,2.1,0), mfrow=c(2,2))
     plot(meuse.gam, residuals=TRUE, se=TRUE, pch=1)
@@ -256,66 +239,106 @@ fig6.8 <- function(){
 @ %
 
 <<fig6_9, eval=TRUE, echo=TRUE>>=
-fig6.9 <- function(){
+fig6.9 <- function(nsim=1000, caption=NULL){
+  if(missing(caption))captCol <- "black" else captCol <- "blue"
+  if(is.null(caption))caption <- paste("Graphs are from", nsim, "simulations")
+  opar <- par(mfrow=c(1,2), oma=c(0,0,1.6,0.6))
+    if(!exists("meuseML.gam"))
     meuseML.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
                        data=meuse, method="ML")
+    if(!exists("meusexML.gam"))
     meusexML.gam <- gam(log(lead) ~ s(elev, dist) + ffreq + soil,
                         data=meuse, method="ML")
-    pval <- anova(meuseML.gam, meusexML.gam, test="F")["Pr(>F)"][2,]
     ## Now simulate from meuseML.gam
-    hat <- predict(meuseML.gam)
-    simY <- simulate(meuseML.gam, nsim=1000)
-    f1000 <- p1000 <- deltaDf <- numeric(1000)
-    for(i in 1:1000){
+    simY <- simulate(meuseML.gam, nsim=nsim)
+    simResults <- matrix(0, nrow=nsim, ncol=3)
+    colnames(simResults) <- c( "deltaDf", "fsim", "psim")
+    for(i in 1:nsim){
         mML.gam <- gam(simY[,i] ~ s(elev) + s(dist) + ffreq + soil,
                        data=meuse, method="ML")
         mxML.gam <- gam(simY[,i] ~ s(elev, dist) + ffreq + soil,
                         data=meuse, method="ML")
         aovcomp <- anova(mML.gam, mxML.gam, test="F")
-        f1000[i] <- aovcomp["F"][2,]
-        p1000[i] <- aovcomp["Pr(>F)"][2,]
-        deltaDf[i] <- aovcomp[2, "Df"]
+        simResults[i,] <- unlist(aovcomp[2, c("Df", "F", "Pr(>F)")])
     }
     ## Now plot the $p$-statistics and $F$-statistics
     ## against the change in degrees of freedom:
-    par(mfrow=c(1,2))
-    colcode <- c("gray", "black")[1+(deltaDf>=1)]
-    plot(p1000 ~ deltaDf, log="y", xlab="Change in degrees of freedom",
-         ylab=expression(italic(p)*"-value"), col=colcode)
+    colcode <- c("gray", "black")[1+(simResults[,"deltaDf"]>=1)]
+    simResults <- as.data.frame(simResults)
+    plot(psim ~ deltaDf, log="y", xlab="Change in degrees of freedom",
+         ylab=expression(italic(p)*"-value"), col=colcode, data=simResults)
     abline(v=1, lty=2, col="gray")
-    mtext("A", side=3, line=0.75, adj=0)
+    mtext("A", side=3, line=0.25, adj=0)
     mtext("1", side=1, at=1, line=0, cex=0.75)
-    plot(f1000 ~ deltaDf, log="y", xlab="Change in degrees of freedom",
-         ylab=expression(italic(F)*"-statistic"),  col=colcode)
+    plot(fsim ~ deltaDf, log="y", xlab="Change in degrees of freedom",
+         ylab=expression(italic(F)*"-statistic"),  col=colcode,
+         data=simResults)
     abline(v=1, lty=2, col="gray")
     mtext("1", side=1, at=1, line=0, cex=0.75)
-    mtext("B", side=3, line=0.75, adj=0)
-    par(mfrow=c(1,1))
+    mtext("B", side=3, line=0.25, adj=0)
+  mtext(side=3, line=0.5, adj=0.052, outer=TRUE, caption, col=captCol)
+  par(opar)
+    invisible(simResults)
+}
+@ %
+
+<<fig6_10A, eval=TRUE, echo=TRUE>>=
+fig6.10A <- function(){
+    opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
+                oma=c(0,0,2.1,0), mfrow=c(4,1))
+    if(!exists("meuseML.gam"))
+    meuseML.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
+                       data=meuse, method="ML")
+    plot(meuseML.gam)
+    termplot(meuseML.gam, terms="ffreq", se=TRUE)
+    termplot(meuseML.gam, terms="soil", se=TRUE)
+    mtext(side=3, line=0.65, "A: Add effects of dist and elev", outer=TRUE,
+          cex=0.8, adj=0)
+    par(opar)
+}
+@ %
+
+<<fig6_10B, eval=TRUE, echo=TRUE>>=
+fig6.10B <- function(){
+    opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
+                oma=c(0,0,2.1,0), mfrow=c(3,1))
+    if(!exists("meusexML.gam"))
+    meusexML.gam <- gam(log(lead) ~ s(elev, dist) + ffreq + soil,
+                        data=meuse, method="ML")
+    plot(meusexML.gam)
+    termplot(meusexML.gam, terms="ffreq", se=TRUE)
+    termplot(meusexML.gam, terms="soil", se=TRUE)
+    mtext(side=3, line=0.65, "B: Fit surface to dist and elev", outer=TRUE,
+      cex=0.8, adj=0)
+par(opar)
 }
 @ %
 
 <<fig6_10, eval=TRUE, echo=TRUE>>=
-fig6.10 <- function(){
+fig6.10 <- function()
+print("Run fig6.10A() and fig6.10B() separately")
+@
+
+<<fig6_11, eval=TRUE, echo=TRUE>>=
+fig6.11 <- function(){
     par(mfrow=c(1,2))
-    mdbRain.gam <- gam(mdbRain ~ s(Year) + s(SOI), data=bomregions)
+    mdbRain.gam <- gam(mdbRain ~ s(Year) + s(SOI), data=bomregions2012)
     plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=1)
     plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=2)
     par(mfrow=c(1,1))
 }
 @ %
 
-<<fig6_11, eval=TRUE, echo=TRUE>>=
-fig6.11 <- function(){
-library(DAAG)
+<<fig6_12, eval=TRUE, echo=TRUE>>=
+fig6.12 <- function(){
 Erie <- greatLakes[,"Erie"]
 plot(Erie, xlab="",
      ylab="Level (m)")
 }
 @ %
 
-<<fig6_12, eval=TRUE, echo=TRUE>>=
-fig6.12 <- function(){
-    library(DAAG)
+<<fig6_13, eval=TRUE, echo=TRUE>>=
+fig6.13 <- function(){
     Erie <- greatLakes[,"Erie"]
     opar <- par(oma=c(0,0,4,0))
     lag.plot(Erie, lags=3,
@@ -329,13 +352,13 @@ fig6.12 <- function(){
     mtext(side=3, line=0.5, "B: Autocorrelation estimates at successive lags",
           adj=-0.35, cex=1)
     mtext(side=1, line=1.75, "Lag", cex=1)
+    par(fig=c(0,1,0,1))
     par(opar)
 }
 @ %
 
-<<fig6_13, eval=TRUE, echo=TRUE>>=
-fig6.13 <- function(){
-    library(DAAG)
+<<fig6_14, eval=TRUE, echo=TRUE>>=
+fig6.14 <- function(){
     Erie <- greatLakes[,"Erie"]
     df <-  data.frame(height=as.vector(Erie), year=time(Erie))
     obj <- gam(height ~ s(year), data=df)
@@ -343,18 +366,18 @@ fig6.13 <- function(){
 }
 @ %
 
-<<fig6_14, eval=TRUE, echo=TRUE>>=
-fig6.14 <- function(){
-    library(DAAG)
+<<fig6_15, eval=TRUE, echo=TRUE>>=
+fig6.15 <- function(){
     if(!require(forecast))stop("Package 'forecast' must be installed")
     Erie <- greatLakes[,"Erie"]
+    assign('Erie', Erie, pos=1)
     erie.ar <- ar(Erie)
     plot(forecast(erie.ar, h=15), ylab="Lake level (m)")
 }
 @ %
 
-<<fig6_15, eval=TRUE, echo=TRUE>>=
-fig6.15 <- function(){
+<<fig6_16, eval=TRUE, echo=TRUE>>=
+fig6.16 <- function(){
     opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
     for(i in 1:6){
         df <- data.frame(x=1:200, y=arima.sim(list(ar=0.7), n=200))
@@ -365,9 +388,8 @@ fig6.15 <- function(){
 }
 @ %
 
-<<fig6_16, eval=TRUE, echo=TRUE>>=
-fig6.16 <- function(){
-    library(mgcv)
+<<fig6_17, eval=TRUE, echo=TRUE>>=
+fig6.17 <- function(){
     hand <- with(cricketer, as.vector(as.vector(unclass(left)-1)))
                                         # 0 for left-handers
                                         # 1 for right
@@ -378,8 +400,8 @@ fig6.16 <- function(){
 }
 @ %
 
-<<fig1_17, eval=TRUE, echo=TRUE>>=
-fig6.17 <- function(){
+<<fig6_18, eval=TRUE, echo=TRUE>>=
+fig6.18 <- function(){
     opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
     for(i in 1:6){
         hand <- sample(c(0,1), size=nrow(cricketer), replace=TRUE,
@@ -396,8 +418,8 @@ fig6.17 <- function(){
 }
 @ %
 
-<<fig1_18, eval=TRUE, echo=TRUE>>=
-fig6.18 <- function(){
+<<fig6_19, eval=TRUE, echo=TRUE>>=
+fig6.19 <- function(){
     rtlef <- data.frame(with(cricketer, as(table(year, left), "matrix")))
     rtlef <- within(rtlef, year <- as.numeric(rownames(rtlef)))
     right.gam <-  gam(right ~ s(year), data=rtlef, family=poisson)
@@ -420,33 +442,122 @@ fig6.18 <- function(){
 }
 @ %
 
-<<figs6, eval=TRUE>>=
-if(exists("OpenSesame")){
-fig6.1()
-fig6.2()
-fig6.3()
-fig6.4()
-fig6.5()
-fig6.6()
-fig6.7()
-fig6.7A()
-fig6.7B()
-fig6.8()
-fig6.9()
-fig6.10()
-fig6.11()
-fig6.12()
-fig6.13()
-fig6.14()
-fig6.15()
-fig6.16()
-fig6.17()
-fig6.18()
+\section{Show the Figures}\label{fig6:show}
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
+
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<figs6-pkgs, eval=doFigs>>=
+pkgs <- c("DAAG","mgcv","splines")
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  stop(paste("The following packages should be installed:", notAvail))
 }
+@ %
+
+<<figs6-data, eval=doFigs>>=
+    if(!exists('meuse')){
+        cat("Will try to load dataset 'meuse' from package 'sp'")
+        if(!require(sp))stop("Package 'sp' is not installed") else {
+            data(meuse)
+            meuse$ffreq <- factor(meuse$ffreq)
+            meuse$soil <- factor(meuse$soil)
+        }
+}
+    if(!exists('Electricity')){
+        cat("Will try to load dataset 'Electricity' from package 'Ecdat'")
+        if(!require(Ecdat))stop("Package 'Ecdat' is not installed") else {
+            data(Electricity)
+        }
+}          
+@ %
+
+<<fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+fig6.1()
+@ %
+
+<<fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.75\\textwidth">>=
+fig6.2()
+@ %
+
+<<fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+fig6.3()
+@ %
+
+<<fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+fig6.4()
+@ %
+
+<<fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+fig6.5()
+@ %
+
+<<fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.75, out.width="0.8\\textwidth">>=
+fig6.6()
+@ %
+
+<<fig6_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth">>=
+fig6.7()
+@ %
+
+<<fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+fig6.8()
+@ %
+
+<<fig6_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth">>=
+caption <- paste("These are from 25 simulations.", 
+                 "More usefully, try, eg: fig6.9(nsim=500)")
+fig6.9(nsim=25, caption=caption)
+@ %
+
+<<fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth">>=
+fig6.10A()
+@ %
+
+<<fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth">>=
+fig6.10B()
+@ %
+
+<<fig6_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth">>=
+fig6.11()
+@ %
+
+<<fig6_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth">>=
+fig6.12()
+@ %
+
+<<fig6_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth">>=
+fig6.13()
+@ %
+
+<<fig6_14x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth">>=
+fig6.14()
+@ %
+
+<<fig6_15x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth">>=
+fig6.15()
+@ %
+
+<<fig6_16x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth">>=
+fig6.16()
+@ %
+
+<<fig6_17x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+fig6.17()
+@ %
+
+<<fig6_18x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth">>=
+fig6.18()
+@ %
+
+<<fig6_19x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth">>=
+fig6.19()
 @ %
 
 \end{document}
 
-<<restore, eval=TRUE, echo=FALSE>>=
-options(continue="+ ", prompt="> ")
-@ %

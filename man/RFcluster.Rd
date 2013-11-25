@@ -62,6 +62,8 @@ John Maindonald
 % }
 \examples{
 \dontrun{
+library(mlbench)
+library(randomForest)
 data(Vowel)
 RFcluster(formula=Class ~., id = V1, data = Vowel, nfold = 15,
               ntree=500, progress=TRUE, printit = TRUE, seed = 29)

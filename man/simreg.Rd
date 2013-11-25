@@ -9,8 +9,8 @@ Simulate (repeated) regression calculations
   by bootstrap resampling.
 }
 \usage{
-simreg(formula, data, n = 1000)
-bootreg(formula, data, n = 1000)
+simreg(formula, data, nsim = 1000)
+bootreg(formula, data, nboot = 1000)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,10 +20,8 @@ Model formula
   \item{data}{
 Data frame from which names in formula can be taken
 }
-  \item{n}{
-    Number of repeats of the simulation, or (\code{bootreg}) of bootstrap
-    resamples
-}
+\item{nsim}{Number of repeats of the simulation (\code{simreg})}
+\item{nboot}{Number of bootstrap resamples (\code{bootreg})}
 }
 % \details{
 % %%  ~~ If necessary, more details than the description above ~~
@@ -53,8 +51,8 @@ Note that \code{bootreg} uses the simplest
 % }
 \examples{
 xy <- data.frame(x=rnorm(100), y=rnorm(100))
-simcoef <- simreg(formula = y~x, data = xy, n = 100)
-bootcoef <- bootreg(formula = y~x, data = xy, n = 100)
+simcoef <- simreg(formula = y~x, data = xy, nsim = 100)
+bootcoef <- bootreg(formula = y~x, data = xy, nboot = 100)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

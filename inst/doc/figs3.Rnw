@@ -1,33 +1,90 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Data-Based Generalization -- Chapter 3 Functions}
-
-<<setup, echo=F>>=
-options(prompt=" ", continue=" ")
-@ %
-
 \begin{document}
-
-\title{Figures for Chapter 3}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Data-Based Generalization (Set 3)}
+\title{3: Data-Based Generalization}
 \author{John H Maindonald}
 \maketitle
 
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/infer-', cache.path='cache/infer-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+A central concern of data analysis is to generalize from results from
+the one data set that is available for analysis to some wider
+relevance. Ideas of sample and population are crucial for such
+generalization.  A further important notion is that of a 
+{\em sampling distribution}, 
+
+Mechanisms for assessing predictive accuracy include the use of theory,
+simulation (which extends the use of theory into areas where the calculations
+may be intractable), the training/test approach, cross-validation, and 
+bootstrap methods.
+
+\paragraph{Note:}  Figures 3.15 and 3.16 show results from repeated
+sampling -- simulation or bootstrap sampling.
+The versions of these figures that are shown in Section \ref{fig3:show}
+are for a substantially reduced number of repeat samples, relative to the
+text {\em Statistically Informed Data Mining}.\footnote{Display of the
+figures can be suppressed, when processing this vignette through {\em knitr}, 
+by placing an object \texttt{doFigs=FALSE} in the workspace.}
+
+\section{Code for Functions that Give the Figures}
 <<fig3_1, eval=TRUE, echo=TRUE>>=
 fig3.1 <-
-function (plotit=TRUE){
-    wts <- with(cats, na.omit(Bwt[Sex=="F"]))
-    av <- mean(wts); sdev <- sd(wts); sampsize <- length(wts)
-    simmat <- cbind(wts, matrix(rnorm(sampsize*5, mean=av, sd=sdev),
-                                ncol=5))
-    simdf <- as.data.frame(simmat)
-    names(simdf) <- c("Source", paste("normal", 1:5, sep=""))
-    simdf <- stack(simdf)
-    names(simdf) <- c("height", "Sample")
-    library(MASS)             # MASS has the cats data set
-    wts <- with(cats, na.omit(Bwt[Sex=="F"]))
-    av <- mean(wts); sdev <- sd(wts); sampsize <- length(wts)
-    simmat <- cbind(wts, matrix(rnorm(sampsize*5, mean=av, sd=sdev),
+function (x=fCatWts){
+lattice::stripplot(jitter(x), pch='|', xlab="Weight (kg)",
+                 aspect=0.25, col="black", border="gray")
+}
+
+<<fig3_2, eval=TRUE, echo=TRUE>>=
+fig3.2 <-
+function(x=fCatWts){
+opar <- par(mfrow=c(2,2), xpd=TRUE,
+            mar=c(3.6,3.1,3.6,1.1), mgp=c(2.25, 0.5, 0))
+hist(x, labels=TRUE, xlim=c(2, 3),
+     xlab="Height (cm)", main="", xpd=TRUE)
+title(main="A: Frequency histogram", adj=0, line=1.5, cex.main=1.05)
+hist(x, labels=TRUE, xlim=c(2,3),
+     xlab="Weight (kg)", main="", freq=FALSE, xpd=TRUE)
+title(main="B: Density histogram", adj=0, line=1.5, cex.main=1.05)
+par(xpd=FALSE)
+hist(x, xlim=c(2,3), xlab="Weight (kg)",
+     main="", freq=FALSE)
+axis(1)
+lines(density(x), xlab="Weight (kg)", col="gray40")
+title(main="C: Histogram, density is overlaid", adj=0, line=1.5,
+      cex.main=1.05)
+plot(density(x), xlim=c(2,3), xlab="Height (cm)",
+     main="", sub="", bty="l", type="l")
+av <- mean(x)
+sdev <- sd(x)
+xval <- pretty(c(2,3), n=40)
+lines(xval, dnorm(xval, mean=av, sd=sdev), lty=2, col="gray40")
+title(main="D: Density curve estimate", adj=0, line=1.5, cex.main=1.05)
+par(opar)
+par(mfrow=c(1,1))
+}
+
+<<fig3_3, eval=TRUE, echo=TRUE>>=
+fig3.3 <-
+function (x=fCatWts, plotit=TRUE){
+    av <- mean(x); sdev <- sd(x); sampsize <- length(x)
+    simmat <- cbind(x, matrix(rnorm(sampsize*5, mean=av, sd=sdev),
                                 ncol=5))
     simdf <- as.data.frame(simmat)
     names(simdf) <- c("Source", paste("normal", 1:5, sep=""))
@@ -36,15 +93,15 @@ function (plotit=TRUE){
     denplotSimple <- densityplot(~height, groups=Sample, data=simdf,
                                  xlab="Body weight (kg)")
     denplotn <- update(denplotSimple, scales=list(tck=0.5),
-                       main=list(expression(plain("A: Density plots")),
-                       x=0.05, just="left"),
+                       main=list(expression(plain("A: Simulation (Densities)")),
+                       cex.title=0.9, x=0.05, just="left"),
                        par.settings=simpleTheme(lty=1:6))
     bwpltBasic <- bwplot(Sample ~ height, data=simdf,
                          xlab="Body weight (kg)",
                          auto.key=list(columns=3))
     bwplotn <- update(bwpltBasic, scales=list(tck=0.5),
-                      main=list(expression(plain("B: Boxplots")),
-                      x=0.05, just="left"))
+                      main=list(expression(plain("B: Simulation (Boxplots)")), 
+                                cex.title=0.9, x=0.05, just="left"))
     if(plotit){
         print(denplotn, position=c(0,0,0.5,1))
         print(bwplotn, position=c(0.5,0,1,1),newpage=FALSE)
@@ -53,29 +110,28 @@ function (plotit=TRUE){
 }
 @ %
 
-<<fig3_2, eval=TRUE, echo=TRUE>>=
-fig3.2 <-
-function (plotit=TRUE)
+<<fig3_4, eval=TRUE, echo=TRUE>>=
+fig3.4 <-
+function (x=fCatWts, plotit=TRUE)
 {
-    wts <- with(cats, na.omit(Bwt[Sex=="F"]))
-    sampsize <- length(wts)
-    bootmat <- cbind(wts, matrix(0, ncol=5, nrow=sampsize))
-    for(i in 2:6) bootmat[,i] <- sample(wts, replace=TRUE)
+    sampsize <- length(x)
+    bootmat <- cbind(x, matrix(0, ncol=5, nrow=sampsize))
+    for(i in 2:6) bootmat[,i] <- sample(x, replace=TRUE)
     colnames(bootmat) <- c("Source", paste("normal", 1:5, sep=""))
     bootdf <- stack(as.data.frame(bootmat))
     names(bootdf) <- c("height", "Sample")
     denplotSimple <- densityplot(~ height, groups=Sample, data=bootdf,
                                  xlab="Body weight (kg)")
-    legendA <- expression(plain("A: Density plots (bootstrap samples)"))
+    legendA <- expression(plain("A: Bbootstrap (Densities)"))
     denplot <- update(denplotSimple, scales=list(tck=0.5),
-                      main=list(legendA, x=0.05, just="left"),
+                      main=list(legendA, x=0.05, just="left"), cex.title=0.9,
                       par.settings=simpleTheme(lty=1:6))
     bwpltBasic <- bwplot(Sample ~ height, data=bootdf,
                          xlab="Body weight (kg)",
                          auto.key=list(columns=3))
-    legendB <- expression(plain("B: Boxplots"))
+    legendB <- expression(plain("B: Bootstrap (Boxplots)"))
     bwplot <- update(bwpltBasic, scales=list(tck=0.5),
-                     main=list(legendB, x=0.05, just="left"))
+                     main=list(legendB, x=0.05, just="left"), cex.title=0.9)
     if(plotit){
         print(denplot, position=c(0,0,0.5,1))
         print(bwplot, position=c(0.5,0,1,1),newpage=FALSE)
@@ -84,8 +140,8 @@ function (plotit=TRUE)
 }
 @ %
 
-<<fig3_3, eval=TRUE, echo=TRUE>>=
-fig3.3 <-
+<<fig3_5, eval=TRUE, echo=TRUE>>=
+fig3.5 <-
 function ()
 {
     opar <- par(mgp=c(2,.75,0), mfrow=c(1,2))
@@ -99,10 +155,9 @@ function ()
 }
 @ %
 
-<<fig3_4, eval=TRUE, echo=TRUE>>=
-fig3.4 <-
+<<fig3_6, eval=TRUE, echo=TRUE>>=
+fig3.6 <-
 function (){
-    library(MASS)
     heights <- na.omit(subset(survey, Sex=="Female")$Height)
     plot(density(heights), bty="l", main="",
          cex.axis=1.15, cex.lab=1.15)
@@ -118,10 +173,10 @@ function (){
 }
 @ %
 
-<<fig3_5, eval=TRUE, echo=TRUE>>=
-fig3.5 <-
+<<fig3_7, eval=TRUE, echo=TRUE>>=
+fig3.7 <-
 function (){
-    library(MASS)
+  ## 'cats' is from MASS
     y <- with(cats, na.omit(Bwt[Sex=="F"]))
     opar <- par(pty="s")
     qqnorm(y)
@@ -129,11 +184,12 @@ function (){
 }
 @ %
 
-<<fig3_6, eval=TRUE, echo=TRUE>>=
-fig3.6 <-
+<<fig3_8, eval=TRUE, echo=TRUE>>=
+fig3.8 <-
 function ()
 {
-    opar <- par(fig=c(0, 1, 0.465, 1))
+    opar <- par(fig=c(0, 1, 0.465, 1), mar=c(2.1, 3.6, 3.6,2.6),
+                mgp=c(2.25, 0.5,0))
     av <- numeric(1000)
     for (i in 1:1000)
         av[i] <- mean(rnorm(47, mean=2.36, sd=0.27))
@@ -144,9 +200,13 @@ function ()
          ylab="Density", ylim=c(0,max(avdens$y)),
          col="gray", lwd=2, lty=2)
     lines(avdens)
-    title(main="A: Simulation (from a normal distribution)", adj=0)
-    legend("topleft", legend=c("Source", "Sampling\ndistribution\nof mean"),
-           col=c("gray", "black"), lty=c(2,1), lwd=c(2,1), bty="n", cex=0.8)
+    mtext(side=3, line=0.75, "A: Simulation (from a normal distribution)",
+          adj=-0.1)
+    legend("bottomright", 
+           legend=c("Source", "Sampling\ndistribution\nof mean"),
+           col=c("gray", "black"), lty=c(2,1), lwd=c(2,1), bty="n", 
+           y.intersp=0.75, inset=c(0,0.2),
+           cex=0.8)
     par(fig=c(0, 1, 0, 0.535), new=TRUE)
     y <- with(cats, na.omit(Bwt[Sex=="F"]))
     av <- numeric(1000)
@@ -154,22 +214,25 @@ function ()
         av[i] <- mean(sample(y, size=length(y), replace=TRUE))
     avdens <- density(av)
     plot(density(y), ylim=c(0, max(avdens$y)),
-         xlab="", ylab="Density", xlim=c(1.5, 3.75),
+         xlab="", ylab="Density", xlim=c(1.5, 3.75),       
          col="gray", lwd=2, lty=2, main="")
     lines(avdens)
-    title(main="B: Bootstrap samples (from the sample data)", adj=0)
-    legend("topleft", legend=c("Source",
+    mtext(side=3, line=0.75, "B: Bootstrap samples (from the sample data)", adj=-0.1)
+    legend("bottomright", 
+           legend=c("Source",
                       "Sampling\ndistribution\nof mean"),
            col=c("gray", "black"), lty=c(2,1), lwd=c(2,1), bty="n",
+           y.intersp=0.75, inset=c(0,0.2),
            cex=0.8)
+    par(opar)
     par(fig=c(0,1,0,1))
 }
 @ %
 
 
 
-<<fig3_7, eval=TRUE, echo=TRUE>>=
-fig3.7 <-
+<<fig3_9, eval=TRUE, echo=TRUE>>=
+fig3.9 <-
 function ()
 {
     xleft <- 0:3; xrt <- 1:4
@@ -189,11 +252,10 @@ function ()
 }
 @ %
 
-<<fig3_8, eval=TRUE, echo=TRUE>>=
-fig3.8 <-
+<<fig3_10, eval=TRUE, echo=TRUE>>=
+fig3.10 <-
 function (plotit=TRUE)
 {
-    library(DAAG)
     library(grid)
     parset1 <- simpleTheme(pch=1:6, alpha=0.8)
     plt1 <- xyplot(length ~ breadth, groups=species, data=cuckoos,
@@ -225,8 +287,8 @@ function (plotit=TRUE)
 }
 @ %
 
-<<fig3_9, eval=TRUE, echo=TRUE>>=
-fig3.9 <-
+<<fig3_11, eval=TRUE, echo=TRUE>>=
+fig3.11 <-
 function ()
 {
     parset <- list(dot.symbol=list(pch=1, alpha=0.6))
@@ -237,9 +299,9 @@ function ()
 }
 @ %
 
-<<fig3_10, eval=TRUE, echo=TRUE>>=
-fig3.10 <-
-function ()
+<<fig3_12, eval=TRUE, echo=TRUE>>=
+fig3.12 <-
+function()
 {
     avdiff <- numeric(100)
     for(i in 1:100){
@@ -247,7 +309,7 @@ function ()
                                     function(x)mean(sample(x, replace=TRUE))))
         avdiff[i] <- avs[1] - avs[2]  # FALSE (non-wren) minus TRUE (wren)
     }
-    xtxt <- paste("Means of bootstrap samples of length difference,",
+    xtxt <- paste("Means of bootstrap samples of length difference,\n",
                   "non-wren - wren (mm)")
     dotdiff <- dotplot(~ avdiff, xlab=xtxt,
                        par.settings=list(dot.symbol=list(pch=1, alpha=0.6)))
@@ -255,37 +317,34 @@ function ()
 }
 @ %
 
-<<fig3_11, eval=TRUE, echo=TRUE>>=
-fig3.11 <-
-function ()
+<<fig3_13, eval=TRUE, echo=TRUE>>=
+fig3.13 <-
+function (df=mcats)
 {
-    mcats <- subset(cats, Sex=="M")
-    xyplot(Hwt ~ Bwt, data=mcats,
+    xyplot(Hwt ~ Bwt, data=df,
            type=c("p","r"))
 }
 @ %
 
-<<fig3_12, eval=TRUE, echo=TRUE>>=
-fig3.12 <-
-function ()
+<<fig3_14, eval=TRUE, echo=TRUE>>=
+fig3.14 <-
+function(df=mcats)
 {
-    mcats <- subset(cats, Sex=="M")
-    mcats.lm <- lm(Hwt ~ Bwt, data=mcats)
+    mcats.lm <- lm(Hwt ~ Bwt, data=df)
     res <- resid(mcats.lm)
     plot(density(res), main="")
     rug(res, col="gray")
 }
 @ %
 
-<<fig3_13, eval=TRUE, echo=TRUE>>=
-fig3.13 <-
-function ()
+<<fig3_15, eval=TRUE, echo=TRUE>>=
+fig3.15 <-
+function(df=mcats, nrepeats=100)
 {
     if(!require(car))stop("Package 'car' must be installed")
-    mcats <- subset(cats, Sex=="M")
     bootmat <- bootreg(formula = Hwt ~ Bwt,
-                       data = mcats,
-                       n = 1000)
+                       data = df,
+                       nboot = nrepeats)
     bootdf <- as.data.frame(bootmat)
     names(bootdf) <- c("Intercept","Slope")
     colr <- adjustcolor(rep("black",3),
@@ -296,22 +355,25 @@ function ()
 }
 @ %
 
-<<fig3_14, eval=TRUE, echo=TRUE>>=
-fig3.14 <-
-function (plotit=TRUE)
+<<fig3_16, eval=TRUE, echo=TRUE>>=
+fig3.16 <-
+function (df=mcats, plotit=TRUE, nrepeats=100)
 {
-    mcats <- subset(cats, Sex=="M")
     bootmat <- bootreg(formula = Hwt ~ Bwt,
-                       data = mcats[-97, ],
-                       n = 1000)
+                       data = df[-97, ],
+                       nboot = nrepeats)
     bootdf0 <- as.data.frame(bootmat)
     names(bootdf0) <- c("Intercept","Slope")
-    gphA <- xyplot(Slope ~ Intercept, data=bootdf0, alpha=0.25)
+    gphA <- xyplot(Slope ~ Intercept, data=bootdf0, alpha=0.25,
+                   main=paste("A:", nrepeats, "bootstrap samples"),
+                   cex.title=1.1)
         simmat <- simreg(formula = Hwt ~ Bwt,
-                         data=mcats[-97, ], n=1000)
+                         data=df[-97, ], nsim=nrepeats)
     simdf <- as.data.frame(simmat)
     names(simdf) <- c("Intercept","Slope")
-    gphB <- xyplot(Slope ~ Intercept, data=simdf, alpha=0.25)
+    gphB <- xyplot(Slope ~ Intercept, data=simdf, alpha=0.25,
+                   main=paste("B:", nrepeats, "simulations"),
+                   cex.title=1.1)
     if(plotit){
         print(gphA, position=c(0,0,0.515,1))
         print(gphB, position=c(0.485,0,1,1), newpage=FALSE)
@@ -320,29 +382,95 @@ function (plotit=TRUE)
 }
 @ %
 
-\end{document}
+\section{Show the Figures}\label{fig3:show}
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
 
-<<figs3, eval=TRUE>>=
-if(exists("OpenSesame")){
-library(MASS)
-library(DAAG)
-fig3.1()
-fig3.2()
-fig3.3()
-fig3.4()
-fig3.5()
-fig3.6()
-fig3.7()
-fig3.8()
-fig3.9()
-fig3.10()
-fig3.11()
-fig3.12()
-fig3.13()
-fig3.14()
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<fig3-pkgs>>=
+pkgs <- c("lattice","DAAG","gamclass")
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  stop(paste("The following packages should be installed:", notAvail))
 }
 @ %
 
-<<restore2, eval=TRUE, echo=FALSE>>=
-options(continue="+ ", prompt="> ")
+<<get-data, eval=doFigs>>=
+if(!exists("cats")){
+  cat("Will load 'cats' dataset from MASS package")
+  require(MASS)
+}
+fCatWts <- with(cats, na.omit(Bwt[Sex=="F"])) 
+mcats <- subset(cats, Sex=="M")
 @ %
+
+<<fig3_1x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.8\\textwidth">>=
+fig3.1()
+@ %
+
+<<fig3_2x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.97\\textwidth">>=
+fig3.2()
+@ %
+
+<<fig3_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.97\\textwidth">>=
+fig3.3()
+@ %
+
+<<fig3_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.97\\textwidth", fig.width=5.5, fig.height=3.0, out.width="0.97\\textwidth">>=
+fig3.4()
+@ %
+
+<<fig3_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.75\\textwidth">>=
+fig3.5()
+@ %
+
+<<fig3_6x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=4.5, out.width="0.6\\textwidth">>=
+fig3.6()
+@ %
+
+<<fig3_7x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig3.7()
+@ %
+
+<<fig3_8x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=6, out.width="0.75\\textwidth">>=
+fig3.8()
+@ %
+
+<<fig3_9x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=3, out.width="0.75\\textwidth">>=
+fig3.9()
+@ %
+
+<<fig3_10x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth">>=
+fig3.10()
+@ %
+
+<<fig3_11x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth">>=
+fig3.11()
+@ %
+
+<<fig3_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth">>=
+fig3.12()
+@ %
+
+<<fig3_13x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.6\\textwidth">>=
+fig3.13()
+@ %
+
+<<fig3_14x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.6\\textwidth">>=
+fig3.14()
+@ %
+
+<<fig3_15x, eval=doFigs, echo=TRUE>>=
+fig3.15(nrepeats=100)
+@ %
+
+<<fig3_16x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth">>=
+fig3.16(nrepeats=100)
+@ %
+
+\end{document}

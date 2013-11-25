@@ -1,2 +1,6 @@
-exportPattern("^[[:alpha:]]+")
+export(bootreg,compareModels,CVcluster,CVgam,matchedPairs,plotFars,RFcluster,bootreg,simreg,tabFarsDead)
+import(mgcv, DAAG, MASS, rpart, randomForest, lattice)
 importFrom(car, scatterplot, spm, scatterplotMatrix)
+importFrom(latticeExtra, layer, layer_, glayer, glayer_, as.layer)
+importFrom(ape, dist.dna)
+importFrom(KernSmooth, bkde2D)

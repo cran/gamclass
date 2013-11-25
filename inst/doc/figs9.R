@@ -1,15 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Ordination (Set 9)}
-
-\title{9: Ordination}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/ord-', cache.path='cache/ord-',
@@ -23,20 +13,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-Ordination is a generic name for methods for providing a low-dimensional
-view of points in multi-dimensional space, such that ``similar'' objects
-are near each other and dissimilar objects are separated.  The plot(s)
-from an ordination in 2 or 3 dimensions may provide useful visual clues
-on clusters in the data and on outliers.  The methods described
-heere all use some form of multi-dimensional scaling (MDS)
-
-\section{Code for the Figures}
-
-<<fig9_1, eval=TRUE, echo=TRUE>>=
+## ----fig9_1, eval=TRUE, echo=TRUE----------------------------------------
 fig9.1 <- function(){
   opar <- par(xpd=TRUE)
   if(!exists("aupoints")){
@@ -55,9 +34,9 @@ fig9.1 <- function(){
     text(aupoints, labels=labs, pos=labpos, xpd=TRUE)
   par(opar)
 }
-@ %,
 
-<<cfPhysical,  eval=TRUE, echo=TRUE>>=
+
+## ----cfPhysical,  eval=TRUE, echo=TRUE-----------------------------------
 comparePhysical <- function(lat=aulatlong$latitude,
                             long=aulatlong$longitude,
                             x1=aupoints[,1], x2 = aupoints[,2],
@@ -70,9 +49,9 @@ comparePhysical <- function(lat=aulatlong$latitude,
     y <- as.vector(rbind(long, fitlong, rep(NA,10)))
     lines(x, y, col="gray40", lwd=3)
 }
-@ %
 
-<<fig9_2A, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_2A, eval=TRUE, echo=TRUE---------------------------------------
 fig9.2A <- function(){
     if(!require(DAAG))stop("'DAAG' must be installed")
     if(!require(oz))stop("Package 'oz' must be installed")
@@ -81,9 +60,9 @@ fig9.2A <- function(){
     points(aulatlong, col="red", pch=16, cex=1.5)
     comparePhysical(x1=aupoints[,1], x2 = aupoints[,2])
 }
-@ %
 
-<<fig9_2B, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_2B, eval=TRUE, echo=TRUE---------------------------------------
 fig9.2B <- function(){
     if(!require(MASS))stop("Package 'MASS' must be installed")
     if(!require(oz))stop("Package 'oz' must be installed")
@@ -94,18 +73,18 @@ fig9.2B <- function(){
     comparePhysical(x1=aupoints.sam$points[,1],
                     x2 = aupoints.sam$points[,2], wts=wt)
 }
-@ %
 
-<<fig9_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_2, eval=TRUE, echo=TRUE----------------------------------------
 fig9.2 <- function(){
   par(fig=c(0,1,0.5,1))
   fig9.2A()
   par(fig=c(0,1,0,0.5), new=TRUE)  
   fig9.2B()  
 }
-@ %
 
-<<fig9_3A, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_3A, eval=TRUE, echo=TRUE---------------------------------------
 fig9.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
     if(!require(ape))stop("Package 'ape' must be installed")
@@ -117,9 +96,9 @@ fig9.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     text(primates.cmd[,1], primates.cmd[,2], row.names(primates.cmd),
          pos=lefrt)
 }
-@ %
 
-<<fig9_3B, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_3B, eval=TRUE, echo=TRUE---------------------------------------
 fig9.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
     if(!require(ape))stop("Package 'ape' must be installed")
@@ -133,9 +112,9 @@ fig9.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     text(primates.mds$points[,1], primates.mds$points[,2],
          row.names(primates.mds$points), pos=lefrt)
 }
-@ %
 
-<<fig9_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_3, eval=TRUE, echo=TRUE----------------------------------------
 fig9.3 <- function(){
   opar <- par(fig=c(0,0.5,0,1), mar=c(3.1,3.1,1.6,0.1))
   fig9.3A()
@@ -144,9 +123,9 @@ fig9.3 <- function(){
   par(fig=c(0,1,0,1))
   par(opar)
 }
-@ %
 
-<<fig9_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig9_4, eval=TRUE, echo=TRUE----------------------------------------
 fig9.4 <- function(){
     if(!require(DAAG))stop("Package 'DAAG' must be installed")
     if(!require(MASS))stop("Package 'MASS' must be installed")
@@ -162,48 +141,43 @@ fig9.4 <- function(){
     pacific.mds <- isoMDS(pacific.dist, pacific.cmd, trace=FALSE)
     plot(pacific.mds$points)
 }
-@ %
 
-\section{Show the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs9-load-pkgs, eval=doFigs>>=
+
+## ----figs9-load-pkgs, eval=doFigs----------------------------------------
 pkgs <- "DAAGbio"
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
-@ %
 
-<<fig9_1x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5>>=
+
+## ----fig9_1x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5----------
 fig9.1()
-@ %
 
-<<aupoints, eval=doFigs>>=
+
+## ----aupoints, eval=doFigs-----------------------------------------------
 if(!exists("aupoints")) 
 aupoints <- cmdscale(audists)
-@ %
 
-<<fig9_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=8>>=
+
+## ----fig9_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=8----------
 fig9.2()
-@ %
 
-<<fig9_3x, eval=doFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth">>=
+
+## ----fig9_3x, eval=doFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth"----
 fig9.3()
-@ %
 
-<<fig9_4x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4.25>>=
+
+## ----fig9_4x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4.25-------
 fig9.4()
-@ %
-\end{document}
 
-<<restore, eval=TRUE, echo=FALSE>>=
+
+## ----restore, eval=TRUE, echo=FALSE--------------------------------------
 options(continue="+ ", prompt="> ")
-@ %
+
+

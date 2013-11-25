@@ -13,10 +13,13 @@
 }
 \usage{
 matchedPairs(years = 2007:2008, prefix = "fars", compareBYvar = c("airbagAvail",
-    "airbagDeploy", "Restraint"), bycat = list(airbagAvail = list(yes = c(1:9,
-    20, 28:29, 31:32), no = 30, leaveout = c(0, 98, 99)), airbagDeploy = list(yes = c(1:9),
-    no = c(20, 28, 30:32), leaveout = c(0, 29, 98, 99)), Restraint = list(yes = c(1:4,
-    8, 10:12, 97), no = c(0, 5, 6, 7, 13:17), leaveout = (98:99))),
+    "airbagDeploy", "Restraint"),
+    bycat = list(airbagAvail = list(yes = c(1:9, 20, 28:29, 31:32), no =30,
+    leaveout = c(0, 98, 99)),
+    airbagDeploy = list(yes = c(1:9),
+    no = c(20, 28, 30:32), leaveout = c(0, 29, 98, 99)),
+    Restraint = list(yes = c(1:4, 8, 10:12, 97), no = c(0, 5, 6, 7, 13:17),
+    leaveout = (98:99))),
     restrict = "body\%in\%c(1:19,48,49,61,62)&!(mhevent\%in\%(2:5))",
     restrictvars = c("body", "mhevent", "seatpos", "injury"),
     retain = c("state", "age", "airbag", "injury", "restraint",

@@ -2,7 +2,6 @@ CVgam <-
 function (formula, data, nfold = 10, debug.level = 0, method = "GCV.Cp",
               printit = TRUE, cvparts = NULL, gamma = 1, seed = 29)
 {
-    require(mgcv)
     if (is.null(cvparts)) {
         set.seed(seed)
         cvparts <- sample(1:nfold, nrow(data), replace = TRUE)

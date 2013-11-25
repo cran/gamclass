@@ -1,27 +1,59 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Ordination -- Chapter 9 Functions}
-
-<<setup, echo=FALSE>>=
-options(continue=" ", prompt=" ")
-@ %
-
 \begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Ordination (Set 9)}
 
-\title{Figures for Chapter 9}
+\title{9: Ordination}
 \author{John H Maindonald}
 \maketitle
 
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/ord-', cache.path='cache/ord-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, out.width="0.8\\textwidth", 
+               fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+
+Ordination is a generic name for methods for providing a low-dimensional
+view of points in multi-dimensional space, such that ``similar'' objects
+are near each other and dissimilar objects are separated.  The plot(s)
+from an ordination in 2 or 3 dimensions may provide useful visual clues
+on clusters in the data and on outliers.  The methods described
+heere all use some form of multi-dimensional scaling (MDS)
+
+\section{Code for the Figures}
+
 <<fig9_1, eval=TRUE, echo=TRUE>>=
 fig9.1 <- function(){
+  opar <- par(xpd=TRUE)
+  if(!exists("aupoints")){
+    cat("Trying to obtain audists from DAAG")        
+    if(!require(DAAG))stop("'DAAG' must be installed")
     aupoints <- cmdscale(audists)
-    plot(aupoints, bty="n", xlab="", ylab="")
+  }
+    assign('aupoints', aupoints, pos=1)
+    xlim <- range(aupoints[,1])
+    xlim <- xlim + diff(xlim)*c(-0.05, 0.2)
+    plot(aupoints, bty="n", xlab="", ylab="", xlim=xlim)
     labs <- rownames(aupoints)
     labpos <- rep(1, length(labs))
-    labpos[labs=="Melbourne"] <- 3
+    labpos[labs%in%c("Cairns","Melbourne")] <- 3
     labpos[labs=="Canberra"] <- 4
-    text(aupoints, labels=labs, xpd=TRUE, pos=labpos)
+    text(aupoints, labels=labs, pos=labpos, xpd=TRUE)
+  par(opar)
 }
 @ %,
 
@@ -40,17 +72,20 @@ comparePhysical <- function(lat=aulatlong$latitude,
 }
 @ %
 
-<<fig9_2, eval=TRUE, echo=TRUE>>=
-fig9.2 <- function(){
+<<fig9_2A, eval=TRUE, echo=TRUE>>=
+fig9.2A <- function(){
+    if(!require(DAAG))stop("'DAAG' must be installed")
     if(!require(oz))stop("Package 'oz' must be installed")
+    if(!exists('aupoints'))aupoints <- cmdscale(audists)
+    oz()
     points(aulatlong, col="red", pch=16, cex=1.5)
-    comparePhysical()
+    comparePhysical(x1=aupoints[,1], x2 = aupoints[,2])
 }
 @ %
 
-<<fig9_3, eval=TRUE, echo=TRUE>>=
-fig9.3 <- function(){
-    library(MASS)
+<<fig9_2B, eval=TRUE, echo=TRUE>>=
+fig9.2B <- function(){
+    if(!require(MASS))stop("Package 'MASS' must be installed")
     if(!require(oz))stop("Package 'oz' must be installed")
     aupoints.sam <- sammon(audists, trace=FALSE)
     oz()
@@ -61,28 +96,38 @@ fig9.3 <- function(){
 }
 @ %
 
-<<fig9_4A, eval=TRUE, echo=TRUE>>=
-fig9.4A <- function(seed=47){
+<<fig9_2, eval=TRUE, echo=TRUE>>=
+fig9.2 <- function(){
+  par(fig=c(0,1,0.5,1))
+  fig9.2A()
+  par(fig=c(0,1,0,0.5), new=TRUE)  
+  fig9.2B()  
+}
+@ %
+
+<<fig9_3A, eval=TRUE, echo=TRUE>>=
+fig9.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
     if(!require(ape))stop("Package 'ape' must be installed")
     ## Calculate distances, using Kimura's K80 model
     primates.dist <- dist.dna(as.DNAbin(primateDNA), model="K80")
     primates.cmd <- cmdscale(primates.dist)
-    eqscplot(primates.cmd, xlab="Axis 1", ylab="Axis 2", cex.lab=1.15)
+    eqscplot(primates.cmd, xlab=xlab, ylab=ylab, cex.lab=1.15)
     lefrt <- 2+2*(primates.cmd[,1] < mean(par()$usr[1:2]))
     text(primates.cmd[,1], primates.cmd[,2], row.names(primates.cmd),
          pos=lefrt)
 }
 @ %
 
-<<fig9_4B, eval=TRUE, echo=TRUE>>=
-fig9.4B <- function(seed=47){
+<<fig9_3B, eval=TRUE, echo=TRUE>>=
+fig9.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))stop("Package 'DAAGbio' must be installed")
     if(!require(ape))stop("Package 'ape' must be installed")
+    if(!require(MASS))stop("Package 'MASS' must be installed")
     primates.dist <- dist.dna(as.DNAbin(primateDNA), model="K80")
     primates.cmd <- cmdscale(primates.dist)
     primates.mds <- isoMDS(primates.dist, primates.cmd, k=2, trace=FALSE)
-    eqscplot(primates.mds$points, xlab="Axis 1", ylab="Axis 2",
+    eqscplot(primates.mds$points, xlab=xlab, ylab=ylab,
              cex.lab=1.15)
     lefrt <- 2+2*(primates.mds$points[,1] < mean(par()$usr[1:2]))
     text(primates.mds$points[,1], primates.mds$points[,2],
@@ -90,9 +135,21 @@ fig9.4B <- function(seed=47){
 }
 @ %
 
-<<fig9_5, eval=TRUE, echo=TRUE>>=
-fig9.5 <- function(){
-    library(DAAG)
+<<fig9_3, eval=TRUE, echo=TRUE>>=
+fig9.3 <- function(){
+  opar <- par(fig=c(0,0.5,0,1), mar=c(3.1,3.1,1.6,0.1))
+  fig9.3A()
+  par(fig=c(0.5,1,0,1), new=TRUE)  
+  fig9.3B(ylab="")
+  par(fig=c(0,1,0,1))
+  par(opar)
+}
+@ %
+
+<<fig9_4, eval=TRUE, echo=TRUE>>=
+fig9.4 <- function(){
+    if(!require(DAAG))stop("Package 'DAAG' must be installed")
+    if(!require(MASS))stop("Package 'MASS' must be installed")
     pacific.dist <- dist(x = as.matrix(rockArt[-c(47,54,60,63,92),
                          28:641]), method = "binary")
     sum(pacific.dist==1)/length(pacific.dist)
@@ -107,20 +164,43 @@ fig9.5 <- function(){
 }
 @ %
 
+\section{Show the Figures}
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
 
-<<figs9, eval=TRUE>>=
-if(exists("OpenSesame")){
-library(MASS)
-library(DAAG)
-library(latticeExtra)
-fig9.1()
-aupoints <- cmdscale(audists)
-fig9.2()
-fig9.3()
-fig9.4A()
-fig9.4B()
-fig9.5()
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<figs9-load-pkgs, eval=doFigs>>=
+pkgs <- "DAAGbio"
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  stop(paste("The following packages should be installed:", notAvail))
 }
+@ %
+
+<<fig9_1x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5>>=
+fig9.1()
+@ %
+
+<<aupoints, eval=doFigs>>=
+if(!exists("aupoints")) 
+aupoints <- cmdscale(audists)
+@ %
+
+<<fig9_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=8>>=
+fig9.2()
+@ %
+
+<<fig9_3x, eval=doFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth">>=
+fig9.3()
+@ %
+
+<<fig9_4x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4.25>>=
+fig9.4()
 @ %
 \end{document}
 

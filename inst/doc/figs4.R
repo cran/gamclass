@@ -1,11 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Linear Models (Set 4)}
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/reg-', cache.path='cache/reg-',
@@ -18,36 +12,18 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
 
-\title{4: Linear Models}
-\author{John H Maindonald}
-\maketitle
-
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
-
-The graphs shown here relate to issues that arise in the use of the
-linear model fitting function \texttt{lm()}.
-
-\paragraph{Note:} The version of Figure 4.13 that is shown in Section 
-\ref{fig4:show} is for a random subset of 80 of the 158 rows of the
-daraset \texttt{Electricity}.\footnote{Display of the
-figures can be suppressed, when processing this vignette through {\em knitr}, 
-by placing an object \texttt{doFigs=FALSE} in the workspace.}
-
-\section{Code for Functions that Plot the Figures}
-
-<<fig4_1, eval=TRUE, echo=TRUE>>=
+## ----fig4_1, eval=TRUE, echo=TRUE----------------------------------------
 fig4.1 <-
 function (){
     size10 <- list(fontsize=list(text=10, points=6))
     print(round(cor(nihills), 2))
     splom(nihills, par.settings=size10)
 }
-@ %
 
-<<fig4_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_2, eval=TRUE, echo=TRUE----------------------------------------
 fig4.2 <-
 function ()
 {
@@ -58,9 +34,9 @@ function ()
     vnam <- paste("log(", names(nihills)[1:4], ")", sep="")
     splom(lognihills, pscales=0, varnames=vnam, par.settings=size10)
 }
-@ %
 
-<<fig4_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_3, eval=TRUE, echo=TRUE----------------------------------------
 fig4.3 <-
 function (obj=lognigrad.lm, mfrow=c(1,2))
 {
@@ -71,9 +47,9 @@ function (obj=lognigrad.lm, mfrow=c(1,2))
              col.res="black", smooth=panel.smooth)
     par(opar)
 }
-@ %
 
-<<fig4_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_4, eval=TRUE, echo=TRUE----------------------------------------
 fig4.4 <-
 function (obj=lognigrad.lm, mfrow=c(1,4)){
     objtxt <- deparse(substitute(obj))
@@ -83,9 +59,9 @@ function (obj=lognigrad.lm, mfrow=c(1,4)){
     plot(obj, cex.lab=1.4)
     par(opar)
 }
-@ %
 
-<<fig4_5, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_5, eval=TRUE, echo=TRUE----------------------------------------
 fig4.5 <-
 function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
@@ -99,9 +75,9 @@ function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     par(opar)
     invisible(y)
 }
-@ %
 
-<<fig4_6, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_6, eval=TRUE, echo=TRUE----------------------------------------
 fig4.6 <-
 function (obj=lognigrad.lm2)
 {
@@ -112,9 +88,9 @@ function (obj=lognigrad.lm2)
     plot(obj, cex.lab=1.1, cex.caption=0.8)
     par(opar)
 }
-@ %
 
-<<fig4_7, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_7, eval=TRUE, echo=TRUE----------------------------------------
 fig4.7 <-
 function (obj=lognigrad.lm)
 {
@@ -139,9 +115,9 @@ function (obj=lognigrad.lm)
                        )
     gph
 }
-@ %
 
-<<fig4_8, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_8, eval=TRUE, echo=TRUE----------------------------------------
 fig4.8 <-
 function (plotit=TRUE)
 {
@@ -151,9 +127,9 @@ with(rice, interaction.plot(x.factor=fert,
                             ShootDryMass,
                             cex.lab=1.2))
 }
-@ %
 
-<<fig4_9, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25>>=
+
+## ----fig4_9, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25----------
 fig4.9 <-
 function (plotit=TRUE)
 {
@@ -198,9 +174,9 @@ function (plotit=TRUE)
     }
     invisible(list(gph1, gph2, gph3))
 }
-@ %
 
-<<fig4_10, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_10, eval=TRUE, echo=TRUE---------------------------------------
 fig4.10 <-
 function ()
 {
@@ -215,9 +191,9 @@ add <- latticeExtra::layer(panel.lines(meuse.riv[,1], meuse.riv[,2],
                            col="gray"))
 gph+add
 }
-@ %
 
-<<fig4_11, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_11, eval=TRUE, echo=TRUE---------------------------------------
 fig4.11 <-
 function ()
 {
@@ -231,9 +207,9 @@ function ()
         data=meuse, cex.labels=1.5, reg.line=NA)
     par(opar)
 }
-@ %
 
-<<fig4_12, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_12, eval=TRUE, echo=TRUE---------------------------------------
 fig4.12 <-
 function ()
 {
@@ -247,9 +223,9 @@ function ()
     termplot(meuse.lm, partial=TRUE, smooth=panel.smooth)
     par(opar)
 }
-@ %
 
-<<fig4_13, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_13, eval=TRUE, echo=TRUE---------------------------------------
 fig4.13 <-
 function (data=Electricity)
 {
@@ -257,9 +233,9 @@ function (data=Electricity)
     spm(data, smooth=TRUE, reg.line=NA, cex.labels=1.5,
         col=adjustcolor(rep("black",3), alpha.f=0.4))
 }
-@ %
 
-<<fig4_14, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_14, eval=TRUE, echo=TRUE---------------------------------------
 fig4.14 <-
 function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
 {
@@ -267,9 +243,9 @@ function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
     spm(data, var.labels=varlabs, smooth=TRUE, reg.line=NA,
     col=adjustcolor(rep("black",3), alpha.f=0.5))
 }
-@ %
 
-<<fig4_15, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_15, eval=TRUE, echo=TRUE---------------------------------------
 fig4.15 <-
 function (obj=elec.lm, mfrow=c(2,4))
 {
@@ -277,9 +253,9 @@ function (obj=elec.lm, mfrow=c(2,4))
     termplot(obj, partial=T, smooth=panel.smooth)
     par(opar)
 }
-@ %
 
-<<fig4_16, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_16, eval=TRUE, echo=TRUE---------------------------------------
 fig4.16 <-
 function (obj=elec2xx.lm, mfrow=c(1,4)){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
@@ -287,101 +263,96 @@ function (obj=elec2xx.lm, mfrow=c(1,4)){
     plot(obj, cex.lab=1.1, cex.caption=0.75)
     par(opar)
 }
-@ %
 
-<<fig4_17, eval=TRUE, echo=TRUE>>=
+
+## ----fig4_17, eval=TRUE, echo=TRUE---------------------------------------
 fig4.17 <-
 function (){
     set.seed(37)   # Use to reproduce graph that is shown
     bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
 }
-@ %
 
-\section{Show the Figures}\label{fig4:show}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs4, eval=doFigs>>=
+
+## ----figs4, eval=doFigs--------------------------------------------------
 pkgs <- c("sp","splines","DAAG")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
-@ %
 
-<<fig4_1x, eval=doFigs, echo=TRUE>>=
+
+## ----fig4_1x, eval=doFigs, echo=TRUE-------------------------------------
 fig4.1()
-@ %
 
-<<fig4_2x, eval=doFigs, echo=TRUE>>=
+
+## ----fig4_2x, eval=doFigs, echo=TRUE-------------------------------------
 fig4.2()
-@ %
 
-<<nihillsEtc, eval=doFigs, echo=TRUE>>=
+
+## ----nihillsEtc, eval=doFigs, echo=TRUE----------------------------------
 nihills[,"gradient"] <- with(nihills, climb/dist)
 lognihills <- log(nihills)
 names(lognihills) <- paste("l", names(nihills), sep="")
 lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
 lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
                     data=lognihills)
-@ %
 
-<<fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25>>=
+
+## ----fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25-------
 fig4.3()
-@ %
 
-<<fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+
+## ----fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
 fig4.4()
-@ %
 
-<<fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+
+## ----fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
 fig4.5()
-@ %
 
-<<fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+
+## ----fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
 fig4.6()
-@ %
 
-<<fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25>>=
+
+## ----fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25-------
 fig4.7()
-@ %
 
-<<fig4_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+
+## ----fig4_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
 fig4.8()
-@ %
 
-<<fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
+
+## ----fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75-------
 fig4.9()
-@ %
 
-<<meuseEtc, eval=doFigs, echo=TRUE>>=
+
+## ----meuseEtc, eval=doFigs, echo=TRUE------------------------------------
 if(!exists('meuse')){
     if(!require(sp))stop("Need package 'sp', to obtain dataset 'meuse")
     data(meuse)
 }
 meuse$ffreq <- factor(meuse$ffreq)
 meuse$soil <- factor(meuse$soil)
-@ %
 
-<<fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.8\\textwidth">>=
+
+## ----fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.8\\textwidth"----
 fig4.10()
-@ %
 
-<<fig4_11x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5>>=
+
+## ----fig4_11x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5-------
 fig4.11()
-@ %
 
-<<fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75>>=
+
+## ----fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75------
 fig4.12()
-@ %
 
-<<Electricity, eval=doFigs, echo=TRUE>>=
+
+## ----Electricity, eval=doFigs, echo=TRUE---------------------------------
 if(!exists("Electricity")){
   cat("Will try to load 'Electricity' from the Ecdat package")
   if(!require(Ecdat))stop("Package Ecdat is not installed")
@@ -392,29 +363,29 @@ elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf,
               data=Electricity)
 elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf,
                  data = Electricity)
-@ %
 
-<<fig4_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6>>=
+
+## ----fig4_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6---------
 opar <- par(oma=c(0,0,2,0))
 nsamp80 <- sample(nrow(Electricity),80)
 fig4.13(data=Electricity[nsamp80, ])
 mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
 par(opar)
-@ %
 
-<<fig4_14x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, out.width="0.6\\textwidth">>=
+
+## ----fig4_14x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, out.width="0.6\\textwidth"----
 fig4.14()
-@ %
 
-<<fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
+
+## ----fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75------
 fig4.15()
-@ %
 
-<<fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+
+## ----fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
 fig4.16()
-@ %
 
-<<fig4_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+
+## ----fig4_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
 fig4.17()
-@ %
-\end{document}
+
+

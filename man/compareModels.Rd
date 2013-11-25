@@ -9,8 +9,8 @@
   data used to dervive the model.
 }
 \usage{
-compareModels(groups = fgl$type, estprobs = list(lda = NULL, rf = NULL),
-            gpnames = NULL, robust = TRUE, print = TRUE) 
+compareModels(groups, estprobs = list(lda = NULL, rf = NULL),
+            gpnames = NULL, robust = TRUE, print = TRUE)
 }
 \arguments{
   \item{groups}{Factor that specifies the groups}
@@ -19,7 +19,7 @@ compareModels(groups = fgl$type, estprobs = list(lda = NULL, rf = NULL),
     matrices that give for each observation (row) estimated
     probabilities of membership for each of the groups (columns).}
     \item{gpnames}{Character: names for groups, if different from
-    \code{levels(groups)}}  
+    \code{levels(groups)}}
   \item{robust}{Logical, \code{TRUE} or \code{FALSE}}
   \item{print}{Logical.  Should results be printed?}
 }
@@ -47,6 +47,7 @@ John Maindonald
 \examples{
 library(MASS)
 library(DAAG)
+library(randomForest)
 ldahat <- lda(species ~ length+breadth, data=cuckoos, CV=TRUE)$posterior
 qdahat <- qda(species ~ length+breadth, data=cuckoos, CV=TRUE)$posterior
 rfhat <- predict(randomForest(species ~ length+breadth, data=cuckoos),

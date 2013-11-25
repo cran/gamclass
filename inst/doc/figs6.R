@@ -1,15 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Generalized Additive Models (Set 6)}
-
-\title{6: Generalized Additive Models}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/gam-', cache.path='cache/gam-',
@@ -22,27 +12,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-Generalized Additive Models (GAMs) extend linear and generalized
-linear models to include smooth functions of explanatory variables,
-where the smoothness may be determined automatically. The graphs shown
-here illustrate some of the possibilities.\footnote{Display of the
-figures can be suppressed, when processing this vignette through {\em knitr}, 
-by placing an object \texttt{doFigs=FALSE} is the workspace.}
-
-\paragraph{Note:}  Figure 6.9 shows the results of simulations.
-The version of this figure that is shown in Section \ref{fig6:show}
-is, in order to keep to a minimum the time taken to process the vignette, 
-for 25 simulations only.  This is useful mainly as a check that the
-code does what is expected of it.  More realistically, specify
-500 or 1000 (as in the text) simulations.
-
-\section{Code for the Figures}
-
-<<fig6_1, eval=TRUE, echo=TRUE>>=
+## ----fig6_1, eval=TRUE, echo=TRUE----------------------------------------
 fig6.1 <- function(plotit=TRUE){
     matohms <- data.frame(model.matrix(with(fruitohms, ~ poly(juice, 4))))
     names(matohms) <- c("Intercept", paste("poly4",1:4, sep=""))
@@ -92,9 +64,9 @@ fig6.1 <- function(plotit=TRUE){
 }
     invisible(list(gph1, gph2))
 }
-@ %
 
-<<fig6_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_2, eval=TRUE, echo=TRUE----------------------------------------
 fig6.2 <- function(){
     plot(ohms ~ juice, data=fruitohms, ylim=c(0, max(ohms)*1.02))
     ## 3 (=2+1) degrees of freedom natural spline
@@ -119,16 +91,16 @@ fig6.2 <- function(){
            "4  [ns(juice, 3)]"),
            lty=c(1,2), lwd=c(1,2), cex=0.8)
 }
-@ %
 
-<<fig6_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_3, eval=TRUE, echo=TRUE----------------------------------------
 fig6.3 <- function(){
     ohms.lm <- lm(ohms ~ ns(juice, df=3), data=fruitohms)
     termplot(ohms.lm, partial=TRUE, se=TRUE)
 }
-@ %
 
-<<fig6_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_4, eval=TRUE, echo=TRUE----------------------------------------
 fig6.4 <- function(plotit=TRUE){
     matohms2 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 2)))
     matohms3 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 3)))
@@ -189,26 +161,26 @@ fig6.4 <- function(plotit=TRUE){
     }
     invisible(list(gph1, gph2))
 }
-@ %
 
-<<fig6_5, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_5, eval=TRUE, echo=TRUE----------------------------------------
 fig6.5 <- function(){
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
     wr.gam <- gam(res ~ s(log(Distance)), data=worldRecords)
     plot(wr.gam, residuals=TRUE, pch=1, las=1, ylab="Fitted smooth")
 }
-@ %
 
-<<fig6_6, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_6, eval=TRUE, echo=TRUE----------------------------------------
 fig6.6 <-
 function () {
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
     wr.gam <- gam(res ~ s(log(Distance)), data=worldRecords)
     gam.check(wr.gam)
 }
-@ %
 
-<<fig6_7, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_7, eval=TRUE, echo=TRUE----------------------------------------
 fig6.7 <-
 function ()
 {
@@ -223,9 +195,9 @@ function ()
     }
     par(opar)
 }
-@ %
 
-<<fig6_8, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_8, eval=TRUE, echo=TRUE----------------------------------------
 fig6.8 <- function(){
     meuse.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
                            data=meuse)
@@ -236,9 +208,9 @@ fig6.8 <- function(){
     termplot(meuse.gam, terms="soil", se=TRUE)
     par(opar)
 }
-@ %
 
-<<fig6_9, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_9, eval=TRUE, echo=TRUE----------------------------------------
 fig6.9 <- function(nsim=1000, caption=NULL){
   if(missing(caption))captCol <- "black" else captCol <- "blue"
   if(is.null(caption))caption <- paste("Graphs are from", nsim, "simulations")
@@ -280,9 +252,9 @@ fig6.9 <- function(nsim=1000, caption=NULL){
   par(opar)
     invisible(simResults)
 }
-@ %
 
-<<fig6_10A, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_10A, eval=TRUE, echo=TRUE--------------------------------------
 fig6.10A <- function(){
     opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
                 oma=c(0,0,2.1,0), mfrow=c(4,1))
@@ -296,9 +268,9 @@ fig6.10A <- function(){
           cex=0.8, adj=0)
     par(opar)
 }
-@ %
 
-<<fig6_10B, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_10B, eval=TRUE, echo=TRUE--------------------------------------
 fig6.10B <- function(){
     opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
                 oma=c(0,0,2.1,0), mfrow=c(3,1))
@@ -312,14 +284,14 @@ fig6.10B <- function(){
       cex=0.8, adj=0)
 par(opar)
 }
-@ %
 
-<<fig6_10, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_10, eval=TRUE, echo=TRUE---------------------------------------
 fig6.10 <- function()
 print("Run fig6.10A() and fig6.10B() separately")
-@
 
-<<fig6_11, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_11, eval=TRUE, echo=TRUE---------------------------------------
 fig6.11 <- function(){
     par(mfrow=c(1,2))
     mdbRain.gam <- gam(mdbRain ~ s(Year) + s(SOI), data=bomregions2012)
@@ -327,17 +299,17 @@ fig6.11 <- function(){
     plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=2)
     par(mfrow=c(1,1))
 }
-@ %
 
-<<fig6_12, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_12, eval=TRUE, echo=TRUE---------------------------------------
 fig6.12 <- function(){
 Erie <- greatLakes[,"Erie"]
 plot(Erie, xlab="",
      ylab="Level (m)")
 }
-@ %
 
-<<fig6_13, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_13, eval=TRUE, echo=TRUE---------------------------------------
 fig6.13 <- function(){
     Erie <- greatLakes[,"Erie"]
     opar <- par(oma=c(0,0,4,0))
@@ -355,18 +327,18 @@ fig6.13 <- function(){
     par(fig=c(0,1,0,1))
     par(opar)
 }
-@ %
 
-<<fig6_14, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_14, eval=TRUE, echo=TRUE---------------------------------------
 fig6.14 <- function(){
     Erie <- greatLakes[,"Erie"]
     df <-  data.frame(height=as.vector(Erie), year=time(Erie))
     obj <- gam(height ~ s(year), data=df)
     plot(obj, shift=mean(df$height), residuals=T, pch=1, xlab="")
 }
-@ %
 
-<<fig6_15, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_15, eval=TRUE, echo=TRUE---------------------------------------
 fig6.15 <- function(){
     if(!require(forecast))stop("Package 'forecast' must be installed")
     Erie <- greatLakes[,"Erie"]
@@ -374,9 +346,9 @@ fig6.15 <- function(){
     erie.ar <- ar(Erie)
     plot(forecast(erie.ar, h=15), ylab="Lake level (m)")
 }
-@ %
 
-<<fig6_16, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_16, eval=TRUE, echo=TRUE---------------------------------------
 fig6.16 <- function(){
     opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
     for(i in 1:6){
@@ -386,9 +358,9 @@ fig6.16 <- function(){
     }
     par(opar)
 }
-@ %
 
-<<fig6_17, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_17, eval=TRUE, echo=TRUE---------------------------------------
 fig6.17 <- function(){
     hand <- with(cricketer, as.vector(as.vector(unclass(left)-1)))
                                         # 0 for left-handers
@@ -398,9 +370,9 @@ fig6.17 <- function(){
          trans=function(x)exp(x)/(1+exp(x)),
          shift=mean(predict(hand.gam)))
 }
-@ %
 
-<<fig6_18, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_18, eval=TRUE, echo=TRUE---------------------------------------
 fig6.18 <- function(){
     opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
     for(i in 1:6){
@@ -416,9 +388,9 @@ fig6.18 <- function(){
         }
         par(opar)
 }
-@ %
 
-<<fig6_19, eval=TRUE, echo=TRUE>>=
+
+## ----fig6_19, eval=TRUE, echo=TRUE---------------------------------------
 fig6.19 <- function(){
     rtlef <- data.frame(with(cricketer, as(table(year, left), "matrix")))
     rtlef <- within(rtlef, year <- as.numeric(rownames(rtlef)))
@@ -440,27 +412,22 @@ fig6.19 <- function(){
                   type="l", ylim=c(0,70))
     print(gph)
 }
-@ %
 
-\section{Show the Figures}\label{fig6:show}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs6-pkgs, eval=doFigs>>=
+
+## ----figs6-pkgs, eval=doFigs---------------------------------------------
 pkgs <- c("DAAG","mgcv","splines")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
-@ %
 
-<<figs6-data, eval=doFigs>>=
+
+## ----figs6-data, eval=doFigs---------------------------------------------
     if(!exists('meuse')){
         cat("Will try to load dataset 'meuse' from package 'sp'")
         if(!require(sp))stop("Package 'sp' is not installed") else {
@@ -475,89 +442,87 @@ if(any(!z)){
             data(Electricity)
         }
 }          
-@ %
 
-<<fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+
+## ----fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
 fig6.1()
-@ %
 
-<<fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.75\\textwidth">>=
+
+## ----fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.75\\textwidth"----
 fig6.2()
-@ %
 
-<<fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+
+## ----fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
 fig6.3()
-@ %
 
-<<fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+
+## ----fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
 fig6.4()
-@ %
 
-<<fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+
+## ----fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
 fig6.5()
-@ %
 
-<<fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.75, out.width="0.8\\textwidth">>=
+
+## ----fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.75, out.width="0.8\\textwidth"----
 fig6.6()
-@ %
 
-<<fig6_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth">>=
+
+## ----fig6_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
 fig6.7()
-@ %
 
-<<fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth">>=
+
+## ----fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
 fig6.8()
-@ %
 
-<<fig6_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth">>=
+
+## ----fig6_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
 caption <- paste("These are from 25 simulations.", 
                  "More usefully, try, eg: fig6.9(nsim=500)")
 fig6.9(nsim=25, caption=caption)
-@ %
 
-<<fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth">>=
+
+## ----fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth"----
 fig6.10A()
-@ %
 
-<<fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth">>=
+
+## ----fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth"----
 fig6.10B()
-@ %
 
-<<fig6_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth">>=
+
+## ----fig6_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth"----
 fig6.11()
-@ %
 
-<<fig6_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth">>=
+
+## ----fig6_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
 fig6.12()
-@ %
 
-<<fig6_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth">>=
+
+## ----fig6_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
 fig6.13()
-@ %
 
-<<fig6_14x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth">>=
+
+## ----fig6_14x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth"----
 fig6.14()
-@ %
 
-<<fig6_15x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth">>=
+
+## ----fig6_15x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
 fig6.15()
-@ %
 
-<<fig6_16x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth">>=
+
+## ----fig6_16x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth"----
 fig6.16()
-@ %
 
-<<fig6_17x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth">>=
+
+## ----fig6_17x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
 fig6.17()
-@ %
 
-<<fig6_18x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth">>=
+
+## ----fig6_18x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
 fig6.18()
-@ %
 
-<<fig6_19x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth">>=
+
+## ----fig6_19x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
 fig6.19()
-@ %
 
-\end{document}
 

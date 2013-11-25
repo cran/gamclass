@@ -1,21 +1,42 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
-%\VignetteIndexEntry{Linear Models -- Chapter 4 Figures}
+\begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Linear Models (Set 4)}
 
-<<setup, echo=F>>=
-options(prompt=" ", continue=" ")
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/reg-', cache.path='cache/reg-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
 @ %
 
-\begin{document}
 
-\title{Figures for Chapter 4}
+\title{4: Linear Models}
 \author{John H Maindonald}
 \maketitle
 
-<<setup, eval=TRUE, echo=FALSE>>=
-library(diagram)
-@ %
+\subsection*{Ideas and issues illustrated by the graphs in this vignette}
+
+The graphs shown here relate to issues that arise in the use of the
+linear model fitting function \texttt{lm()}.
+
+\paragraph{Note:} The version of Figure 4.13 that is shown in Section 
+\ref{fig4:show} is for a random subset of 80 of the 158 rows of the
+daraset \texttt{Electricity}.\footnote{Display of the
+figures can be suppressed, when processing this vignette through {\em knitr}, 
+by placing an object \texttt{doFigs=FALSE} in the workspace.}
+
+\section{Code for Functions that Plot the Figures}
 
 <<fig4_1, eval=TRUE, echo=TRUE>>=
 fig4.1 <-
@@ -43,6 +64,8 @@ function ()
 fig4.3 <-
 function (obj=lognigrad.lm, mfrow=c(1,2))
 {
+    objtxt <- deparse(substitute(obj))
+    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     opar <- par(mfrow=mfrow)
     termplot(obj, col.term="gray", partial=TRUE,
              col.res="black", smooth=panel.smooth)
@@ -53,6 +76,8 @@ function (obj=lognigrad.lm, mfrow=c(1,2))
 <<fig4_4, eval=TRUE, echo=TRUE>>=
 fig4.4 <-
 function (obj=lognigrad.lm, mfrow=c(1,4)){
+    objtxt <- deparse(substitute(obj))
+    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     opar <- par(mfrow=mfrow, pty="s",
                 mgp=c(2.25,.5,0), mar=c(3.6,3.6,2.1,0.6))
     plot(obj, cex.lab=1.4)
@@ -65,10 +90,12 @@ fig4.5 <-
 function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
+    objtxt <- deparse(substitute(obj))
+    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     y <- simulate(obj, nsim=nsim)
     ## Look only at the first simulation
     lognisim1.lm <- lm(y[, 1] ~ ldist + lgradient, data=lognihills)
-    plot(lognisim1.lm, cex.lab=1.4)
+    plot(lognisim1.lm, cex.lab=1.1, cex.caption=0.75)
     par(opar)
     invisible(y)
 }
@@ -76,11 +103,13 @@ function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
 
 <<fig4_6, eval=TRUE, echo=TRUE>>=
 fig4.6 <-
-function (obj=lognihills.lm2)
+function (obj=lognigrad.lm2)
 {
+    objtxt <- deparse(substitute(obj))
+    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     opar <- par(mfrow=c(1,4), mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
-    plot(lognigrad.lm2, cex.lab=1.4)
+    plot(obj, cex.lab=1.1, cex.caption=0.8)
     par(opar)
 }
 @ %
@@ -89,6 +118,8 @@ function (obj=lognihills.lm2)
 fig4.7 <-
 function (obj=lognigrad.lm)
 {
+    objtxt <- deparse(substitute(obj))
+    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     ## The following generates a matrix of 23 rows (observations)
     ## by 1000 sets of simulated responses
     simlogniY <- simulate(obj, nsim=1000)
@@ -118,33 +149,48 @@ library(DAAG)
 with(rice, interaction.plot(x.factor=fert,
                             trace.factor=variety,
                             ShootDryMass,
-                            cex.lab=1.4))
+                            cex.lab=1.2))
 }
 @ %
 
-<<fig4_9, eval=TRUE, echo=TRUE>>=
+<<fig4_9, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25>>=
 fig4.9 <-
 function (plotit=TRUE)
 {
     ## Panel A
     gph <- xyplot(tempDiff ~ vapPress, groups=CO2level, data = leaftemp,
-                  auto.key=list(columns=3), ylab="", aspect=1,
+                  ylab="", aspect=1,
                   cex.main=0.75,
-                  par.settings=simpleTheme(pch=c(2,1,6), lty=1:3))
+                  par.settings=simpleTheme(pch=c(2,1,6), cex=0.85,
+                                           lty=1:3))
     hat1 <- predict(lm(tempDiff ~ vapPress, data = leaftemp))
-    gph1 <- gph+layer(panel.xyplot(x, hat1, type="l", col.line=1, ...))
-    ## Panel B
     hat2 <- predict(lm(tempDiff ~ vapPress + CO2level, data = leaftemp))
-    gph2 <- gph+layer(panel.xyplot(x, hat2, type="l", ...))
-    ## Panel C
     hat3 <- predict(lm(tempDiff ~ vapPress * CO2level, data = leaftemp))
-    gph3 <- gph+layer(panel.xyplot(x, hat3, type="l", ...))
+    hat123 <- data.frame(hat1=hat1, hat2=hat2, hat3=hat3)
+    gph1 <- gph+latticeExtra::layer(panel.xyplot(x, hat1, type="l",
+                                                 col.line=1, ...),
+                      data=hat123)
+    ## Panel B
+    gph2 <- gph+latticeExtra::layer(panel.xyplot(x, hat2, type="l", ...),
+                      data=hat123)
+    ## Panel C
+    gph3 <- gph+latticeExtra::layer(panel.xyplot(x, hat3, type="l", ...),
+                      data=hat123)
     maintxt <- c(as.call(~ vapPress),
                  as.call(~ vapPress + CO2level),
                  as.call(~ vapPress*CO2level))
-    gph1 <- update(gph1, main=deparse(maintxt[[1]]), ylab="tempDiff")
-    gph2 <- update(gph2, main=deparse(maintxt[[2]]))
-    gph3 <- update(gph3, main=deparse(maintxt[[3]]))
+    gph1 <- update(gph1, main=deparse(maintxt[[1]]), ylab="tempDiff",
+                   auto.key=list(text=c("low","med","high"),
+                                 between=1, between.columns=2,
+                                 columns=3))
+    gph2 <- update(gph2, main=deparse(maintxt[[2]]),
+                   auto.key=list(text=c("low","med","high"),
+                                 between=1, between.columns=2,
+                                 columns=3))
+    gph3 <- update(gph3, main=deparse(maintxt[[3]]),
+                   auto.key=list(text=c("low","med","high"),
+                                 between=1, between.columns=2,
+                                 columns=3))
     if(plotit){
         print(gph1, position=c(0,0,.36,1))
         print(gph2, position=c(0.34,0,.68,1), newpage=FALSE)
@@ -156,6 +202,23 @@ function (plotit=TRUE)
 
 <<fig4_10, eval=TRUE, echo=TRUE>>=
 fig4.10 <-
+function ()
+{
+if(!exists('meuse'))stop("Dataset 'meuse' must be available")
+library(sp)
+data(meuse); data(meuse.riv)
+coordinates(meuse) <- ~ x + y
+gph <- bubble(meuse, "lead", pch=1, maxsize=2, main = "Lead(ppm)",
+              key.entries =  100 * 2^(0:4), col=c(2,4),
+              scales=list(axes=TRUE, tck=0.4))
+add <- latticeExtra::layer(panel.lines(meuse.riv[,1], meuse.riv[,2],
+                           col="gray"))
+gph+add
+}
+@ %
+
+<<fig4_11, eval=TRUE, echo=TRUE>>=
+fig4.11 <-
 function ()
 {
     if(!exists('meuse'))stop("Dataset 'meuse' must be available")
@@ -170,8 +233,8 @@ function ()
 }
 @ %
 
-<<fig4_11, eval=TRUE, echo=TRUE>>=
-fig4.11 <-
+<<fig4_12, eval=TRUE, echo=TRUE>>=
+fig4.12 <-
 function ()
 {
     if(!exists('meuse'))stop("Dataset 'meuse' must be available")
@@ -186,18 +249,18 @@ function ()
 }
 @ %
 
-<<fig4_12, eval=TRUE, echo=TRUE>>=
-fig4.12 <-
+<<fig4_13, eval=TRUE, echo=TRUE>>=
+fig4.13 <-
 function (data=Electricity)
 {
     if(!require(car))stop("Package 'car' must be installed")
-    spm(Electricity, smooth=TRUE, reg.line=NA, cex.labels=1.5,
-        col=adjustcolor(rep("black",3), alpha.f=0.5))
+    spm(data, smooth=TRUE, reg.line=NA, cex.labels=1.5,
+        col=adjustcolor(rep("black",3), alpha.f=0.4))
 }
 @ %
 
-<<fig4_13, eval=TRUE, echo=TRUE>>=
-fig4.13 <-
+<<fig4_14, eval=TRUE, echo=TRUE>>=
+fig4.14 <-
 function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
 {
     if(!require(car))stop("Package 'car' must be installed")
@@ -206,8 +269,8 @@ function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
 }
 @ %
 
-<<fig4_14, eval=TRUE, echo=TRUE>>=
-fig4.14 <-
+<<fig4_15, eval=TRUE, echo=TRUE>>=
+fig4.15 <-
 function (obj=elec.lm, mfrow=c(2,4))
 {
     opar <- par(mfrow=mfrow, mar=c(3.1,3.1,1.6,0.6), mgp=c(2,0.5,0))
@@ -216,71 +279,142 @@ function (obj=elec.lm, mfrow=c(2,4))
 }
 @ %
 
-<<fig4_15, eval=TRUE, echo=TRUE>>=
-fig4.15 <-
+<<fig4_16, eval=TRUE, echo=TRUE>>=
+fig4.16 <-
 function (obj=elec2xx.lm, mfrow=c(1,4)){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
-    plot(obj, cex.lab=1.4)
+    plot(obj, cex.lab=1.1, cex.caption=0.75)
     par(opar)
 }
 @ %
 
-<<fig4_16, eval=TRUE, echo=TRUE>>=
-fig4.16 <-
+<<fig4_17, eval=TRUE, echo=TRUE>>=
+fig4.17 <-
 function (){
-    library(DAAG)
-    library(splines)
     set.seed(37)   # Use to reproduce graph that is shown
     bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
 }
 @ %
 
+\section{Show the Figures}\label{fig4:show}
+Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
+then subject to checks that all necessary datasets and packages are
+available, the figures are now shown.
 
-<<figs4, eval=TRUE>>=
-if(exists("OpenSesame")){
-library(MASS)
-library(DAAG)
-library(lattice)
+<<docheck, eval=TRUE>>=
+if(!exists("doFigs")) doFigs <- TRUE
+@ %
+
+<<figs4, eval=doFigs>>=
+pkgs <- c("sp","splines","DAAG")
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  stop(paste("The following packages should be installed:", notAvail))
+}
+@ %
+
+<<fig4_1x, eval=doFigs, echo=TRUE>>=
 fig4.1()
+@ %
+
+<<fig4_2x, eval=doFigs, echo=TRUE>>=
 fig4.2()
+@ %
+
+<<nihillsEtc, eval=doFigs, echo=TRUE>>=
 nihills[,"gradient"] <- with(nihills, climb/dist)
 lognihills <- log(nihills)
 names(lognihills) <- paste("l", names(nihills), sep="")
 lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
-round(coef(lognigrad.lm),3)
-fig4.3()
-fig4.4()
-fig4.5()
 lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
-                data=lognihills)
+                    data=lognihills)
+@ %
+
+<<fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25>>=
+fig4.3()
+@ %
+
+<<fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+fig4.4()
+@ %
+
+<<fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
+fig4.5()
+@ %
+
+<<fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
 fig4.6()
+@ %
+
+<<fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25>>=
 fig4.7()
+@ %
+
+<<fig4_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
 fig4.8()
+@ %
+
+<<fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
 fig4.9()
+@ %
+
+<<meuseEtc, eval=doFigs, echo=TRUE>>=
 if(!exists('meuse')){
     if(!require(sp))stop("Need package 'sp', to obtain dataset 'meuse")
     data(meuse)
 }
 meuse$ffreq <- factor(meuse$ffreq)
 meuse$soil <- factor(meuse$soil)
+@ %
+
+<<fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.8\\textwidth">>=
 fig4.10()
+@ %
+
+<<fig4_11x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5>>=
 fig4.11()
-library(Ecdat)
-data(Electricity)
+@ %
+
+<<fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75>>=
 fig4.12()
-fig4.13()
-elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
-fig4.14()
+@ %
+
+<<Electricity, eval=doFigs, echo=TRUE>>=
+if(!exists("Electricity")){
+  cat("Will try to load 'Electricity' from the Ecdat package")
+  if(!require(Ecdat))stop("Package Ecdat is not installed")
+  library(Ecdat)
+  data(Electricity)
+}
+elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf,
+              data=Electricity)
 elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf,
                  data = Electricity)
+@ %
+
+<<fig4_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6>>=
+opar <- par(oma=c(0,0,2,0))
+nsamp80 <- sample(nrow(Electricity),80)
+fig4.13(data=Electricity[nsamp80, ])
+mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
+par(opar)
+@ %
+
+<<fig4_14x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, out.width="0.6\\textwidth">>=
+fig4.14()
+@ %
+
+<<fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
 fig4.15()
+@ %
+
+<<fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
 fig4.16()
-}
 @ %
 
-<<restore2, eval=TRUE, echo=FALSE>>=
-options(continue="+ ", prompt="> ")
+<<fig4_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
+fig4.17()
 @ %
-
 \end{document}

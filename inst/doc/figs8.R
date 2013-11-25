@@ -1,15 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Model Output Can Deceive! (Set 8)}
-
-\title{8: Model Output Can Deceive!}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/deceive-', cache.path='cache/deceive-',
@@ -23,17 +13,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-Issues are noted here that apply to all regression models, including regression
-models where the outcome variable is categorical. Note in particular implications,
-for standard forms of analysis output, of errors in explanatory variables.
-
-\section{Code for the Figures}
-
-<<fig8_1, eval=TRUE, echo=TRUE>>=
+## ----fig8_1, eval=TRUE, echo=TRUE----------------------------------------
 fig8.1 <- function(plotit=TRUE){
 tau <- (0:5)/2.5; m <- length(tau); n <- 200; SD <- 2
 x0 <- rnorm(n, mean=12.5, sd=SD)  # Generate x-values
@@ -55,38 +37,31 @@ gph <- xyplot(form, data=df, outer=TRUE, xlab=xlabel, strip=striplabel,
                type=c("p", "r"), layout=c(3,2))
 gph+layer(panel.abline(15, 2.5, lty=2))
 }
-@ %
 
-<<fig8_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig8_2, eval=TRUE, echo=TRUE----------------------------------------
 fig8.2 <- function(){
   gph <- errorsINx(gpdiff=4, , timesSDx=1.25, SDyerr=2.5, n=80, plotit=FALSE)$gph
   gph
 }
-@ %
-  
-\section{Show the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs8-pkg, eval=doFigs>>=
+
+## ----figs8-pkg, eval=doFigs----------------------------------------------
 library(DAAG)
-@ %
 
-<<figs8_1, eval=doFigs, fig.width=6.5, fig.height=4.75, out.width="0.97\\textwidth">>=
+
+## ----figs8_1, eval=doFigs, fig.width=6.5, fig.height=4.75, out.width="0.97\\textwidth"----
 gph <- fig8.1()
 print(gph)
-@ %
 
-<<figs8_2, eval=doFigs, fig.width=6, fig.height=4, out.width="0.97\\textwidth">>=
+
+## ----figs8_2, eval=doFigs, fig.width=6, fig.height=4, out.width="0.97\\textwidth"----
 set.seed(31)
 gph <- fig8.2()
 print(gph)
-@ %
 
-\end{document}
 

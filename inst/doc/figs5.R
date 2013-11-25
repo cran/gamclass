@@ -1,15 +1,5 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
 
-\begin{document}
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Generalized Linear Models (Set 5)}
-
-\title{5: Generalized Linear Models -- Logistic and Poisson Regression}
-\author{John H Maindonald}
-\maketitle
-
-<<setup, cache=FALSE, echo=FALSE>>=
+## ----setup, cache=FALSE, echo=FALSE--------------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/glm-', cache.path='cache/glm-',
@@ -22,17 +12,9 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
-@ %
 
-\subsection*{Ideas and issues illustrated by the graphs in this vignette}
 
-Generalized linear models (GLMs) are an extension of linear models.
-An important special case is models with a binary outcome. 
-Poission regression models are another special case.
-Graphs shown here illustrate important aspects of the use of these models.
-
-\section{Code for the Figures}
-<<fig5_1, eval=TRUE, echo=TRUE>>=
+## ----fig5_1, eval=TRUE, echo=TRUE----------------------------------------
 fig5.1 <-
 function (){
   opar <- par(mar=c(4,4,2.6,.1))
@@ -65,9 +47,9 @@ function (){
     par(fig=c(0,1,0,1))
   par(opar)
 }
-@ %
 
-<<fig5_2, eval=TRUE, echo=TRUE>>=
+
+## ----fig5_2, eval=TRUE, echo=TRUE----------------------------------------
 fig5.2 <-
 function (plotit=TRUE)
 {
@@ -77,9 +59,9 @@ function (plotit=TRUE)
     termplot(cig2.glm, se=TRUE, ylim=c(-2,4))
     par(mfrow=c(1,1))
 }
-@ %
 
-<<fig5_3, eval=TRUE, echo=TRUE>>=
+
+## ----fig5_3, eval=TRUE, echo=TRUE----------------------------------------
 fig5.3 <-
 function ()
 {
@@ -98,9 +80,9 @@ function ()
     mtext(side=3, line=1.0, "B", adj=0)
     par(fig=c(0,1,0,1))
 }
-@ %
 
-<<fig5_4, eval=TRUE, echo=TRUE>>=
+
+## ----fig5_4, eval=TRUE, echo=TRUE----------------------------------------
 fig5.4 <-
 function (){
     opar <- par(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0))
@@ -108,9 +90,9 @@ function (){
     qqnorm(rpois(30, 5), ylab="", main="")
     par(opar)
 }
-@ %
 
-<<fig5_5, eval=TRUE, echo=TRUE>>=
+
+## ----fig5_5, eval=TRUE, echo=TRUE----------------------------------------
 fig5.5 <-
 function (){
     if(!require(car))
@@ -118,9 +100,9 @@ function (){
     spm(~ . | habitat, data=moths, cex.labels=1.2,
         smooth=FALSE, reg.line=NA)
 }
-@ %
 
-<<fig5_6, eval=TRUE, echo=TRUE>>=
+
+## ----fig5_6, eval=TRUE, echo=TRUE----------------------------------------
 fig5.6 <-
 function ()
 {
@@ -130,18 +112,13 @@ function ()
     plot(P.glm, which=1:4)
     par(mfrow=c(1,1))
 }
-@ %
 
-\section{Show the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
+## ----docheck, eval=TRUE--------------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
-@ %
 
-<<figs5-pkgs, eval=doFigs>>=
+
+## ----figs5-pkgs, eval=doFigs---------------------------------------------
 if(!exists("bronchit")){
   cat("Will try to load 'bronchit' from the SMIR package")
   if(!require(SMIR))stop("Package SMIR is not installed")
@@ -150,35 +127,34 @@ if(!exists("bronchit")){
 }
 library(DAAG)
 library(KernSmooth)
-@ %
 
-<<get-data, eval=doFigs>>=
+
+## ----get-data, eval=doFigs-----------------------------------------------
 cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial,
                 data=bronchit)
-@ %
 
-<<fig5_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, out.width="0.97\\textwidth">>=
+
+## ----fig5_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, out.width="0.97\\textwidth"----
 fig5.1()
-@ %
 
-<<fig5_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth">>=
+
+## ----fig5_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
 fig5.2()
-@ %
 
-<<fig5_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth">>=
+
+## ----fig5_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
 fig5.3()
-@ %
 
-<<fig5_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth">>=
+
+## ----fig5_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
 fig5.4()
-@ %
 
-<<fig5_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth">>=
+
+## ----fig5_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
 fig5.5()
-@ %
 
-<<fig5_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth">>=
+
+## ----fig5_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth"----
 fig5.6()
-@ %
 
-\end{document}
+

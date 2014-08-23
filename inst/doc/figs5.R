@@ -1,23 +1,22 @@
-
-## ----setup, cache=FALSE, echo=FALSE--------------------------------------
+## ----setup, cache=FALSE, echo=FALSE-----------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/glm-', cache.path='cache/glm-',
                fig.align='center', dev='pdf', fig.width=3.5,
-               fig.height=3.5, fig.show='hold', par=TRUE,
+               fig.height=3.5, fig.show='hold', pars=TRUE,
                tidy=FALSE,  comment=NA)
-knit_hooks$set(par=function(before, options, envir){
+knit_hooks$set(pars=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
-              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
-}, crop=hook_pdfcrop)
+              font.main=1, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),
+              tcl=-.3)
+              par(options$pars)
+}, crop=hook_pdfcrop)  
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-
-## ----fig5_1, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_1, eval=TRUE, echo=TRUE-------------------------------------
 fig5.1 <-
 function (){
-  opar <- par(mar=c(4,4,2.6,.1))
     ylim <- range(bronchit$poll)+c(0,2.5)
     par(fig=c(0,.525, 0,1))
     plot(xlab="# cigarettes per day", ylab="Pollution", poll ~ cig,
@@ -45,11 +44,9 @@ function (){
           expression("B: Log-transformed "*italic(x)*"-scale"),
           cex=0.95, adj=0)
     par(fig=c(0,1,0,1))
-  par(opar)
 }
 
-
-## ----fig5_2, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_2, eval=TRUE, echo=TRUE-------------------------------------
 fig5.2 <-
 function (plotit=TRUE)
 {
@@ -60,8 +57,7 @@ function (plotit=TRUE)
     par(mfrow=c(1,1))
 }
 
-
-## ----fig5_3, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_3, eval=TRUE, echo=TRUE-------------------------------------
 fig5.3 <-
 function ()
 {
@@ -81,28 +77,22 @@ function ()
     par(fig=c(0,1,0,1))
 }
 
-
-## ----fig5_4, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_4, eval=TRUE, echo=TRUE-------------------------------------
 fig5.4 <-
 function (){
-    opar <- par(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0))
     qqnorm(rpois(30, 5), ylab="", main="")
     qqnorm(rpois(30, 5), ylab="", main="")
-    par(opar)
 }
 
-
-## ----fig5_5, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_5, eval=TRUE, echo=TRUE-------------------------------------
 fig5.5 <-
 function (){
-    if(!require(car))
-        stop("Package 'car' must be installed")
-    spm(~ . | habitat, data=moths, cex.labels=1.2,
-        smooth=FALSE, reg.line=NA)
+    if(!require(car))return("'car::spm' is not available; cannot do plot.")
+    car::spm(~ . | habitat, data=moths, cex.labels=1.2,
+        smooth=FALSE, reg.line=NA, diag="boxplot")
 }
 
-
-## ----fig5_6, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig5_6, eval=TRUE, echo=TRUE-------------------------------------
 fig5.6 <-
 function ()
 {
@@ -113,48 +103,36 @@ function ()
     par(mfrow=c(1,1))
 }
 
-
-## ----docheck, eval=TRUE--------------------------------------------------
+## ----docheck, eval=TRUE-----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
 
-
-## ----figs5-pkgs, eval=doFigs---------------------------------------------
-if(!exists("bronchit")){
-  cat("Will try to load 'bronchit' from the SMIR package")
-  if(!require(SMIR))stop("Package SMIR is not installed")
-  library(SMIR)
-  data(bronchit)
+## ----figs5-pkgs, eval=doFigs, message=FALSE, warning=FALSE------------
+pkgs <- c("DAAG","KernSmooth","car")
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+if(any(!z)){
+  notAvail <- paste(names(z)[!z], collapse=", ")
+  print(paste("The following packages should be installed:", notAvail))
 }
-library(DAAG)
-library(KernSmooth)
+if(!exists("bronchit")){
+  getData <- try(data("bronchit", package="SMIR"))
+}
+if(getData != "bronchit") print("Dataset 'bronchit' is not available")
 
+## ----fig5_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, pars=list(mar=c(4,4,2.6,.1)), out.width="0.925\\textwidth"----
+if(doFigs)if(exists("bronchit"))fig5.1() else return("Data set 'bronchit' is not available")
 
-## ----get-data, eval=doFigs-----------------------------------------------
-cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial,
-                data=bronchit)
+## ----fig5_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
+if(doFigs)if(exists("bronchit"))fig5.2() else return("Data set 'bronchit' is not available")
 
+## ----fig5_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
+if(doFigs)fig5.3()
 
-## ----fig5_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, out.width="0.97\\textwidth"----
-fig5.1()
+## ----fig5_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth"----
+if(doFigs)fig5.4()
 
-
-## ----fig5_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
-fig5.2()
-
-
-## ----fig5_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
-fig5.3()
-
-
-## ----fig5_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
-fig5.4()
-
-
-## ----fig5_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
-fig5.5()
-
+## ----fig5_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, pars=list(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0)), out.width="0.97\\textwidth"----
+if(require(DAAG)) fig5.5() else return("Dataset 'moths' is from 'DAAG', not available")
 
 ## ----fig5_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth"----
-fig5.6()
-
+if(doFigs)if(require(DAAG)) fig5.6() else return("Dataset 'moths' is from 'DAAG', not available")
 

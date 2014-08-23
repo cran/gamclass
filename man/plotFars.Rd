@@ -1,8 +1,8 @@
 \name{plotFars}
 \alias{plotFars}
 \title{
-  Extract ratio of ratios estimate of safety device effectiveness,
-  and return trellis graphics object
+  Extract from \code{FARS} data set the ratio of ratios estimate
+  of safety device effectiveness, and return trellis graphics object
 }
 \description{
 Safety devices may be airbags or seatbelts.  For airbags, alternatives
@@ -12,18 +12,11 @@ for driver with device and for driver without device, in both cases for
 passenger without device.
 }
 \usage{
-plotFars(data = FARS, restrict =
+plotFars(restrict =
 "age>=16&age<998&inimpact\%in\%c(11,12,1)", fatal = 4, statistics =
 c("airbagAvail", "airbagDeploy", "Restraint"))
 }
 \arguments{
-  \item{data}{
-    Data frame, which must include among its columns variables
-    \code{year}, variables noted in
-    \code{statistics} plus corresponding variables for drivers,
-    variables that appear in \code{restrict}, the variable
-    \code{injury} and \code{D_injury}.
-}
   \item{restrict}{
 text: an expression that restricts observations considered
 }
@@ -57,4 +50,4 @@ John Maindonald
 gphFars <- plotFars()
 }
 }
-\keyword{manip}% __ONLY ONE__ keyword per line
+\keyword{graphics}

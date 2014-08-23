@@ -1,29 +1,28 @@
-
-## ----setup, cache=FALSE, echo=FALSE--------------------------------------
+## ----setup, cache=FALSE, echo=FALSE-----------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/reg-', cache.path='cache/reg-',
                fig.align='center', dev='pdf', fig.width=3.5,
-               fig.height=3.5, fig.show='hold', par=TRUE,
+               fig.height=3.5, fig.show='hold', pars=TRUE,
                tidy=FALSE,  comment=NA)
-knit_hooks$set(par=function(before, options, envir){
+knit_hooks$set(pars=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
-              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+              font.main=1, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),
+              tcl=-.3)
+              par(options$pars)
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-
-## ----fig4_1, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_1, eval=TRUE, echo=TRUE-------------------------------------
 fig4.1 <-
 function (){
-    size10 <- list(fontsize=list(text=10, points=6))
+    size10 <- list(fontsize=list(text=8, points=6))
     print(round(cor(nihills), 2))
     splom(nihills, par.settings=size10)
 }
 
-
-## ----fig4_2, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_2, eval=TRUE, echo=TRUE-------------------------------------
 fig4.2 <-
 function ()
 {
@@ -35,8 +34,7 @@ function ()
     splom(lognihills, pscales=0, varnames=vnam, par.settings=size10)
 }
 
-
-## ----fig4_3, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_3, eval=TRUE, echo=TRUE-------------------------------------
 fig4.3 <-
 function (obj=lognigrad.lm, mfrow=c(1,2))
 {
@@ -48,8 +46,7 @@ function (obj=lognigrad.lm, mfrow=c(1,2))
     par(opar)
 }
 
-
-## ----fig4_4, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_4, eval=TRUE, echo=TRUE-------------------------------------
 fig4.4 <-
 function (obj=lognigrad.lm, mfrow=c(1,4)){
     objtxt <- deparse(substitute(obj))
@@ -60,8 +57,7 @@ function (obj=lognigrad.lm, mfrow=c(1,4)){
     par(opar)
 }
 
-
-## ----fig4_5, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_5, eval=TRUE, echo=TRUE-------------------------------------
 fig4.5 <-
 function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
@@ -76,8 +72,7 @@ function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     invisible(y)
 }
 
-
-## ----fig4_6, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_6, eval=TRUE, echo=TRUE-------------------------------------
 fig4.6 <-
 function (obj=lognigrad.lm2)
 {
@@ -89,8 +84,7 @@ function (obj=lognigrad.lm2)
     par(opar)
 }
 
-
-## ----fig4_7, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_7, eval=TRUE, echo=TRUE-------------------------------------
 fig4.7 <-
 function (obj=lognigrad.lm)
 {
@@ -116,8 +110,7 @@ function (obj=lognigrad.lm)
     gph
 }
 
-
-## ----fig4_8, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig4_8, eval=TRUE, echo=TRUE-------------------------------------
 fig4.8 <-
 function (plotit=TRUE)
 {
@@ -125,11 +118,10 @@ library(DAAG)
 with(rice, interaction.plot(x.factor=fert,
                             trace.factor=variety,
                             ShootDryMass,
-                            cex.lab=1.2))
+                            cex.lab=1.2, xpd=TRUE))
 }
 
-
-## ----fig4_9, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25----------
+## ----fig4_9, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25-------
 fig4.9 <-
 function (plotit=TRUE)
 {
@@ -175,16 +167,18 @@ function (plotit=TRUE)
     invisible(list(gph1, gph2, gph3))
 }
 
-
-## ----fig4_10, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_10, eval=TRUE, echo=TRUE------------------------------------
 fig4.10 <-
 function ()
 {
-if(!exists('meuse'))stop("Dataset 'meuse' must be available")
-library(sp)
-data(meuse); data(meuse.riv)
+if(!require(sp, quietly=TRUE)){
+print("Package 'sp' must be available")
+return()
+}
+data(meuse, package="sp"); data(meuse.riv, package="sp")
 coordinates(meuse) <- ~ x + y
-gph <- bubble(meuse, "lead", pch=1, maxsize=2, main = "Lead(ppm)",
+gph <- bubble(meuse, "lead", pch=1, maxsize=2,
+              main = list("Lead(ppm)", fontface="plain", cex=1.35),
               key.entries =  100 * 2^(0:4), col=c(2,4),
               scales=list(axes=TRUE, tck=0.4))
 add <- latticeExtra::layer(panel.lines(meuse.riv[,1], meuse.riv[,2],
@@ -192,8 +186,7 @@ add <- latticeExtra::layer(panel.lines(meuse.riv[,1], meuse.riv[,2],
 gph+add
 }
 
-
-## ----fig4_11, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_11, eval=TRUE, echo=TRUE------------------------------------
 fig4.11 <-
 function ()
 {
@@ -208,8 +201,7 @@ function ()
     par(opar)
 }
 
-
-## ----fig4_12, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_12, eval=TRUE, echo=TRUE------------------------------------
 fig4.12 <-
 function ()
 {
@@ -224,8 +216,7 @@ function ()
     par(opar)
 }
 
-
-## ----fig4_13, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_13, eval=TRUE, echo=TRUE------------------------------------
 fig4.13 <-
 function (data=Electricity)
 {
@@ -234,8 +225,7 @@ function (data=Electricity)
         col=adjustcolor(rep("black",3), alpha.f=0.4))
 }
 
-
-## ----fig4_14, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_14, eval=TRUE, echo=TRUE------------------------------------
 fig4.14 <-
 function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
 {
@@ -244,8 +234,7 @@ function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
     col=adjustcolor(rep("black",3), alpha.f=0.5))
 }
 
-
-## ----fig4_15, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_15, eval=TRUE, echo=TRUE------------------------------------
 fig4.15 <-
 function (obj=elec.lm, mfrow=c(2,4))
 {
@@ -254,8 +243,7 @@ function (obj=elec.lm, mfrow=c(2,4))
     par(opar)
 }
 
-
-## ----fig4_16, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_16, eval=TRUE, echo=TRUE------------------------------------
 fig4.16 <-
 function (obj=elec2xx.lm, mfrow=c(1,4)){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
@@ -264,37 +252,37 @@ function (obj=elec2xx.lm, mfrow=c(1,4)){
     par(opar)
 }
 
-
-## ----fig4_17, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig4_17, eval=TRUE, echo=TRUE------------------------------------
 fig4.17 <-
 function (){
     set.seed(37)   # Use to reproduce graph that is shown
     bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
 }
 
-
-## ----docheck, eval=TRUE--------------------------------------------------
+## ----docheck, eval=TRUE-----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
 
-
-## ----figs4, eval=doFigs--------------------------------------------------
-pkgs <- c("sp","splines","DAAG")
+## ----pkgs-figs4, eval=doFigs, message=FALSE, warning=FALSE------------
+pkgs <- c("DAAG","sp","splines","car","leaps","sp","quantreg")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
-  stop(paste("The following packages should be installed:", notAvail))
+  print(paste("The following packages should be installed:", notAvail))
 }
 
+## ----Electricity, eval=doFigs, echo=TRUE------------------------------
+if(!exists("Electricity")){
+  getElec <- try(data("Electricity", package="Ecdat"))
+  if(getElec != "Electricity") print("Dataset 'Electricity' is not available")
+}
 
-## ----fig4_1x, eval=doFigs, echo=TRUE-------------------------------------
-fig4.1()
+## ----fig4_1x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"-----
+if(doFigs)fig4.1()
 
+## ----fig4_2x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"-----
+if(doFigs)fig4.2()
 
-## ----fig4_2x, eval=doFigs, echo=TRUE-------------------------------------
-fig4.2()
-
-
-## ----nihillsEtc, eval=doFigs, echo=TRUE----------------------------------
+## ----nihillsEtc, eval=doFigs, echo=TRUE-------------------------------
 nihills[,"gradient"] <- with(nihills, climb/dist)
 lognihills <- log(nihills)
 names(lognihills) <- paste("l", names(nihills), sep="")
@@ -302,90 +290,58 @@ lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
 lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
                     data=lognihills)
 
-
-## ----fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25-------
-fig4.3()
-
+## ----fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth"----
+if(doFigs)fig4.3()
 
 ## ----fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-fig4.4()
-
+if(doFigs)fig4.4()
 
 ## ----fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-fig4.5()
-
+if(doFigs)fig4.5()
 
 ## ----fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-fig4.6()
+if(doFigs)fig4.6()
 
+## ----fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth"----
+if(doFigs)fig4.7()
 
-## ----fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25-------
-fig4.7()
+## ----fig4_8x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth"----
+if(doFigs)fig4.8()
 
+## ----fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75----
+if(doFigs)fig4.9()
 
-## ----fig4_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
-fig4.8()
+## ----fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth"----
+if(doFigs)if(require(sp)) fig4.10() else print("Required package 'sp' is not available")
 
+## ----fig4_11x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.7\\textwidth"----
+if(doFigs)fig4.11()
 
-## ----fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75-------
-fig4.9()
+## ----fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75----
+if(doFigs)fig4.12()
 
-
-## ----meuseEtc, eval=doFigs, echo=TRUE------------------------------------
-if(!exists('meuse')){
-    if(!require(sp))stop("Need package 'sp', to obtain dataset 'meuse")
-    data(meuse)
-}
-meuse$ffreq <- factor(meuse$ffreq)
-meuse$soil <- factor(meuse$soil)
-
-
-## ----fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.8\\textwidth"----
-fig4.10()
-
-
-## ----fig4_11x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5-------
-fig4.11()
-
-
-## ----fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75------
-fig4.12()
-
-
-## ----Electricity, eval=doFigs, echo=TRUE---------------------------------
-if(!exists("Electricity")){
-  cat("Will try to load 'Electricity' from the Ecdat package")
-  if(!require(Ecdat))stop("Package Ecdat is not installed")
-  library(Ecdat)
-  data(Electricity)
-}
-elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf,
-              data=Electricity)
-elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf,
-                 data = Electricity)
-
-
-## ----fig4_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6---------
-opar <- par(oma=c(0,0,2,0))
+## ----fig4_13x, eval=doFigs, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
+if(doFigs)if(!exists("Electricity")) print("Dataset 'Electricity' is not available") else {
 nsamp80 <- sample(nrow(Electricity),80)
 fig4.13(data=Electricity[nsamp80, ])
 mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
-par(opar)
+}
 
+## ----elec-calcs, eval=doFigs, echo=TRUE-------------------------------
+if(exists("Electricity")){
+elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
+elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf, data = Electricity)
+}
 
-## ----fig4_14x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, out.width="0.6\\textwidth"----
-fig4.14()
+## ----fig4_14x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth"----
+if(doFigs)if(exists("Electricity"))fig4.14()
 
-
-## ----fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75------
-fig4.15()
-
+## ----fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth"----
+if(doFigs)if(exists("Electricity"))fig4.15()
 
 ## ----fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-fig4.16()
+if(doFigs)if(exists("Electricity"))fig4.16()
 
-
-## ----fig4_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
-fig4.17()
-
+## ----fig4_17x, eval=doFigs, echo=TRUE, out.width="0.55\\textwidth"----
+if(doFigs)if(require(DAAG)) fig4.17()
 

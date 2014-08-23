@@ -1,9 +1,9 @@
 plotFars <-
-function (data = FARS, restrict = "age>=16&age<998&inimpact%in%c(11,12,1)",
+function (restrict = "age>=16&age<998&inimpact%in%c(11,12,1)",
               fatal = 4,
               statistics = c("airbagAvail", "airbagDeploy", "Restraint"))
 {
-tabDeaths <- tabFarsDead(data = data, restrict = restrict,
+tabDeaths <- tabFarsDead(restrict = restrict,
               fatal = 4,
               statistics = statistics)
 tabAa <- tabDeaths[['airbagAvail']]

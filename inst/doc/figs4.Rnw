@@ -10,11 +10,13 @@ library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/reg-', cache.path='cache/reg-',
                fig.align='center', dev='pdf', fig.width=3.5,
-               fig.height=3.5, fig.show='hold', par=TRUE,
+               fig.height=3.5, fig.show='hold', pars=TRUE,
                tidy=FALSE,  comment=NA)
-knit_hooks$set(par=function(before, options, envir){
+knit_hooks$set(pars=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
-              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+              font.main=1, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),
+              tcl=-.3)
+              par(options$pars)
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
@@ -30,10 +32,10 @@ oldopt <- options(digits=4)
 The graphs shown here relate to issues that arise in the use of the
 linear model fitting function \texttt{lm()}.
 
-\paragraph{Note:} The version of Figure 4.13 that is shown in Section 
+\paragraph{Note:} The version of Figure 4.13 that is shown in Section
 \ref{fig4:show} is for a random subset of 80 of the 158 rows of the
-daraset \texttt{Electricity}.\footnote{Display of the
-figures can be suppressed, when processing this vignette through {\em knitr}, 
+dataset \texttt{Electricity}.\footnote{Display of the
+figures can be suppressed, when processing this vignette through {\em knitr},
 by placing an object \texttt{doFigs=FALSE} in the workspace.}
 
 \section{Code for Functions that Plot the Figures}
@@ -41,7 +43,7 @@ by placing an object \texttt{doFigs=FALSE} in the workspace.}
 <<fig4_1, eval=TRUE, echo=TRUE>>=
 fig4.1 <-
 function (){
-    size10 <- list(fontsize=list(text=10, points=6))
+    size10 <- list(fontsize=list(text=8, points=6))
     print(round(cor(nihills), 2))
     splom(nihills, par.settings=size10)
 }
@@ -149,7 +151,7 @@ library(DAAG)
 with(rice, interaction.plot(x.factor=fert,
                             trace.factor=variety,
                             ShootDryMass,
-                            cex.lab=1.2))
+                            cex.lab=1.2, xpd=TRUE))
 }
 @ %
 
@@ -204,11 +206,14 @@ function (plotit=TRUE)
 fig4.10 <-
 function ()
 {
-if(!exists('meuse'))stop("Dataset 'meuse' must be available")
-library(sp)
-data(meuse); data(meuse.riv)
+if(!require(sp, quietly=TRUE)){
+print("Package 'sp' must be available")
+return()
+}
+data(meuse, package="sp"); data(meuse.riv, package="sp")
 coordinates(meuse) <- ~ x + y
-gph <- bubble(meuse, "lead", pch=1, maxsize=2, main = "Lead(ppm)",
+gph <- bubble(meuse, "lead", pch=1, maxsize=2,
+              main = list("Lead(ppm)", fontface="plain", cex=1.35),
               key.entries =  100 * 2^(0:4), col=c(2,4),
               scales=list(axes=TRUE, tck=0.4))
 add <- latticeExtra::layer(panel.lines(meuse.riv[,1], meuse.riv[,2],
@@ -306,21 +311,28 @@ available, the figures are now shown.
 if(!exists("doFigs")) doFigs <- TRUE
 @ %
 
-<<figs4, eval=doFigs>>=
-pkgs <- c("sp","splines","DAAG")
+<<pkgs-figs4, eval=doFigs, message=FALSE, warning=FALSE>>=
+pkgs <- c("DAAG","sp","splines","car","leaps","sp","quantreg")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
-  stop(paste("The following packages should be installed:", notAvail))
+  print(paste("The following packages should be installed:", notAvail))
 }
 @ %
 
-<<fig4_1x, eval=doFigs, echo=TRUE>>=
-fig4.1()
+<<Electricity, eval=doFigs, echo=TRUE>>=
+if(!exists("Electricity")){
+  getElec <- try(data("Electricity", package="Ecdat"))
+  if(getElec != "Electricity") print("Dataset 'Electricity' is not available")
+}
 @ %
 
-<<fig4_2x, eval=doFigs, echo=TRUE>>=
-fig4.2()
+<<fig4_1x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+if(doFigs)fig4.1()
+@ %
+
+<<fig4_2x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth">>=
+if(doFigs)fig4.2()
 @ %
 
 <<nihillsEtc, eval=doFigs, echo=TRUE>>=
@@ -332,89 +344,74 @@ lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
                     data=lognihills)
 @ %
 
-<<fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25>>=
-fig4.3()
+<<fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth">>=
+if(doFigs)fig4.3()
 @ %
 
 <<fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
-fig4.4()
+if(doFigs)fig4.4()
 @ %
 
 <<fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
-fig4.5()
+if(doFigs)fig4.5()
 @ %
 
 <<fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
-fig4.6()
+if(doFigs)fig4.6()
 @ %
 
-<<fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25>>=
-fig4.7()
+<<fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth">>=
+if(doFigs)fig4.7()
 @ %
 
-<<fig4_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
-fig4.8()
+<<fig4_8x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth">>=
+if(doFigs)fig4.8()
 @ %
 
 <<fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
-fig4.9()
+if(doFigs)fig4.9()
 @ %
 
-<<meuseEtc, eval=doFigs, echo=TRUE>>=
-if(!exists('meuse')){
-    if(!require(sp))stop("Need package 'sp', to obtain dataset 'meuse")
-    data(meuse)
-}
-meuse$ffreq <- factor(meuse$ffreq)
-meuse$soil <- factor(meuse$soil)
+<<fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth">>=
+if(doFigs)if(require(sp)) fig4.10() else print("Required package 'sp' is not available")
 @ %
 
-<<fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.8\\textwidth">>=
-fig4.10()
-@ %
-
-<<fig4_11x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5>>=
-fig4.11()
+<<fig4_11x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.7\\textwidth">>=
+if(doFigs)fig4.11()
 @ %
 
 <<fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75>>=
-fig4.12()
+if(doFigs)fig4.12()
 @ %
 
-<<Electricity, eval=doFigs, echo=TRUE>>=
-if(!exists("Electricity")){
-  cat("Will try to load 'Electricity' from the Ecdat package")
-  if(!require(Ecdat))stop("Package Ecdat is not installed")
-  library(Ecdat)
-  data(Electricity)
-}
-elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf,
-              data=Electricity)
-elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf,
-                 data = Electricity)
-@ %
-
-<<fig4_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6>>=
-opar <- par(oma=c(0,0,2,0))
+<<fig4_13x, eval=doFigs, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth">>=
+if(doFigs)if(!exists("Electricity")) print("Dataset 'Electricity' is not available") else {
 nsamp80 <- sample(nrow(Electricity),80)
 fig4.13(data=Electricity[nsamp80, ])
 mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
-par(opar)
+}
 @ %
 
-<<fig4_14x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, out.width="0.6\\textwidth">>=
-fig4.14()
+<<elec-calcs, eval=doFigs, echo=TRUE>>=
+if(exists("Electricity")){
+elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
+elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf, data = Electricity)
+}
 @ %
 
-<<fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75>>=
-fig4.15()
+<<fig4_14x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth">>=
+if(doFigs)if(exists("Electricity"))fig4.14()
+@ %
+
+<<fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth">>=
+if(doFigs)if(exists("Electricity"))fig4.15()
 @ %
 
 <<fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85>>=
-fig4.16()
+if(doFigs)if(exists("Electricity"))fig4.16()
 @ %
 
-<<fig4_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth">>=
-fig4.17()
+<<fig4_17x, eval=doFigs, echo=TRUE, out.width="0.55\\textwidth">>=
+if(doFigs)if(require(DAAG)) fig4.17()
 @ %
 \end{document}

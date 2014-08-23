@@ -1,19 +1,21 @@
 tabFarsDead <-
-function (data = FARS, restrict = "age>=16&age<998&inimpact%in%c(11,12,1)",
+function (restrict = "age>=16&age<998&inimpact%in%c(11,12,1)",
               fatal = 4, statistics = c("airbagAvail", "airbagDeploy",
                          "Restraint"))
 {
+    data('FARS', package='gamclass', envir=environment())
+    FARS <- get("FARS", envir=environment())
     vars2 <- paste("D_", statistics, sep = "")
-    yrs <- sort(unique(data[,"year"]))
+    yrs <- sort(unique(FARS[,"year"]))
     tabAa <- tabAd <- tabRe <- array(0, c(length(yrs), 2, 4),
-                                     dimnames = list(years = yrs, D_airbagAvail = levels(FARS$D_airbagAvail)[1:2],
+                                     dimnames = list(years = yrs, D_airbagAvail = levels(FARS[,'D_airbagAvail'])[1:2],
                                      injury = c("P_injury", "D_injury", "tot", "prop")))
     names(tabAd)[2] <- vars2[2]
     names(tabRe)[2] <- vars2[3]
     i <- 0
     for (yr in yrs) {
         i <- i + 1
-        yrdat <- data[data[,"year"]==yr, ]
+        yrdat <- subset(FARS, FARS[,"year"]==yr)
         yrdat <- yrdat[eval(parse(text = restrict), yrdat), ]
         subdat <- subset(yrdat[, c(vars2[1], "injury", "D_injury")],
                          yrdat[, statistics[1]] == "no")

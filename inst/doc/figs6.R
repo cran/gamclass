@@ -1,20 +1,20 @@
-
-## ----setup, cache=FALSE, echo=FALSE--------------------------------------
+## ----setup, cache=FALSE, echo=FALSE-----------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/gam-', cache.path='cache/gam-',
                fig.align='center', dev='pdf', fig.width=3.5,
-               fig.height=3.5, fig.show='hold', par=TRUE,
+               fig.height=3.5, fig.show='hold', pars=TRUE,
                tidy=FALSE,  comment=NA)
-knit_hooks$set(par=function(before, options, envir){
+knit_hooks$set(pars=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
-              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+              font.main=1, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),
+              tcl=-.3)
+              par(options$pars)
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-
-## ----fig6_1, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_1, eval=TRUE, echo=TRUE-------------------------------------
 fig6.1 <- function(plotit=TRUE){
     matohms <- data.frame(model.matrix(with(fruitohms, ~ poly(juice, 4))))
     names(matohms) <- c("Intercept", paste("poly4",1:4, sep=""))
@@ -65,8 +65,7 @@ fig6.1 <- function(plotit=TRUE){
     invisible(list(gph1, gph2))
 }
 
-
-## ----fig6_2, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_2, eval=TRUE, echo=TRUE-------------------------------------
 fig6.2 <- function(){
     plot(ohms ~ juice, data=fruitohms, ylim=c(0, max(ohms)*1.02))
     ## 3 (=2+1) degrees of freedom natural spline
@@ -92,15 +91,13 @@ fig6.2 <- function(){
            lty=c(1,2), lwd=c(1,2), cex=0.8)
 }
 
-
-## ----fig6_3, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_3, eval=TRUE, echo=TRUE-------------------------------------
 fig6.3 <- function(){
     ohms.lm <- lm(ohms ~ ns(juice, df=3), data=fruitohms)
     termplot(ohms.lm, partial=TRUE, se=TRUE)
 }
 
-
-## ----fig6_4, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_4, eval=TRUE, echo=TRUE-------------------------------------
 fig6.4 <- function(plotit=TRUE){
     matohms2 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 2)))
     matohms3 <- model.matrix(with(fruitohms, ~ splines::ns(juice, 3)))
@@ -162,16 +159,14 @@ fig6.4 <- function(plotit=TRUE){
     invisible(list(gph1, gph2))
 }
 
-
-## ----fig6_5, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_5, eval=TRUE, echo=TRUE-------------------------------------
 fig6.5 <- function(){
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
     wr.gam <- gam(res ~ s(log(Distance)), data=worldRecords)
     plot(wr.gam, residuals=TRUE, pch=1, las=1, ylab="Fitted smooth")
 }
 
-
-## ----fig6_6, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_6, eval=TRUE, echo=TRUE-------------------------------------
 fig6.6 <-
 function () {
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
@@ -179,42 +174,37 @@ function () {
     gam.check(wr.gam)
 }
 
-
-## ----fig6_7, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_7, eval=TRUE, echo=TRUE-------------------------------------
 fig6.7 <-
-function ()
+function (mf=3,nf=2)
 {
-    opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
+  opar <- par(mfrow=c(mf,nf), mar=c(0.25, 4.1, 0.25, 1.1))
     set.seed(29)         # Ensure exact result is reproducible
     res <- resid(lm(log(Time) ~ log(Distance), data=worldRecords))
-    for(i in 1:6){
+    npanels <- mf*nf
+    for(i in 1:npanels){
         permres <- sample(res)  # Random permutation
                                         # 0 for left-handers;  1 for right
         perm.gam <- gam(permres ~ s(log(Distance)), data=worldRecords)
         plot(perm.gam, las=1, rug=if(i<5) FALSE else TRUE, ylab="Fit")
     }
-    par(opar)
+  par(opar)
 }
 
-
-## ----fig6_8, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_8, eval=TRUE, echo=TRUE-------------------------------------
 fig6.8 <- function(){
     meuse.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
                            data=meuse)
-    opar <- par(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0),
-                oma=c(0,0,2.1,0), mfrow=c(2,2))
     plot(meuse.gam, residuals=TRUE, se=TRUE, pch=1)
     termplot(meuse.gam, terms="ffreq", se=TRUE)
     termplot(meuse.gam, terms="soil", se=TRUE)
-    par(opar)
 }
 
-
-## ----fig6_9, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig6_9, eval=TRUE, echo=TRUE-------------------------------------
 fig6.9 <- function(nsim=1000, caption=NULL){
+  opar <- par(mfrow=c(1,2), oma=c(0,0,1.6,0.6))
   if(missing(caption))captCol <- "black" else captCol <- "blue"
   if(is.null(caption))caption <- paste("Graphs are from", nsim, "simulations")
-  opar <- par(mfrow=c(1,2), oma=c(0,0,1.6,0.6))
     if(!exists("meuseML.gam"))
     meuseML.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
                        data=meuse, method="ML")
@@ -249,15 +239,12 @@ fig6.9 <- function(nsim=1000, caption=NULL){
     mtext("1", side=1, at=1, line=0, cex=0.75)
     mtext("B", side=3, line=0.25, adj=0)
   mtext(side=3, line=0.5, adj=0.052, outer=TRUE, caption, col=captCol)
-  par(opar)
     invisible(simResults)
+  par(opar)
 }
 
-
-## ----fig6_10A, eval=TRUE, echo=TRUE--------------------------------------
+## ----fig6_10A, eval=TRUE, echo=TRUE-----------------------------------
 fig6.10A <- function(){
-    opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
-                oma=c(0,0,2.1,0), mfrow=c(4,1))
     if(!exists("meuseML.gam"))
     meuseML.gam <- gam(log(lead) ~ s(elev) + s(dist) + ffreq + soil,
                        data=meuse, method="ML")
@@ -266,14 +253,10 @@ fig6.10A <- function(){
     termplot(meuseML.gam, terms="soil", se=TRUE)
     mtext(side=3, line=0.65, "A: Add effects of dist and elev", outer=TRUE,
           cex=0.8, adj=0)
-    par(opar)
 }
 
-
-## ----fig6_10B, eval=TRUE, echo=TRUE--------------------------------------
+## ----fig6_10B, eval=TRUE, echo=TRUE-----------------------------------
 fig6.10B <- function(){
-    opar <- par(mar=c(4.1,4.1,2.1, 1.6), mex=0.8,
-                oma=c(0,0,2.1,0), mfrow=c(3,1))
     if(!exists("meusexML.gam"))
     meusexML.gam <- gam(log(lead) ~ s(elev, dist) + ffreq + soil,
                         data=meuse, method="ML")
@@ -282,86 +265,14 @@ fig6.10B <- function(){
     termplot(meusexML.gam, terms="soil", se=TRUE)
     mtext(side=3, line=0.65, "B: Fit surface to dist and elev", outer=TRUE,
       cex=0.8, adj=0)
-par(opar)
 }
 
-
-## ----fig6_10, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig6_10, eval=TRUE, echo=TRUE------------------------------------
 fig6.10 <- function()
 print("Run fig6.10A() and fig6.10B() separately")
 
-
-## ----fig6_11, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig6_11, eval=TRUE, echo=TRUE------------------------------------
 fig6.11 <- function(){
-    par(mfrow=c(1,2))
-    mdbRain.gam <- gam(mdbRain ~ s(Year) + s(SOI), data=bomregions2012)
-    plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=1)
-    plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=2)
-    par(mfrow=c(1,1))
-}
-
-
-## ----fig6_12, eval=TRUE, echo=TRUE---------------------------------------
-fig6.12 <- function(){
-Erie <- greatLakes[,"Erie"]
-plot(Erie, xlab="",
-     ylab="Level (m)")
-}
-
-
-## ----fig6_13, eval=TRUE, echo=TRUE---------------------------------------
-fig6.13 <- function(){
-    Erie <- greatLakes[,"Erie"]
-    opar <- par(oma=c(0,0,4,0))
-    lag.plot(Erie, lags=3,
-             do.lines=FALSE,
-             layout=c(2,3), main="")
-    mtext(side=3, line=3, adj=-0.155,
-          "A: Lag plots, for lags 1, 2 and 3 respectively", cex=1)
-    par(fig=c(0,1,0,0.6), new=TRUE)
-    par(mar=c(2.75, 3.1, 3.6, 1.6))
-    acf(Erie, main="", xlab="")
-    mtext(side=3, line=0.5, "B: Autocorrelation estimates at successive lags",
-          adj=-0.35, cex=1)
-    mtext(side=1, line=1.75, "Lag", cex=1)
-    par(fig=c(0,1,0,1))
-    par(opar)
-}
-
-
-## ----fig6_14, eval=TRUE, echo=TRUE---------------------------------------
-fig6.14 <- function(){
-    Erie <- greatLakes[,"Erie"]
-    df <-  data.frame(height=as.vector(Erie), year=time(Erie))
-    obj <- gam(height ~ s(year), data=df)
-    plot(obj, shift=mean(df$height), residuals=T, pch=1, xlab="")
-}
-
-
-## ----fig6_15, eval=TRUE, echo=TRUE---------------------------------------
-fig6.15 <- function(){
-    if(!require(forecast))stop("Package 'forecast' must be installed")
-    Erie <- greatLakes[,"Erie"]
-    assign('Erie', Erie, pos=1)
-    erie.ar <- ar(Erie)
-    plot(forecast(erie.ar, h=15), ylab="Lake level (m)")
-}
-
-
-## ----fig6_16, eval=TRUE, echo=TRUE---------------------------------------
-fig6.16 <- function(){
-    opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
-    for(i in 1:6){
-        df <- data.frame(x=1:200, y=arima.sim(list(ar=0.7), n=200))
-        df.gam <- gam(y ~ s(x), data=df)
-        plot(df.gam, residuals=TRUE)
-    }
-    par(opar)
-}
-
-
-## ----fig6_17, eval=TRUE, echo=TRUE---------------------------------------
-fig6.17 <- function(){
     hand <- with(cricketer, as.vector(as.vector(unclass(left)-1)))
                                         # 0 for left-handers
                                         # 1 for right
@@ -371,11 +282,11 @@ fig6.17 <- function(){
          shift=mean(predict(hand.gam)))
 }
 
-
-## ----fig6_18, eval=TRUE, echo=TRUE---------------------------------------
-fig6.18 <- function(){
-    opar <- par(mfrow=c(3,2), mar=c(0.25, 4.1, 0.25, 1.1))
-    for(i in 1:6){
+## ----fig6_12, eval=TRUE, echo=TRUE------------------------------------
+fig6.12 <- function(mf=3,nf=2){
+    opar <- par(mfrow=c(mf,nf), mar=c(0.25, 4.1, 0.25, 1.1))
+    npanel <- mf*nf
+    for(i in 1:npanel){
         hand <- sample(c(0,1), size=nrow(cricketer), replace=TRUE,
                        prob=c(0.185, 0.815))
                                         # 0 for left-handers
@@ -389,9 +300,8 @@ fig6.18 <- function(){
         par(opar)
 }
 
-
-## ----fig6_19, eval=TRUE, echo=TRUE---------------------------------------
-fig6.19 <- function(){
+## ----fig6_13, eval=TRUE, echo=TRUE------------------------------------
+fig6.13 <- function(){
     rtlef <- data.frame(with(cricketer, as(table(year, left), "matrix")))
     rtlef <- within(rtlef, year <- as.numeric(rownames(rtlef)))
     right.gam <-  gam(right ~ s(year), data=rtlef, family=poisson)
@@ -413,21 +323,61 @@ fig6.19 <- function(){
     print(gph)
 }
 
+## ----fig6_14, eval=TRUE, echo=TRUE------------------------------------
+countAccs <- function(data=airAccs, dateCol="Date", 
+                      fromDate = as.Date("2006-01-01"),
+                      by="1 day", prefix="num"){
+  dfCount <- eventCounts(data, dateCol=dateCol,
+                       from= fromDate, by=by,
+                       prefix=prefix)
+  dfCount[, "day"] <- julian(dfCount[,"Date"], origin=fromDate)
+  dfCount
+}
+##
+fig6.14 <- function()
+    print("Run the separate functions fig6.14A() and fig6.14B()")
+fig6.14A <- function(fromDate=as.Date("2006-01-01"), basis.df=50){
+  if(!exists('dfDay06'))dfDay06 <- countAccs(fromDate=fromDate)
+year <- seq(from=fromDate, to=max(dfDay06$Date), by="1 year")
+atyear=julian(year, origin=fromDate)
+dfDay06.gam <-
+  gam(formula = num ~ s(day, k=basis.df), family = quasipoisson,
+      data = dfDay06)
+av <- mean(predict(dfDay06.gam))
+plot(dfDay06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
+     ylab="Estimated rate per day")
+axis(1, at=atyear, labels=format(year, "%Y"))
+mtext(side=3, line=0.75, "A: Events per day, vs date", adj=0)
+}
+fig6.14B <- function(fromDate=as.Date("2006-01-01"), basis.df=50){
+  if(!exists('dfWeek06'))dfWeek06 <- countAccs(fromDate=fromDate,
+                                               by="1 week")
+dfWeek06.gam <- gam(num~s(day, k=basis.df), data=dfWeek06,
+                    family=quasipoisson)
+av <- mean(predict(dfWeek06.gam))
+year <- seq(from=fromDate, to=max(dfWeek06$Date), by="1 year")
+atyear=julian(year, origin=fromDate)
+plot(dfWeek06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
+      ylab="Estimated rate per week")
+axis(1, at=atyear, labels=format(year, "%Y"))
+mtext(side=3, line=0.75, "B: Events per week, vs date", adj=0)
+}
 
-## ----docheck, eval=TRUE--------------------------------------------------
+## ----docheck, eval=TRUE-----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
 
-
-## ----figs6-pkgs, eval=doFigs---------------------------------------------
-pkgs <- c("DAAG","mgcv","splines")
+## ----pkgs-figs6, eval=doFigs, message=FALSE, warning=FALSE------------
+if(doFigs){
+pkgs <- c("DAAG","mgcv","splines","gamclass")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
-  stop(paste("The following packages should be installed:", notAvail))
+  print(paste("The following packages require to be installed:", notAvail))
+}
 }
 
-
-## ----figs6-data, eval=doFigs---------------------------------------------
+## ----figs6-data, eval=doFigs, message=FALSE, warning=FALSE------------
+if(doFigs){
     if(!exists('meuse')){
         cat("Will try to load dataset 'meuse' from package 'sp'")
         if(!require(sp))stop("Package 'sp' is not installed") else {
@@ -441,88 +391,58 @@ if(any(!z)){
         if(!require(Ecdat))stop("Package 'Ecdat' is not installed") else {
             data(Electricity)
         }
-}          
+}
+}
 
+## ----fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.75, out.width="0.725\\textwidth"----
+if(doFigs)fig6.1()
 
-## ----fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
-fig6.1()
+## ----fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.605\\textwidth"----
+if(doFigs)fig6.2()
 
+## ----fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.605\\textwidth"----
+if(doFigs)fig6.3()
 
-## ----fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.75\\textwidth"----
-fig6.2()
+## ----fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.8\\textwidth"----
+if(doFigs)fig6.4()
 
+## ----fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.625\\textwidth"----
+if(doFigs)fig6.5()
 
-## ----fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
-fig6.3()
-
-
-## ----fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
-fig6.4()
-
-
-## ----fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
-fig6.5()
-
-
-## ----fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.75, out.width="0.8\\textwidth"----
-fig6.6()
-
+## ----fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
+if(doFigs)fig6.6()
 
 ## ----fig6_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
-fig6.7()
+if(doFigs)fig6.7()
 
-
-## ----fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
-fig6.8()
-
+## ----fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, pars=list(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0), oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.8\\textwidth"----
+if(doFigs)fig6.8()
 
 ## ----fig6_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
-caption <- paste("These are from 25 simulations.", 
+if(doFigs){
+caption <- paste("These are from 25 simulations.",
                  "More usefully, try, eg: fig6.9(nsim=500)")
 fig6.9(nsim=25, caption=caption)
+}
 
+## ----fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=5, fig.height=4.5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
+if(doFigs)fig6.10A()
 
-## ----fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth"----
-fig6.10A()
+## ----fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
+if(doFigs)fig6.10B()
 
+## ----fig6_11x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.75, out.width="0.75\\textwidth"----
+if(doFigs)fig6.11()
 
-## ----fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=3, fig.height=8, out.width="0.5\\textwidth"----
-fig6.10B()
+## ----fig6_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
+if(doFigs)fig6.12()
 
+## ----fig6_13x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
+if(doFigs)fig6.13()
 
-## ----fig6_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth"----
-fig6.11()
-
-
-## ----fig6_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
-fig6.12()
-
-
-## ----fig6_13x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
-fig6.13()
-
-
-## ----fig6_14x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth"----
-fig6.14()
-
-
-## ----fig6_15x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
-fig6.15()
-
-
-## ----fig6_16x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.75\\textwidth"----
-fig6.16()
-
-
-## ----fig6_17x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.75\\textwidth"----
-fig6.17()
-
-
-## ----fig6_18x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
-fig6.18()
-
-
-## ----fig6_19x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
-fig6.19()
-
+## ----fig6_14x, eval=doFigs, echo=TRUE, fig.width=3.0, fig.height=2.5, out.width="0.47\\textwidth"----
+if(doFigs){
+  fig6.14A(fromDate=as.Date("2010-01-01"), basis.df=50)
+  fig6.14B(fromDate=as.Date("2010-01-01"), basis.df=50)
+}
 

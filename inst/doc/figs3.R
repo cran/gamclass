@@ -1,5 +1,4 @@
-
-## ----setup, cache=FALSE, echo=FALSE--------------------------------------
+## ----setup, cache=FALSE, echo=FALSE-----------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/infer-', cache.path='cache/infer-',
@@ -8,13 +7,14 @@ opts_chunk$set(fig.path='figs/infer-', cache.path='cache/infer-',
                tidy=FALSE,  comment=NA)
 knit_hooks$set(par=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
-              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+              font.main=1, cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),
+              tcl=-.3)
+              par(options$pars)
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-
-## ----fig3_1, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_1, eval=TRUE, echo=TRUE-------------------------------------
 fig3.1 <-
 function (x=fCatWts){
 lattice::stripplot(jitter(x), pch='|', xlab="Weight (kg)",
@@ -22,7 +22,7 @@ lattice::stripplot(jitter(x), pch='|', xlab="Weight (kg)",
 }
 
 
-## ----fig3_2, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_2, eval=TRUE, echo=TRUE-------------------------------------
 fig3.2 <-
 function(x=fCatWts){
 opar <- par(mfrow=c(2,2), xpd=TRUE,
@@ -52,7 +52,7 @@ par(mfrow=c(1,1))
 }
 
 
-## ----fig3_3, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_3, eval=TRUE, echo=TRUE-------------------------------------
 fig3.3 <-
 function (x=fCatWts, plotit=TRUE){
     av <- mean(x); sdev <- sd(x); sampsize <- length(x)
@@ -81,8 +81,7 @@ function (x=fCatWts, plotit=TRUE){
     invisible(list(denplotn, bwplotn))
 }
 
-
-## ----fig3_4, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_4, eval=TRUE, echo=TRUE-------------------------------------
 fig3.4 <-
 function (x=fCatWts, plotit=TRUE)
 {
@@ -94,7 +93,7 @@ function (x=fCatWts, plotit=TRUE)
     names(bootdf) <- c("height", "Sample")
     denplotSimple <- densityplot(~ height, groups=Sample, data=bootdf,
                                  xlab="Body weight (kg)")
-    legendA <- expression(plain("A: Bbootstrap (Densities)"))
+    legendA <- expression(plain("A: Bootstrap (Densities)"))
     denplot <- update(denplotSimple, scales=list(tck=0.5),
                       main=list(legendA, x=0.05, just="left"), cex.title=0.9,
                       par.settings=simpleTheme(lty=1:6))
@@ -111,8 +110,7 @@ function (x=fCatWts, plotit=TRUE)
     invisible(list(denplot, bwplot))
 }
 
-
-## ----fig3_5, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_5, eval=TRUE, echo=TRUE-------------------------------------
 fig3.5 <-
 function ()
 {
@@ -126,8 +124,7 @@ function ()
     par(opar)
 }
 
-
-## ----fig3_6, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_6, eval=TRUE, echo=TRUE-------------------------------------
 fig3.6 <-
 function (){
     heights <- na.omit(subset(survey, Sex=="Female")$Height)
@@ -144,8 +141,7 @@ function (){
          labels=c("mean-SD","mean+SD"), col="gray40", xpd=TRUE)
 }
 
-
-## ----fig3_7, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_7, eval=TRUE, echo=TRUE-------------------------------------
 fig3.7 <-
 function (){
   ## 'cats' is from MASS
@@ -155,8 +151,7 @@ function (){
     par(opar)
 }
 
-
-## ----fig3_8, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_8, eval=TRUE, echo=TRUE-------------------------------------
 fig3.8 <-
 function ()
 {
@@ -200,8 +195,7 @@ function ()
     par(fig=c(0,1,0,1))
 }
 
-
-## ----fig3_9, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig3_9, eval=TRUE, echo=TRUE-------------------------------------
 fig3.9 <-
 function ()
 {
@@ -221,8 +215,7 @@ function ()
 }
 }
 
-
-## ----fig3_10, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_10, eval=TRUE, echo=TRUE------------------------------------
 fig3.10 <-
 function (plotit=TRUE)
 {
@@ -256,8 +249,7 @@ function (plotit=TRUE)
     invisible(list(plt1, plt2))
 }
 
-
-## ----fig3_11, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_11, eval=TRUE, echo=TRUE------------------------------------
 fig3.11 <-
 function ()
 {
@@ -268,8 +260,7 @@ function ()
     dotwren
 }
 
-
-## ----fig3_12, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_12, eval=TRUE, echo=TRUE------------------------------------
 fig3.12 <-
 function()
 {
@@ -286,8 +277,7 @@ function()
     dotdiff
 }
 
-
-## ----fig3_13, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_13, eval=TRUE, echo=TRUE------------------------------------
 fig3.13 <-
 function (df=mcats)
 {
@@ -295,8 +285,7 @@ function (df=mcats)
            type=c("p","r"))
 }
 
-
-## ----fig3_14, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_14, eval=TRUE, echo=TRUE------------------------------------
 fig3.14 <-
 function(df=mcats)
 {
@@ -306,12 +295,15 @@ function(df=mcats)
     rug(res, col="gray")
 }
 
-
-## ----fig3_15, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_15, eval=TRUE, echo=TRUE------------------------------------
 fig3.15 <-
 function(df=mcats, nrepeats=100)
 {
-    if(!require(car))stop("Package 'car' must be installed")
+  if(!require(car)){
+    print("Figure 3.15 requires the 'car' package")
+    print("The 'car' package needs to be installed.")
+    return()
+}
     bootmat <- bootreg(formula = Hwt ~ Bwt,
                        data = df,
                        nboot = nrepeats)
@@ -324,8 +316,7 @@ function(df=mcats, nrepeats=100)
                 reg.line=NA, smooth=FALSE)
 }
 
-
-## ----fig3_16, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig3_16, eval=TRUE, echo=TRUE------------------------------------
 fig3.16 <-
 function (df=mcats, plotit=TRUE, nrepeats=100)
 {
@@ -351,90 +342,71 @@ function (df=mcats, plotit=TRUE, nrepeats=100)
     invisible(list(gphA, gphB))
 }
 
-
-## ----docheck, eval=TRUE--------------------------------------------------
+## ----docheck, eval=TRUE-----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
 
-
-## ----fig3-pkgs-----------------------------------------------------------
+## ----fig3-pkgs, warning=FALSE, message=FALSE--------------------------
 pkgs <- c("lattice","DAAG","gamclass")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE, quietly=TRUE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   stop(paste("The following packages should be installed:", notAvail))
 }
+require(car, quietly=TRUE, warn.conflicts=FALSE)
 
-
-## ----get-data, eval=doFigs-----------------------------------------------
+## ----get-data, eval=doFigs--------------------------------------------
 if(!exists("cats")){
   cat("Will load 'cats' dataset from MASS package")
-  require(MASS)
+  require(MASS, warn.conflicts=FALSE)
 }
 fCatWts <- with(cats, na.omit(Bwt[Sex=="F"])) 
 mcats <- subset(cats, Sex=="M")
 
+## ----fig3_1x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
+if(doFigs)fig3.1()
 
-## ----fig3_1x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.8\\textwidth"----
-fig3.1()
+## ----fig3_2x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.8\\textwidth"----
+if(doFigs)fig3.2()
 
+## ----fig3_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+if(doFigs)fig3.3()
 
-## ----fig3_2x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.97\\textwidth"----
-fig3.2()
-
-
-## ----fig3_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.97\\textwidth"----
-fig3.3()
-
-
-## ----fig3_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.97\\textwidth", fig.width=5.5, fig.height=3.0, out.width="0.97\\textwidth"----
-fig3.4()
-
+## ----fig3_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+if(doFigs)fig3.4()
 
 ## ----fig3_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.75\\textwidth"----
-fig3.5()
+if(doFigs)fig3.5()
 
+## ----fig3_6x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3.5, out.width="0.6\\textwidth"----
+if(doFigs)fig3.6()
 
-## ----fig3_6x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=4.5, out.width="0.6\\textwidth"----
-fig3.6()
+## ----fig3_7x, eval=doFigs, echo=TRUE, out.width="0.5\\textwidth"------
+if(doFigs)fig3.7()
 
+## ----fig3_8x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=5.5, out.width="0.65\\textwidth"----
+if(doFigs)fig3.8()
 
-## ----fig3_7x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
-fig3.7()
-
-
-## ----fig3_8x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=6, out.width="0.75\\textwidth"----
-fig3.8()
-
-
-## ----fig3_9x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=3, out.width="0.75\\textwidth"----
-fig3.9()
-
+## ----fig3_9x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=3, out.width="0.6\\textwidth"----
+if(doFigs)fig3.9()
 
 ## ----fig3_10x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth"----
-fig3.10()
-
+if(doFigs)fig3.10()
 
 ## ----fig3_11x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-fig3.11()
-
+if(doFigs)fig3.11()
 
 ## ----fig3_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-fig3.12()
+if(doFigs)fig3.12()
 
+## ----fig3_13x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.55\\textwidth"----
+if(doFigs)fig3.13()
 
-## ----fig3_13x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.6\\textwidth"----
-fig3.13()
+## ----fig3_14x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=3, out.width="0.5\\textwidth"----
+if(doFigs)fig3.14()
 
-
-## ----fig3_14x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.6\\textwidth"----
-fig3.14()
-
-
-## ----fig3_15x, eval=doFigs, echo=TRUE------------------------------------
-fig3.15(nrepeats=100)
-
+## ----fig3_15x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"----
+if(doFigs)fig3.15(nrepeats=100)
 
 ## ----fig3_16x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth"----
-fig3.16(nrepeats=100)
-
+if(doFigs)fig3.16(nrepeats=100)
 

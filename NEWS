@@ -1,0 +1,20 @@
+                  Changes in gamclass version 0.53
+
+NEW FEATURES
+  o Functions plotFars() an tabFarsDead() do not now have an argument
+    'data'.  Instead, to deal with a "No visible binding" message, 
+     data('FARS', package='gamclass', envir=environment()) is used
+    to place the dataset 'FARS' in the function environment, with
+    FARS <- get("FARS", envir=environment()) used to appease the
+    CRAN check.
+  o The functions eventCounts() (counts of events by specified intervals),
+    gamRF() (use repeated sampling to compare interpolation accuracy of
+    GAM model + randomForests fit to residual), addhlines() (plot
+    horizontal lines to show rpart fitted values) and bssBYcut()
+    (between group SS for y, for all possible splits on a value of x)
+  o Vignettes figs7 and figs8 are new.  The former vignettes figs7:figs9
+    have become figs9:figs11
+  o The dataset airAccs has been added.
+
+
+

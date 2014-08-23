@@ -1,4 +1,4 @@
-export(bootreg,compareModels,CVcluster,CVgam,matchedPairs,plotFars,RFcluster,bootreg,simreg,tabFarsDead)
+export(bootreg,compareModels,CVcluster,CVgam,matchedPairs,plotFars,RFcluster,bootreg,simreg,tabFarsDead,addhlines,gamRF,eventCounts,bssBYcut)
 import(mgcv, DAAG, MASS, rpart, randomForest, lattice)
 importFrom(car, scatterplot, spm, scatterplotMatrix)
 importFrom(latticeExtra, layer, layer_, glayer, glayer_, as.layer)

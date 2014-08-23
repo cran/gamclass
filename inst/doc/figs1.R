@@ -1,5 +1,4 @@
-
-## ----setup, cache=FALSE, echo=FALSE--------------------------------------
+## ----setup, cache=FALSE, echo=FALSE-----------------------------------
 library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/key-', cache.path='cache/key-',
@@ -13,8 +12,7 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-
-## ----fig1_1, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_1, eval=TRUE, echo=TRUE-------------------------------------
 fig1.1 <-
 function (form = depression ~ weight, data = roller, ...)
 {
@@ -29,16 +27,14 @@ function (form = depression ~ weight, data = roller, ...)
          main="1.1: Depression vs weight")
 }
 
-
-## ----fig1_2, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_2, eval=TRUE, echo=TRUE-------------------------------------
 fig1.2 <-
 function ()
 {
 print("Run the separate functions fig1.2A() and fig1.2B()")
 }
 
-
-## ----fig1_2A, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_2A, eval=TRUE, echo=TRUE------------------------------------
 fig1.2A <-
 function ()
 {
@@ -47,8 +43,7 @@ function ()
     mtext(side = 3, line = 0.5, adj = 0, "1.2A: Unlogged data")
 }
 
-
-## ----fig1_2B, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_2B, eval=TRUE, echo=TRUE------------------------------------
 fig1.2B <-
 function ()
 {
@@ -57,8 +52,7 @@ function ()
     mtext(side = 3, line = 0.5, adj = 0, "1.2B: Log scales on both axes")
 }
 
-
-## ----fig1_3, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_3, eval=TRUE, echo=TRUE-------------------------------------
 fig1.3 <-
 function ()
 {
@@ -67,8 +61,7 @@ function ()
     mtext(side=3, line=0.75, outer=TRUE, "1.3: Pairs plot")
 }
 
-
-## ----fig1_4, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_4, eval=TRUE, echo=TRUE-------------------------------------
 fig1.4 <-
 function (parset = simpleTheme(pch = 1:10, alpha = 0.6, cex = 1),
     fontsize = list(text = 14, points = 10))
@@ -89,8 +82,7 @@ function (parset = simpleTheme(pch = 1:10, alpha = 0.6, cex = 1),
     gph
 }
 
-
-## ----fig1_5, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_5, eval=TRUE, echo=TRUE-------------------------------------
 fig1.5 <-
 function ()
 {
@@ -112,8 +104,7 @@ function ()
     par(opar)
 }
 
-
-## ----fig1_6, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_6, eval=TRUE, echo=TRUE-------------------------------------
 fig1.6 <-
 function ()
 {
@@ -152,8 +143,7 @@ function ()
 }
 
 
-
-## ----fig1_7, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_7, eval=TRUE, echo=TRUE-------------------------------------
 fig1.7 <- function(){
     obj <- lm(depression ~ weight, data=roller)
     gph <- plotSimScat(obj, sigma=6.4, layout=c(4,1), aspect=1)
@@ -162,8 +152,7 @@ fig1.7 <- function(){
     gph
 }
 
-
-## ----fig1_8, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_8, eval=TRUE, echo=TRUE-------------------------------------
 fig1.8 <- function(){
     pset <- simpleTheme(col.line="gray")
     gph <- xyplot(timef~time,
@@ -177,8 +166,7 @@ fig1.8 <- function(){
     gph
 }
 
-
-## ----fig1_9, eval=TRUE, echo=TRUE----------------------------------------
+## ----fig1_9, eval=TRUE, echo=TRUE-------------------------------------
 fig1.9 <- function(obj=mftime.lm){
     gph <- plotSimScat(obj, layout=c(4,1), aspect=1)
     update(gph, xlab="Record times for males (h)",
@@ -186,16 +174,14 @@ fig1.9 <- function(obj=mftime.lm){
            main="1.9: f vs m times, simulation")
 }
 
-
-## ----fig1_10, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_10, eval=TRUE, echo=TRUE------------------------------------
 fig1.10 <- function(obj=mftime.lm){
     plot(obj, which=1, caption=NULL,
          sub.caption=NULL,
          main="1.10: Diagnostic plot 1")
 }
 
-
-## ----fig1_11, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_11, eval=TRUE, echo=TRUE------------------------------------
 fig1.11 <- function(obj=mftime.lm){
     gph <- plotSimScat(obj, show="residuals",
                        type=c("p","smooth"), layout=c(4,1))
@@ -205,16 +191,14 @@ fig1.11 <- function(obj=mftime.lm){
     gph
 }
 
-
-## ----fig1_12, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_12, eval=TRUE, echo=TRUE------------------------------------
 fig1.12 <- function(obj=mftime.lm){
     plot(obj, which=2, caption=NULL,
          sub.caption=NULL,
          main="1.12: Diagnostic plot 2")
 }
 
-
-## ----fig1_13, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_13, eval=TRUE, echo=TRUE------------------------------------
 fig1.13 <- function(){
     gph <- plotSimDiags(obj=mftime.lm, which=2, layout=c(4,1),
                         aspect=1,
@@ -222,16 +206,14 @@ fig1.13 <- function(){
     gph
 }
 
-
-## ----fig1_14, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_14, eval=TRUE, echo=TRUE------------------------------------
 fig1.14 <- function(obj=mftime.lm){
     plot(obj, which=3, caption=NULL,
          sub.caption=NULL,
          main="1.14: Diagnostic plot 3")
 }
 
-
-## ----fig1_15, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_15, eval=TRUE, echo=TRUE------------------------------------
 fig1.15 <- function(obj=mftime.lm){
     gph <- plotSimDiags(obj, which=3, layout=c(4,1),
                         aspect=1,
@@ -239,16 +221,14 @@ fig1.15 <- function(obj=mftime.lm){
     gph
 }
 
-
-## ----fig1_16, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_16, eval=TRUE, echo=TRUE------------------------------------
 fig1.16 <- function(){
     plot(mftime.lm, which=5, caption=NULL,
          sub.caption=NULL,
          main="1.16: Leverage plot")
 }
 
-
-## ----fig1_17, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_17, eval=TRUE, echo=TRUE------------------------------------
 fig1.17 <- function(){
     pset <- simpleTheme(lty=c(1,2))
     key <- list(text=c("Males", "Females"), columns=2)
@@ -258,8 +238,7 @@ fig1.17 <- function(){
     gph
 }
 
-
-## ----fig1_18, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_18, eval=TRUE, echo=TRUE------------------------------------
 fig1.18 <- function(){
     pset <- simpleTheme(col.line="gray")
     gph <- xyplot(timef ~ time,
@@ -274,8 +253,7 @@ fig1.18 <- function(){
     gph
 }
 
-
-## ----fig1_19, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_19, eval=TRUE, echo=TRUE------------------------------------
 fig1.19 <- function(){
     obj <- lm(log(timef) ~ log(time), data=nihills)
     opar <- par(mfrow=c(1,4), mex=0.75, oma=c(0,0,2,0),
@@ -285,8 +263,7 @@ fig1.19 <- function(){
     par(opar)
 }
 
-
-## ----fig1_20, eval=TRUE, echo=TRUE---------------------------------------
+## ----fig1_20, eval=TRUE, echo=TRUE------------------------------------
 fig1.20 <- function(){
     library(lattice)
     parset <- simpleTheme(cex=1.35, pch=16,
@@ -308,98 +285,74 @@ fig1.20 <- function(){
     gph
 }
 
-
-## ----docheck, eval=TRUE--------------------------------------------------
+## ----docheck, eval=TRUE-----------------------------------------------
 if(!exists("doFigs")) doFigs <- TRUE
 
-
-## ----figs1-setup, eval=doFigs, warn.conflicts=FALSE----------------------
+## ----figs1-setup, eval=doFigs, warn.conflicts=FALSE-------------------
 library(DAAG)
 mftime.lm <- lm(timef ~ time, data=nihills)
 
-
-## ----fig1_1x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
+## ----fig1_1x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"------
 fig1.1()
 
-
-## ----fig1_2x, eval=doFigs, echo=TRUE-------------------------------------
+## ----fig1_2x, eval=doFigs, echo=TRUE----------------------------------
 fig1.2()
 
-
-## ----fig1_2ABx, eval=doFigs, echo=TRUE, out.width="0.47\\textwidth"------
+## ----fig1_2ABx, eval=doFigs, echo=TRUE, out.width="0.47\\textwidth"----
 fig1.2A()
 fig1.2B()
-
 
 ## ----fig1_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.6\\textwidth"----
 fig1.3()
 
-
 ## ----fig1_4x, eval=doFigs, echo=TRUE, , fig.width=5, fig.height=5.5, out.width="0.75\\textwidth"----
 fig1.4()
 
-
-## ----fig1_5x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
+## ----fig1_5x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"------
 fig1.5()
-
 
 ## ----fig1_6x, eval=doFigs, echo=TRUE, fig.width=3.8, fig.height=4, out.width="0.65\\textwidth"----
 fig1.6()
 
-
-## ----fig1_7x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5--------
+## ----fig1_7x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5-----
 fig1.7()
 
-
-## ----fig1_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"---------
+## ----fig1_8x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"------
 fig1.8()
 
-
-## ----fig1_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5--------
+## ----fig1_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5-----
 fig1.9()
 
-
-## ----fig1_10x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_10x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.10()
 
-
-## ----fig1_11x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5-------
+## ----fig1_11x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.11()
 
-
-## ----fig1_12x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_12x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.12()
 
-
-## ----fig1_13x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5-------
+## ----fig1_13x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.13()
 
-
-## ----fig1_14x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_14x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.14()
 
-
-## ----fig1_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5-------
+## ----fig1_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.15()
 
-
-## ----fig1_16x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_16x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.16()
 
-
-## ----fig1_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_17x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.17()
 
-
-## ----fig1_18x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_18x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"-----
 fig1.18()
 
-
-## ----fig1_19x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=2-------
+## ----fig1_19x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=2----
 fig1.19()
-
 
 ## ----fig1_20x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.8\\textwidth"----
 fig1.20()
-
 

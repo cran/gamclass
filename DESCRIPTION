@@ -2,8 +2,8 @@ Package: gamclass
 Type: Package
 Title: Functions and data for a course on modern regression and
         classification
-Version: 0.52
-Date: 2013-11-25
+Version: 0.55
+Date: 2014-08-23
 Author: John Maindonald
 Maintainer: John Maindonald <john.maindonald@anu.edu.au>
 LazyData: true
@@ -15,7 +15,7 @@ Imports: car, mgcv, DAAG, MASS, rpart, randomForest, lattice,
 VignetteBuilder: knitr
 Description: Modern regression extends to include classification and multivariate exploration
 License: GPL (>= 2)
-Packaged: 2013-12-05 22:12:55 UTC; johnm1
+Packaged: 2014-08-22 23:24:27 UTC; johnm1
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-12-05 23:26:03
+Date/Publication: 2014-08-23 07:39:07

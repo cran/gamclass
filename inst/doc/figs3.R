@@ -16,7 +16,7 @@ oldopt <- options(digits=4)
 
 ## ----fig3_1, eval=TRUE, echo=TRUE-------------------------------------
 fig3.1 <-
-function (x=fCatWts){
+function (x=fCatBwt){
 lattice::stripplot(jitter(x), pch='|', xlab="Weight (kg)",
                  aspect=0.25, col="black", border="gray")
 }
@@ -24,7 +24,7 @@ lattice::stripplot(jitter(x), pch='|', xlab="Weight (kg)",
 
 ## ----fig3_2, eval=TRUE, echo=TRUE-------------------------------------
 fig3.2 <-
-function(x=fCatWts){
+function(x=fCatBwt){
 opar <- par(mfrow=c(2,2), xpd=TRUE,
             mar=c(3.6,3.1,3.6,1.1), mgp=c(2.25, 0.5, 0))
 hist(x, labels=TRUE, xlim=c(2, 3),
@@ -54,7 +54,7 @@ par(mfrow=c(1,1))
 
 ## ----fig3_3, eval=TRUE, echo=TRUE-------------------------------------
 fig3.3 <-
-function (x=fCatWts, plotit=TRUE){
+function (x=fCatBwt, plotit=TRUE){
     av <- mean(x); sdev <- sd(x); sampsize <- length(x)
     simmat <- cbind(x, matrix(rnorm(sampsize*5, mean=av, sd=sdev),
                                 ncol=5))
@@ -83,7 +83,7 @@ function (x=fCatWts, plotit=TRUE){
 
 ## ----fig3_4, eval=TRUE, echo=TRUE-------------------------------------
 fig3.4 <-
-function (x=fCatWts, plotit=TRUE)
+function (x=fCatBwt, plotit=TRUE)
 {
     sampsize <- length(x)
     bootmat <- cbind(x, matrix(0, ncol=5, nrow=sampsize))
@@ -143,19 +143,17 @@ function (){
 
 ## ----fig3_7, eval=TRUE, echo=TRUE-------------------------------------
 fig3.7 <-
-function (){
-  ## 'cats' is from MASS
-    y <- with(cats, na.omit(Bwt[Sex=="F"]))
+function (wts=fCatBwt){
     opar <- par(pty="s")
-    qqnorm(y)
+    qqnorm(wts)
     par(opar)
 }
 
 ## ----fig3_8, eval=TRUE, echo=TRUE-------------------------------------
 fig3.8 <-
-function ()
+function (wts=fCatBwt)
 {
-    opar <- par(fig=c(0, 1, 0.465, 1), mar=c(2.1, 3.6, 3.6,2.6),
+    opar <- par(mfrow=c(1,2), mar=c(2.1, 3.6, 3.6,2.6),
                 mgp=c(2.25, 0.5,0))
     av <- numeric(1000)
     for (i in 1:1000)
@@ -168,23 +166,22 @@ function ()
          col="gray", lwd=2, lty=2)
     lines(avdens)
     mtext(side=3, line=0.75, "A: Simulation (from a normal distribution)",
-          adj=-0.1)
+          adj=0)
     legend("bottomright", 
            legend=c("Source", "Sampling\ndistribution\nof mean"),
            col=c("gray", "black"), lty=c(2,1), lwd=c(2,1), bty="n", 
            y.intersp=0.75, inset=c(0,0.2),
            cex=0.8)
-    par(fig=c(0, 1, 0, 0.535), new=TRUE)
-    y <- with(cats, na.omit(Bwt[Sex=="F"]))
     av <- numeric(1000)
     for (i in 1:1000)
-        av[i] <- mean(sample(y, size=length(y), replace=TRUE))
+        av[i] <- mean(sample(wts, size=length(wts), replace=TRUE))
     avdens <- density(av)
-    plot(density(y), ylim=c(0, max(avdens$y)),
+    plot(density(wts), ylim=c(0, max(avdens$y)),
          xlab="", ylab="Density", xlim=c(1.5, 3.75),       
          col="gray", lwd=2, lty=2, main="")
     lines(avdens)
-    mtext(side=3, line=0.75, "B: Bootstrap samples (from the sample data)", adj=-0.1)
+    mtext(side=3, line=0.75, 
+          "B: Bootstrap samples (resample sample)", adj=0)
     legend("bottomright", 
            legend=c("Source",
                       "Sampling\ndistribution\nof mean"),
@@ -192,7 +189,7 @@ function ()
            y.intersp=0.75, inset=c(0,0.2),
            cex=0.8)
     par(opar)
-    par(fig=c(0,1,0,1))
+    par(mfrow=c(1,1))
 }
 
 ## ----fig3_9, eval=TRUE, echo=TRUE-------------------------------------
@@ -217,28 +214,27 @@ function ()
 
 ## ----fig3_10, eval=TRUE, echo=TRUE------------------------------------
 fig3.10 <-
-function (plotit=TRUE)
+function (dset=cuckoos, plotit=TRUE)
 {
-    library(grid)
-    parset1 <- simpleTheme(pch=1:6, alpha=0.8)
-    plt1 <- xyplot(length ~ breadth, groups=species, data=cuckoos,
+    parset1 <- lattice::simpleTheme(pch=1:6, alpha=0.8)
+    plt1 <- lattice::xyplot(length ~ breadth, groups=species, data=dset,
                    par.settings=parset1, aspect=1,
                    scales=list(tck=0.5),
                    auto.key=list(columns=2, alpha=1),
-                   main=textGrob("A:", x=unit(.025, "npc"),
+                   main=grid::textGrob("A:", x=unit(.025, "npc"),
                    y = unit(.25, "npc"), just="left",
                    gp=gpar(cex=1))
                    )
     Species <- factor(c(rep("other", 5), "wren")[unclass(cuckoos$species)])
-    parset2 <- simpleTheme(pch=c(0,6), alpha=0.8,
+    parset2 <- lattice::simpleTheme(pch=c(0,6), alpha=0.8,
                            col=trellis.par.get()$superpose.symbol$col[c(7,6)])
-    plt2 <- xyplot(length ~ breadth, groups=Species, data=cuckoos,
+    plt2 <- lattice::xyplot(length ~ breadth, groups=Species, data=dset,
                    par.settings=parset2,
                    aspect=1, ylab="", scales=list(tck=0.25),
                    auto.key=list(columns=1, alpha=1),
-                   main=textGrob("B:", x=unit(.05, "npc"),
+                   main=grid::textGrob("B:", x=unit(.05, "npc"),
                    y = unit(.25, "npc"), just="left",
-                   gp=gpar(cex=1))
+                   gp=grid::gpar(cex=1))
                    )
     plt2 <- update(plt2,
                    par.settings=list(layout.heights=list(key.top=1.5)))
@@ -251,10 +247,10 @@ function (plotit=TRUE)
 
 ## ----fig3_11, eval=TRUE, echo=TRUE------------------------------------
 fig3.11 <-
-function ()
+function (dset=cuckoos)
 {
     parset <- list(dot.symbol=list(pch=1, alpha=0.6))
-    dotwren <- dotplot(species %in% "wren" ~ length, data=cuckoos,
+    dotwren <- dotplot(species %in% "wren" ~ length, data=dset,
                        scales=list(y=list(labels=c("Other", "Wren"))),
                        par.settings=parset, xlab="Length (mm)")
     dotwren
@@ -262,11 +258,11 @@ function ()
 
 ## ----fig3_12, eval=TRUE, echo=TRUE------------------------------------
 fig3.12 <-
-function()
+function(dset=cuckoos)
 {
     avdiff <- numeric(100)
     for(i in 1:100){
-        avs <- with(cuckoos, sapply(split(length, species %in% "wren"),
+        avs <- with(dset, sapply(split(length, species %in% "wren"),
                                     function(x)mean(sample(x, replace=TRUE))))
         avdiff[i] <- avs[1] - avs[2]  # FALSE (non-wren) minus TRUE (wren)
     }
@@ -279,17 +275,17 @@ function()
 
 ## ----fig3_13, eval=TRUE, echo=TRUE------------------------------------
 fig3.13 <-
-function (df=mcats)
+function (dset=mcats)
 {
-    xyplot(Hwt ~ Bwt, data=df,
+    xyplot(Hwt ~ Bwt, data=dset,
            type=c("p","r"))
 }
 
 ## ----fig3_14, eval=TRUE, echo=TRUE------------------------------------
 fig3.14 <-
-function(df=mcats)
+function(dset=mcats)
 {
-    mcats.lm <- lm(Hwt ~ Bwt, data=df)
+    mcats.lm <- lm(Hwt ~ Bwt, data=dset)
     res <- resid(mcats.lm)
     plot(density(res), main="")
     rug(res, col="gray")
@@ -297,15 +293,10 @@ function(df=mcats)
 
 ## ----fig3_15, eval=TRUE, echo=TRUE------------------------------------
 fig3.15 <-
-function(df=mcats, nrepeats=100)
+function(dset=mcats, nrepeats=100)
 {
-  if(!require(car)){
-    print("Figure 3.15 requires the 'car' package")
-    print("The 'car' package needs to be installed.")
-    return()
-}
     bootmat <- bootreg(formula = Hwt ~ Bwt,
-                       data = df,
+                       data = dset,
                        nboot = nrepeats)
     bootdf <- as.data.frame(bootmat)
     names(bootdf) <- c("Intercept","Slope")
@@ -318,10 +309,10 @@ function(df=mcats, nrepeats=100)
 
 ## ----fig3_16, eval=TRUE, echo=TRUE------------------------------------
 fig3.16 <-
-function (df=mcats, plotit=TRUE, nrepeats=100)
+function (dset=mcats, plotit=TRUE, nrepeats=100)
 {
     bootmat <- bootreg(formula = Hwt ~ Bwt,
-                       data = df[-97, ],
+                       data = dset[-97, ],
                        nboot = nrepeats)
     bootdf0 <- as.data.frame(bootmat)
     names(bootdf0) <- c("Intercept","Slope")
@@ -329,7 +320,7 @@ function (df=mcats, plotit=TRUE, nrepeats=100)
                    main=paste("A:", nrepeats, "bootstrap samples"),
                    cex.title=1.1)
         simmat <- simreg(formula = Hwt ~ Bwt,
-                         data=df[-97, ], nsim=nrepeats)
+                         data=dset[-97, ], nsim=nrepeats)
     simdf <- as.data.frame(simmat)
     names(simdf) <- c("Intercept","Slope")
     gphB <- xyplot(Slope ~ Intercept, data=simdf, alpha=0.25,
@@ -342,71 +333,90 @@ function (df=mcats, plotit=TRUE, nrepeats=100)
     invisible(list(gphA, gphB))
 }
 
-## ----docheck, eval=TRUE-----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
 ## ----fig3-pkgs, warning=FALSE, message=FALSE--------------------------
-pkgs <- c("lattice","DAAG","gamclass")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE, quietly=TRUE)
+pkgs <- c("lattice","DAAG","gamclass","MASS","car","grid")
+z <- sapply(pkgs, require, character.only=TRUE, 
+            warn.conflicts=FALSE, quietly=TRUE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
-  stop(paste("The following packages should be installed:", notAvail))
+  print(paste("The following packages should be installed:", notAvail))
 }
-require(car, quietly=TRUE, warn.conflicts=FALSE)
 
-## ----get-data, eval=doFigs--------------------------------------------
-if(!exists("cats")){
-  cat("Will load 'cats' dataset from MASS package")
-  require(MASS, warn.conflicts=FALSE)
+## ----get-data, eval=TRUE----------------------------------------------
+msg <- "Data object 'cats', from 'MASS', may not be available"
+if(!requireNamespace("MASS"))print(msg) else {
+  mcats <- subset(MASS::cats, Sex=="M")
+  fcats <- subset(MASS::cats, Sex=="F")
+  fCatBwt <- na.omit(fcats[, "Bwt"])
 }
-fCatWts <- with(cats, na.omit(Bwt[Sex=="F"])) 
-mcats <- subset(cats, Sex=="M")
+if(!exists("cuckoos")){
+        msg <- "Cannot find either 'cuckoos' or 'DAAG::cuckoos',"
+if(requireNamespace("DAAG"))cuckoos <- DAAG::cuckoos else 
+          print(msg)
+      }    
 
-## ----fig3_1x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
-if(doFigs)fig3.1()
+## ----fig3_1x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
+if(exists('fCatBwt'))fig3.1() else
+    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_2x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.8\\textwidth"----
-if(doFigs)fig3.2()
+## ----fig3_2x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.8\\textwidth"----
+if(exists('fCatBwt'))fig3.2() else
+    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
-if(doFigs)fig3.3()
+## ----fig3_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+if(exists('fCatBwt'))fig3.3() else
+    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
-if(doFigs)fig3.4()
+## ----fig3_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+if(exists('fCatBwt'))fig3.4() else
+    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.75\\textwidth"----
-if(doFigs)fig3.5()
+## ----fig3_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth"----
+fig3.5()
 
-## ----fig3_6x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3.5, out.width="0.6\\textwidth"----
-if(doFigs)fig3.6()
+## ----fig3_6x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=3.5, out.width="0.55\\textwidth"----
+fig3.6()
 
-## ----fig3_7x, eval=doFigs, echo=TRUE, out.width="0.5\\textwidth"------
-if(doFigs)fig3.7()
+## ----fig3_7x, eval=TRUE, echo=TRUE, out.width="0.5\\textwidth"--------
+if(exists("fCatBwt"))fig3.7() else
+    print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
 
-## ----fig3_8x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=5.5, out.width="0.65\\textwidth"----
-if(doFigs)fig3.8()
+## ----fig3_8x, eval=TRUE, echo=TRUE, fig.width=8, fig.height=3.5, out.width="0.98\\textwidth"----
+if(exists("fCatBwt"))fig3.8() else
+    print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
 
-## ----fig3_9x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=3, out.width="0.6\\textwidth"----
-if(doFigs)fig3.9()
+## ----fig3_9x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=3, out.width="0.6\\textwidth"----
+fig3.9()
 
-## ----fig3_10x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth"----
-if(doFigs)fig3.10()
+## ----fig3_10x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth"----
+if(exists("cuckoos"))fig3.10() else
+    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
 
-## ----fig3_11x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-if(doFigs)fig3.11()
+## ----fig3_11x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
+if(exists("cuckoos"))fig3.11() else
+    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
 
-## ----fig3_12x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-if(doFigs)fig3.12()
+## ----fig3_12x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
+if(exists("cuckoos"))fig3.12() else
+    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
 
-## ----fig3_13x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.55\\textwidth"----
-if(doFigs)fig3.13()
+## ----fig3_13x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=4, out.width="0.55\\textwidth"----
+if(exists('mcats'))fig3.13() else
+    print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_14x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=3, out.width="0.5\\textwidth"----
-if(doFigs)fig3.14()
+## ----fig3_14x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=3, out.width="0.5\\textwidth"----
+if(exists('mcats'))fig3.14() else
+    print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_15x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"----
-if(doFigs)fig3.15(nrepeats=100)
+## ----fig3_15x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+if(!require(car)){
+    print("Figure 3.15 requires the 'car' package")
+    return("The 'car' package needs to be installed.")
+}
+if(exists("mcats"))fig3.15(nrepeats=100) else
+    print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_16x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth"----
-if(doFigs)fig3.16(nrepeats=100)
+## ----fig3_16x, eval=TRUE, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth"----
+if(exists('mcats'))fig3.16() else
+    print("Object 'mcats' was not found; subset from 'MASS::cats'")
 

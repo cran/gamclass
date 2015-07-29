@@ -3,7 +3,7 @@
 \alias{modregR}
 \docType{package}
 \title{
-Functions and Data for a course in modern regression
+Functions and Data for a Course in Modern Regression
 }
 \description{
 For purposes of this package, modern regression extends to include
@@ -26,7 +26,7 @@ John Maindonald
 Maintainer: john.maindonald@anu.edu.au
 }
 \references{
-\url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \keyword{ package }
 % \seealso{

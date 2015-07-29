@@ -30,7 +30,7 @@ variable names, and \code{years}
 \url{http://www-fars.nhtsa.dot.gov/Main/index.aspx}
 }
 \references{
-\url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \seealso{
 \code{\link{matchedPairs}}

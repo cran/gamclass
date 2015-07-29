@@ -46,7 +46,7 @@ Print summary information on accuracy
 \item{confusion}{Confusion matrix}
 }
 \references{
-\url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \author{
 John Maindonald

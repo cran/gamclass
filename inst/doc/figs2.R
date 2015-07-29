@@ -12,8 +12,8 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
               par(options$pars)
 }, crop=hook_pdfcrop)
 pdf.options(pointsize=12)
-if(!require(lattice, quietly=TRUE))
-trellis.par.set(par.main.text=list(font=1))
+if(require("lattice", quietly=TRUE))
+lattice::trellis.par.set(par.main.text=list(font=1))
 oldopt <- options(digits=4)
 
 ## ----fig2_1, eval=TRUE, echo=TRUE-------------------------------------
@@ -46,9 +46,9 @@ function (seed = NULL, N = 10, parset = simpleTheme(pch = 1:N),
     if (!is.null(parset))
         parset$fontsize <- fontsize
     if (!exists("Wages")) {
-        if(!require(Ecdat, warn.conflicts=FALSE, quietly=TRUE))
+        if(!require("Ecdat", warn.conflicts=FALSE, quietly=TRUE))
     return("Dataset 'Wages' is not available; cannot show graph")
-        data(Wages)
+      Wages <- Ecdat::Wages
     }
     if (is.null(Wages$ID))
         Wages$ID <- rep(1:595, each = 7)
@@ -69,9 +69,11 @@ function (parset = simpleTheme(pch = 16, alpha = 0.8, cex = 1.25),
 {
     if (!is.null(parset))
         parset$fontsize <- fontsize
-    if(!require(lattice))return("Package 'lattice' is not available; cannot show graph")
-    if(!exists('ant111b'))
-    if(!require(DAAG))return("Dataset 'ant111b' is not available; cannot show graph")
+    if(!require("lattice"))return("Package 'lattice' is not available; cannot show graph")
+    if(!exists('ant111b')){
+    if(!require("DAAG"))return("Dataset 'ant111b' is not available; cannot show graph")
+      ant111b <- DAAG::ant111b
+    }
     Site <- with(ant111b, reorder(site, harvwt, FUN = mean))
     gph <- stripplot(Site ~ harvwt, data = ant111b, par.settings = parset,
         xlab = "Harvest weight of corn")
@@ -119,7 +121,8 @@ function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
 {
     wr.lm <- lm(log(Time) ~ log(Distance), data = worldRecords)
     resid1 <- resid(wr.lm)
-    if(!require(mgcv, quietly=TRUE, warn.conflicts=FALSE))stop("Package 'mgcv' must be available")
+    msg <- "As 'mgcv::gam' is not available, unable to proceed."
+    if(!require("mgcv", quietly=TRUE, warn.conflicts=FALSE))return(msg)
     wr.gam <- gam(resid1 ~ s(log(Distance)), data = worldRecords)
     hat.gam <- predict(wr.gam, se.fit = TRUE)
     wrgamdata <- with(worldRecords, data.frame(distance = Distance,
@@ -127,14 +130,15 @@ function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
         hat = hat.gam$fit, se = hat.gam$se.fit))  
     ord <- with(wrgamdata, order(distance))
     wrgamdata <- wrgamdata[ord, ]
-    if(!require(latticeExtra, quietly=TRUE))stop("Package 'latticeExtra' must be available")
-    gph0 <- xyplot(resid1 ~ distance, groups = roadORtrack, 
+    msg <- "As 'lattice' is not available, cannot do graph."
+    if(!require("lattice", quietly=TRUE))return(msg)
+    gph0 <- lattice::xyplot(resid1 ~ distance, groups = roadORtrack, 
                    ylim = c(-0.15, 0.175), xlab = "", 
                    scales = list(x = list(log = 10, alternating = 0),
                    tck = -0.4), data = wrgamdata, type = "p", 
                    par.settings = parset,
                    auto.key = list(columns = 2))
-    gph01 <- xyplot(I(hat - 2 * se) + hat + I(hat + 2 * se) ~
+    gph01 <- lattice::xyplot(I(hat - 2 * se) + hat + I(hat + 2 * se) ~
         distance, outer = FALSE, ylim = c(-0.125, 0.175), 
                     scales = list(tck = -0.4,
         x = list(log = 10, alternating = 2)), data = wrgamdata,
@@ -142,7 +146,7 @@ function (parset = simpleTheme(lty = c(2, 1, 2), col.line = c("gray30",
     gph1 <- update(gph0 + as.layer(gph01), 
                    ylab = expression(atop(Smooth %+-%
         2 * SE, "(resid1)")))
-    gph2 <- xyplot(resid2 ~ distance, groups = roadORtrack, 
+    gph2 <- lattice::xyplot(resid2 ~ distance, groups = roadORtrack, 
                    scales = list(tck = -0.4,
         x = list(log = 10)), ylim = c(-0.125, 0.175), 
                    ylab = expression(atop("Resids from smooth",
@@ -177,8 +181,9 @@ fig2.7 <-
 function (statistics = c("airbagAvail", "airbagDeploy", "Restraint"),
     restrict = "!is.na(age)&age>=16&age<998")
 {
-    if(!require(lattice))return("Package 'lattice' is not available; cannot show graph")
-    gph <- plotFars(restrict = restrict)
+    msg <- "As 'lattice' is not available; cannot show graph"
+    if(!require("lattice"))return(msg)
+    gph <- gamclass::plotFars(restrict = restrict)
     plotchars <- c(1:length(statistics))
     plotchars[1] <- 16
     gph <- update(gph, xlab = "", ylab = "Death rate ratio of ratios, w/wo",
@@ -186,61 +191,54 @@ function (statistics = c("airbagAvail", "airbagDeploy", "Restraint"),
     gph
 }
 
-## ----docheck, eval=TRUE,----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----figsAll, eval=doFigs, warning=FALSE------------------------------
+## ----figsAll, eval=TRUE, warning=FALSE--------------------------------
 pkgs <- c("gamclass","latticeExtra","DAAG", "mgcv")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE, quietly=TRUE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
-  stop(paste("The following packages should be installed:", notAvail))
+  print(paste("The following packages should be installed:", notAvail))
 }
 
-## ----figs2_1x, eval=doFigs, pars=list(mar=c(4,4,2.6,.1), font.main=1), fig.width=4.25, fig.height=3.75, out.width="0.65\\textwidth"----
-if(doFigs){
+## ----figs2_1x, eval=TRUE, pars=list(mar=c(4,4,2.6,.1), font.main=1), fig.width=4.25, fig.height=3.75, out.width="0.55\\textwidth"----
 fig2.1()
 title(main="2.1B: Light speed estimates (line is silly)", 
       line=1.75, cex.main=1.1)
 mtext(side=3, line=0.5, "For 2.1A, type: fig2.1(data=cvalues)")
-}
 
-## ----fig2_2x, eval=doFigs, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.6\\textwidth"----
-if(doFigs){gph <- fig2.2()
-update(gph, main = list("2.2: Wage data, broken down by worker", fontface="plain"))
-}
+## ----fig2_2x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.6\\textwidth"----
+gph <- fig2.2()
+update(gph, main = list("2.2: Wage data, broken down by worker", 
+                        fontface="plain", lineheight=0.25, 
+                        just=c("left","top"),
+                        x = grid::unit(12, "mm")))
 
-## ----fig2_3x, eval=doFigs, echo=TRUE, , fig.width=4.25, fig.height=3.5, out.width="0.6\\textwidth"----
-if(doFigs){gph <- fig2.3()
-update(gph, main=list("2.3: Corn harvest weight by site", fontface="plain"))
-}
+## ----fig2_3x, eval=TRUE, echo=TRUE, , fig.width=4.25, fig.height=3.5, out.width="0.6\\textwidth"----
+gph <- fig2.3()
+update(gph, main=list("2.3: Corn harvest weight by site", 
+                      lineheight=0.75, fontface="plain"))
 
-## ----fig2_4x, eval=doFigs, echo=TRUE, out.width="0.6\\textwidth"------
-if(doFigs){gph <- fig2.4()
+## ----fig2_4x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"--------
+gph <- fig2.4()
 trellis.par.set(clip=list(panel="off",strip="on"))
 print(update(gph, main=list("2.4: World records, field vs track", fontface="plain")),  
       position = c(0.05, 0, 1, 0.95))
 trellis.par.set(clip=list(panel="on",strip="on"))
-}
 
-## ----fig2_5x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.5\\textwidth"----
-if(doFigs){gphs <- fig2.5(printit=FALSE)
+## ----fig2_5x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.5\\textwidth"----
+gphs <- fig2.5(printit=FALSE)
 print(gphs[["upper"]], position=c(0, 0.415, 1,1)) 
 print(gphs[["lower"]], position=c(0, 0, 1,0.585), newpage=FALSE) 
-}
 
-## ----fig2_6x, eval=doFigs, echo=TRUE, fig.width=5, pars=list(mar=c(3.1,3.1,4.1,0.6)), out.width="0.65\\textwidth"----
-if(doFigs){fig2.6()
+## ----fig2_6x, eval=TRUE, echo=TRUE, fig.width=5, pars=list(mar=c(3.1,3.1,4.1,0.6)), out.width="0.65\\textwidth"----
+fig2.6()
 title1 <- expression("2.6: Annual global temperature anomalies, in 0.01" *
         degree * "C,")
 title(main = title1, line = 2.1, cex=1.2)
 title2 <- expression("from the average (" %~~% 14 * degree *
         "C), 1951 to 1980 inclusive")
 title(main = title2, line = 0.8, cex=1.2)
-}
 
-## ----fig2_7x, eval=doFigs, echo=TRUE, fig.width=5, out.width="0.65\\textwidth"----
-if(doFigs){gph <- fig2.7()
+## ----fig2_7x, eval=TRUE, echo=TRUE, fig.width=5, out.width="0.6\\textwidth"----
+gph <- fig2.7()
 update(gph, main=list("2.7: Death rate ratios", fontface="plain"))
-}
 

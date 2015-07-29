@@ -46,10 +46,7 @@ set.seed(31)         # Reproduce graph shown
 errorsINx(gpdiff=4, timesSDx=1.25, SDyerr=2.5, n=80, plotit=FALSE)[["gph"]]
 }
 
-## ----docheck, eval=TRUE-----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----pkgs-figs8, eval=doFigs, message=FALSE, warning=FALSE------------
+## ----pkgs-figs10, eval=TRUE, message=FALSE, warning=FALSE-------------
 pkgs <- c("latticeExtra", "DAAG")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -57,9 +54,11 @@ if(any(!z)){
   print(paste("The following package requires to be installed:", notAvail))
 }
 
-## ----fig10_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=5----
-if(doFigs)fig10.1()
+## ----fig10_1x, eval=TRUE, echo=TRUE, fig.width=6.75, fig.height=5-----
+if(require('latticeExtra')) fig10.1() else
+  print("Package 'latticeExtra' is not available, cannot do graph")
 
-## ----fig10_2x, eval=doFigs, echo=TRUE,  fig.width=6.0, fig.height=3.5----
-if(doFigs)fig10.2()
+## ----fig10_2x, eval=TRUE, echo=TRUE,  fig.width=6.0, fig.height=3.5----
+if(require('latticeExtra')&require('DAAG')) fig10.2() else
+  print("Packages 'latticeExtra' &/or 'DAAG' is/are not available, cannot do graph")
 

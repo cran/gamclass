@@ -320,6 +320,8 @@ rfErr <- function(train.rf=spam01.rf, train=spam01, test=spam2,
 
 ## ----fig9_11, eval=TRUE, echo=TRUE------------------------------------
 fig9.11 <- function(){
+if(!exists("Vowel"))
+  return("Dataset 'Vowel' (from mlbench) is not available")
 form <- paste("~", paste(paste("V", 2:10, sep= ""),
                          collapse="+"))
 gph <- bwplot(formula(paste("Class", form)),
@@ -328,10 +330,7 @@ gph <- bwplot(formula(paste("Class", form)),
 gph
 }
 
-## ----figs9-setup, eval=TRUE-------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----pkgs-figs9, eval=doFigs, message=FALSE, warning=FALSE------------
+## ----pkgs-figs9, eval=TRUE, message=FALSE, warning=FALSE--------------
 pkgs <- c("DAAG","rpart","randomForest","MASS","mgcv","kernlab","mlbench")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -339,21 +338,27 @@ if(any(!z)){
   print(paste("The following packages need to be installed:", notAvail))
 }
 
-## ----bronchit, eval=doFigs, echo=TRUE---------------------------------
+## ----bronchit, eval=TRUE, echo=TRUE-----------------------------------
+getbronchit <- function(){
 if(!exists("bronchit")){
-  getData <- try(data("bronchit", package="SMIR"))
-if(getData != "bronchit") print("Dataset 'bronchit' is not available")
+  if(require("SMIR")) data("bronchit", package="SMIR") else
+    print("Dataset 'bronchit' is not available")
 }
-if(exists("bronchit")){
-bronchit <-
-  within(bronchit,
+if(!exists("bronchit")) 
+  return("Dataset 'bronchit' is not available") else {
+  bronchit <-
+     within(bronchit,
          rfac <- factor(r, labels=c("abs","pres")))
 }
+bronchit
+}
 
-## ----fig9_1x, eval=doFigs, fig.width=5, fig.height=5.5, echo=TRUE,  out.width="0.65\\textwidth"----
-if(doFigs)fig9.1()
+bronchit <- getbronchit()
 
-## ----figs9-cuckoos, eval=doFigs---------------------------------------
+## ----fig9_1x, eval=TRUE, fig.width=4.25, fig.height=4.75, echo=TRUE,  out.width="0.55\\textwidth"----
+fig9.1()
+
+## ----figs9-cuckoos, eval=TRUE-----------------------------------------
     if(!exists('cuckoos.lda')){
         cuckoos <- within(cuckoos,
                           levels(species) <- abbreviate(levels(species), 8))
@@ -362,34 +367,37 @@ if(doFigs)fig9.1()
                            data=cuckoos)
     }
 
-## ----fig9_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth"----
-if(doFigs)fig9.2()
+## ----fig9_2x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
+fig9.2()
 
-## ----fig9_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.97\\textwidth"----
-if(doFigs)fig9.3()
+## ----fig9_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
+fig9.3()
 
 
-## ----fig9_4x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth"----
-if(doFigs)fig9.4()
+## ----fig9_4x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.65\\textwidth"----
+if(exists("bronchit")) fig9.4() else
+  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
 
-## ----fig9_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=5, out.width="0.65\\textwidth"----
-if(doFigs)fig9.5()
+## ----fig9_5x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.55\\textwidth"----
+if(exists("bronchit")) fig9.5() else
+  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
 
-## ----fig9_6x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
-if(doFigs)fig9.6()
+## ----fig9_6x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5-----
+fig9.6()
 
-## ----fig9_7x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5-------
-if(doFigs)fig9.7()
+## ----fig9_7x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5---------
+if(exists("bronchit")) fig9.7() else
+  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
 
-## ----fig9_8x, eval=doFigs, fig.width=5, fig.height=5, echo=TRUE, out.width="0.65\\textwidth"----
+## ----fig9_8x, eval=TRUE, fig.width=5, fig.height=5, echo=TRUE, out.width="0.6\\textwidth"----
 set.seed(31)
-if(doFigs)fig9.8()
+if(exists("bronchit")) fig9.8() else
+  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
 
-## ----spam, eval=doFigs, echo=TRUE-------------------------------------
-if(doFigs){
+## ----spam, eval=TRUE, echo=TRUE---------------------------------------
 if(!exists("spam")){
-  getData <- try(data("spam", package="kernlab"))
-if(getData != "spam") print("Dataset 'spam' is not available")
+  if(require("kernlab")) data("spam", package="kernlab") else
+    print("Dataset 'spam' is not available")
 }
 if(exists("spam")){
 nr <- sample(1:nrow(spam))
@@ -407,26 +415,25 @@ set.seed(29)
 spam01.rf <- randomForest(type ~ ., data=spam01)
 rfError <- rfErr()
 }
-}
 
-## ----ticShown, eval=doFigs, echo=TRUE, message=FALSE, warning=FALSE----
-if(doFigs){
+## ----ticShown, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE-----
 if(!exists('ticShown') | !exists('ticHeld')){
         cat("Will try to load dataset 'ticdata' from package 'kernlab'")
-        getData <- try(data("ticdata", package="kernlab"))
-        if(getData == "ticdata") {
+        if(require("kernlab"))
+          data("ticdata", package="kernlab") else 
+          print("Dataset 'ticdata' is not available; get from kernlab")
+if(exists('ticdata')){
           ## Use first 5822 observations for prediction
           ticShown <- ticdata[1:5822, ]
           ticHeld <- ticdata[-(1:5822), ]
-      } else print("Dataset 'ticShown' is not available")
+      } 
 }
 if(!exists('tictrain') | !exists('tictest')){
 tictrain <- ticShown[1:3822, ]
 tictest <- ticShown[-(1:3822), ]
 }
-}
 
-## ----testLong, eval=doFigs, echo=TRUE---------------------------------
+## ----testLong, eval=TRUE, echo=TRUE-----------------------------------
 ## Generated with seed=29
 testLong <-
 structure(list(test = c(61, 63, 65, 66, 65, 65, 67, 67, 63, 62, 
@@ -442,7 +449,7 @@ structure(list(test = c(61, 63, 65, 66, 65, 65, 67, 67, 63, 62,
 4L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("test", 
 "n0", "gp"), row.names = c(NA, -50L), class = "data.frame")
 
-## ----fig9_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
+## ----fig9_9x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5-----
 opar <- par(mar=c(4.6,4.6,2.6, 0.6))
 note <- paste("This plots stored results (seed=29), plus one further data point.",
               "\nType 'fig9.9(seed=31)' for graph shown in the text.")
@@ -459,7 +466,7 @@ axis(1, at=log(nn0), labels=paste(nn0), las=3)
 mtext(side=3, line=0.5, note, col="blue")
 par(opar)
 
-## ----heldlong, eval=doFigs, echo=TRUE---------------------------------
+## ----heldlong, eval=TRUE, echo=TRUE-----------------------------------
 ## Generated with seed=43
 heldLong <-
 structure(list(insure = c(108, 114, 120, 119, 121, 116, 114, 
@@ -476,8 +483,7 @@ structure(list(insure = c(108, 114, 120, 119, 121, 116, 114,
 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("insure", "n0", "gp"
 ), row.names = c(NA, -50L), class = "data.frame")
 
-## ----fig9_10x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
-if(doFigs){
+## ----fig9_10x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5----
 opar <- par(mar=c(4.6,4.6,2.6, 0.6))
 note <- paste("This plots stored results (seed=43), plus one further data point.",
               "\nType 'fig9.10(seed=47)' for graph shown in the text.")
@@ -493,15 +499,15 @@ plot(held.gam, se=T, residuals=T, pch=1, xaxt="n",
 axis(1, at=log(nn0), labels=paste(nn0), las=3)
 mtext(side=3, line=0.5, note, col="blue")
 par(opar)
-}
 
-## ----Vowel, eval=doFigs-----------------------------------------------
+## ----Vowel, eval=TRUE-------------------------------------------------
     if(!exists('Vowel')){
         cat("Will try to load dataset 'Vowel' from package 'mlbench'")
-        if(!require(mlbench))stop("Package 'mlbench' is not installed") else
-            data(Vowel)
+        if(!requireNamespace("mlbench"))
+          print("Package 'mlbench' is not installed") else
+            data("Vowel", package="mlbench", envir=environment())
     }
 
-## ----fig9_11x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=8, out.width="0.875\\textwidth"----
-if(doFigs)fig9.11()
+## ----fig9_11x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=8, out.width="0.875\\textwidth"----
+fig9.11()
 

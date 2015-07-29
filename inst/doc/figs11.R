@@ -15,8 +15,8 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
-## ----fig9_1, eval=TRUE, echo=TRUE-------------------------------------
-fig9.1 <- function(){
+## ----fig11_1, eval=TRUE, echo=TRUE------------------------------------
+fig11.1 <- function(){
   opar <- par(xpd=TRUE)
   if(!exists("aupoints")){
     cat("Trying to obtain audists from DAAG")        
@@ -35,8 +35,8 @@ fig9.1 <- function(){
   par(opar)
 }
 
-## ----fig9_2A, eval=TRUE, echo=TRUE------------------------------------
-fig9.2A <- function(){
+## ----fig11_2A, eval=TRUE, echo=TRUE-----------------------------------
+fig11.2A <- function(){
     if(!require(DAAG))return("'DAAG' must be installed")
     if(!require(oz))return("Package 'oz' must be installed")
     if(!exists('aupoints'))aupoints <- cmdscale(audists)
@@ -49,8 +49,8 @@ fig9.2A <- function(){
     lines(x, y, col="gray40", lwd=3)
 }
 
-## ----fig9_2B, eval=TRUE, echo=TRUE------------------------------------
-fig9.2B <- function(){
+## ----fig11_2B, eval=TRUE, echo=TRUE-----------------------------------
+fig11.2B <- function(){
     if(!require(MASS))return("Package 'MASS' must be installed")
     if(!require(oz))return("Package 'oz' must be installed")
     aupoints.sam <- sammon(audists, trace=FALSE)
@@ -65,16 +65,15 @@ fig9.2B <- function(){
     lines(x, y, col="gray40", lwd=3)
 }
 
-## ----fig9_2, eval=TRUE, echo=TRUE-------------------------------------
-fig9.2 <- function(){
+## ----fig11_2, eval=TRUE, echo=TRUE------------------------------------
+fig11.2 <- function(){
   par(fig=c(0,1,0.5,1))
-  fig9.2A()
-  par(fig=c(0,1,0,0.5), new=TRUE)  
-  fig9.2B()  
+  fig11.2A()
+  fig11.2B()  
 }
 
-## ----fig9_3A, eval=TRUE, echo=TRUE------------------------------------
-fig9.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
+## ----fig11_3A, eval=TRUE, echo=TRUE-----------------------------------
+fig11.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))return("Package 'DAAGbio' must be installed")
     if(!require(ape))return("Package 'ape' must be installed")
     ## Calculate distances, using Kimura's K80 model
@@ -86,8 +85,8 @@ fig9.3A <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
          pos=lefrt)
 }
 
-## ----fig9_3B, eval=TRUE, echo=TRUE------------------------------------
-fig9.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
+## ----fig11_3B, eval=TRUE, echo=TRUE-----------------------------------
+fig11.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
     if(!require(DAAGbio))return("Package 'DAAGbio' must be installed")
     if(!require(ape))return("Package 'ape' must be installed")
     if(!require(MASS))return("Package 'MASS' must be installed")
@@ -101,18 +100,18 @@ fig9.3B <- function(seed=47, xlab="Axis 1", ylab="Axis 2"){
          row.names(primates.mds$points), pos=lefrt)
 }
 
-## ----fig9_3, eval=TRUE, echo=TRUE-------------------------------------
-fig9.3 <- function(){
+## ----fig11_3, eval=TRUE, echo=TRUE------------------------------------
+fig11.3 <- function(){
   opar <- par(fig=c(0,0.5,0,1), mar=c(3.1,3.1,1.6,0.1))
-  fig9.3A()
+  fig11.3A()
   par(fig=c(0.5,1,0,1), new=TRUE)  
-  fig9.3B(ylab="")
+  fig11.3B(ylab="")
   par(fig=c(0,1,0,1))
   par(opar)
 }
 
-## ----fig9_4, eval=TRUE, echo=TRUE-------------------------------------
-fig9.4 <- function(){
+## ----fig11_4, eval=TRUE, echo=TRUE------------------------------------
+fig11.4 <- function(){
     if(!require(DAAG))return("Package 'DAAG' must be installed")
     if(!require(MASS))return("Package 'MASS' must be installed")
     pacific.dist <- dist(x = as.matrix(rockArt[-c(47,54,60,63,92),
@@ -128,10 +127,7 @@ fig9.4 <- function(){
     plot(pacific.mds$points)
 }
 
-## ----docheck, eval=TRUE-----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----pkgs-figs9, eval=doFigs, message=FALSE, warning=FALSE------------
+## ----pkgs-figs9, eval=TRUE, message=FALSE, warning=FALSE--------------
 pkgs <- c("DAAG","DAAGbio","MASS","oz","ape")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -139,19 +135,19 @@ if(any(!z)){
   print(paste("The following packages should be installed:", notAvail))
 }
 
-## ----fig9_1x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5-------
-if(doFigs)fig9.1()
+## ----fig11_1x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5--------
+fig11.1()
 
-## ----aupoints, eval=doFigs--------------------------------------------
-if(doFigs)if(!exists("aupoints")) 
+## ----aupoints, eval=TRUE----------------------------------------------
+if(!exists("aupoints")) 
 aupoints <- cmdscale(audists)
 
-## ----fig9_2x, eval=doFigs, echo=TRUE, pars=list(mfrow=c(2,1), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.65\\textwidth"----
-if(doFigs)fig9.2()
+## ----fig11_2x, eval=TRUE, echo=TRUE, pars=list(mfrow=c(1,2), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.485\\textwidth"----
+fig11.2()
 
-## ----fig9_3x, eval=doFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth"----
-if(doFigs)fig9.3()
+## ----fig11_3x, eval=TRUE, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth"----
+fig11.3()
 
-## ----fig9_4x, eval=doFigs, echo=TRUE, fig.width=4, fig.height=4.25----
-if(doFigs)fig9.4()
+## ----fig11_4x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=4.25-----
+fig11.4()
 

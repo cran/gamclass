@@ -55,7 +55,7 @@ Set seed, if required, so that results are exactly reproducible
   The scale parameter from cross-validation is the error mean square)
 }
 \references{
-\url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \author{
 John Maindonald

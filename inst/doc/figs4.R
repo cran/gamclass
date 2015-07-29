@@ -39,7 +39,8 @@ fig4.3 <-
 function (obj=lognigrad.lm, mfrow=c(1,2))
 {
     objtxt <- deparse(substitute(obj))
-    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     opar <- par(mfrow=mfrow)
     termplot(obj, col.term="gray", partial=TRUE,
              col.res="black", smooth=panel.smooth)
@@ -50,7 +51,8 @@ function (obj=lognigrad.lm, mfrow=c(1,2))
 fig4.4 <-
 function (obj=lognigrad.lm, mfrow=c(1,4)){
     objtxt <- deparse(substitute(obj))
-    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     opar <- par(mfrow=mfrow, pty="s",
                 mgp=c(2.25,.5,0), mar=c(3.6,3.6,2.1,0.6))
     plot(obj, cex.lab=1.4)
@@ -63,7 +65,8 @@ function (obj=lognigrad.lm, mfrow=c(1,4), nsim=10){
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
     objtxt <- deparse(substitute(obj))
-    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     y <- simulate(obj, nsim=nsim)
     ## Look only at the first simulation
     lognisim1.lm <- lm(y[, 1] ~ ldist + lgradient, data=lognihills)
@@ -77,7 +80,8 @@ fig4.6 <-
 function (obj=lognigrad.lm2)
 {
     objtxt <- deparse(substitute(obj))
-    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     opar <- par(mfrow=c(1,4), mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
     plot(obj, cex.lab=1.1, cex.caption=0.8)
@@ -88,8 +92,6 @@ function (obj=lognigrad.lm2)
 fig4.7 <-
 function (obj=lognigrad.lm)
 {
-    objtxt <- deparse(substitute(obj))
-    if(!exists(objtxt))stop(paste("Requires argument obj =", objtxt))
     ## The following generates a matrix of 23 rows (observations)
     ## by 1000 sets of simulated responses
     simlogniY <- simulate(obj, nsim=1000)
@@ -114,8 +116,7 @@ function (obj=lognigrad.lm)
 fig4.8 <-
 function (plotit=TRUE)
 {
-library(DAAG)
-with(rice, interaction.plot(x.factor=fert,
+with(DAAG::rice, interaction.plot(x.factor=fert,
                             trace.factor=variety,
                             ShootDryMass,
                             cex.lab=1.2, xpd=TRUE))
@@ -126,7 +127,8 @@ fig4.9 <-
 function (plotit=TRUE)
 {
     ## Panel A
-    gph <- xyplot(tempDiff ~ vapPress, groups=CO2level, data = leaftemp,
+    gph <- xyplot(tempDiff ~ vapPress, groups=CO2level, 
+                  data = DAAG::leaftemp,
                   ylab="", aspect=1,
                   cex.main=0.75,
                   par.settings=simpleTheme(pch=c(2,1,6), cex=0.85,
@@ -171,13 +173,8 @@ function (plotit=TRUE)
 fig4.10 <-
 function ()
 {
-if(!require(sp, quietly=TRUE)){
-print("Package 'sp' must be available")
-return()
-}
-data(meuse, package="sp"); data(meuse.riv, package="sp")
 coordinates(meuse) <- ~ x + y
-gph <- bubble(meuse, "lead", pch=1, maxsize=2,
+gph <- sp::bubble(meuse, "lead", pch=1, maxsize=2,
               main = list("Lead(ppm)", fontface="plain", cex=1.35),
               key.entries =  100 * 2^(0:4), col=c(2,4),
               scales=list(axes=TRUE, tck=0.4))
@@ -188,28 +185,24 @@ gph+add
 
 ## ----fig4_11, eval=TRUE, echo=TRUE------------------------------------
 fig4.11 <-
-function ()
+function (dset=meuse)
 {
-    if(!exists('meuse'))stop("Dataset 'meuse' must be available")
     opar <- par(cex=1.25, mar=rep(1.5,4))
-    if(!require(car))
-        stop("Package 'car' must be installed")
+    if(!requireNamespace("car"))
+        return("Function 'car::spm' is unavailable")
     spm(~ lead+elev+dist+jitter(unclass(ffreq)) | soil,
         col=adjustcolor(rep("black",3), alpha.f=0.5),
         var.labels=c("lead","elev","dist","jitter(ffreq)"),
-        data=meuse, cex.labels=1.5, reg.line=NA)
+        data=dset, cex.labels=1.5, reg.line=NA)
     par(opar)
 }
 
 ## ----fig4_12, eval=TRUE, echo=TRUE------------------------------------
 fig4.12 <-
-function ()
+function (dset=meuse)
 {
-    if(!exists('meuse'))stop("Dataset 'meuse' must be available")
-    if(!require(car))
-        stop("Package 'car' must be installed")
-    meuse$ffreq <- factor(meuse$ffreq)
-    meuse$soil <- factor(meuse$soil)
+    dset$ffreq <- factor(dset$ffreq)
+    dset$soil <- factor(dset$soil)
     meuse.lm <- lm(log(lead) ~ elev + dist + ffreq + soil, data=meuse)
     opar <- par(mfrow=c(1,4), mar=c(3.1,3.1,2.6,0.6))
     termplot(meuse.lm, partial=TRUE, smooth=panel.smooth)
@@ -218,26 +211,29 @@ function ()
 
 ## ----fig4_13, eval=TRUE, echo=TRUE------------------------------------
 fig4.13 <-
-function (data=Electricity)
+function (data)
 {
-    if(!require(car))stop("Package 'car' must be installed")
     spm(data, smooth=TRUE, reg.line=NA, cex.labels=1.5,
         col=adjustcolor(rep("black",3), alpha.f=0.4))
 }
 
 ## ----fig4_14, eval=TRUE, echo=TRUE------------------------------------
 fig4.14 <-
-function (data=log(Electricity[,1:2]), varlabs = c("log(cost)", "log(q)"))
+function (data=log(Electricity[,1:2]))
 {
-    if(!require(car))stop("Package 'car' must be installed")
-    spm(data, var.labels=varlabs, smooth=TRUE, reg.line=NA,
-    col=adjustcolor(rep("black",3), alpha.f=0.5))
+    varlabs = c("log(cost)", "log(q)")
+    if(!requireNamespace("Ecdat"))return(msg)   
+    spm(data[,1:2], var.labels=varlabs, smooth=TRUE, reg.line=NA,
+        col=adjustcolor(rep("black",3), alpha.f=0.5))
 }
 
 ## ----fig4_15, eval=TRUE, echo=TRUE------------------------------------
 fig4.15 <-
 function (obj=elec.lm, mfrow=c(2,4))
 {
+    objtxt <- deparse(substitute(obj))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     opar <- par(mfrow=mfrow, mar=c(3.1,3.1,1.6,0.6), mgp=c(2,0.5,0))
     termplot(obj, partial=T, smooth=panel.smooth)
     par(opar)
@@ -246,6 +242,9 @@ function (obj=elec.lm, mfrow=c(2,4))
 ## ----fig4_16, eval=TRUE, echo=TRUE------------------------------------
 fig4.16 <-
 function (obj=elec2xx.lm, mfrow=c(1,4)){
+    objtxt <- deparse(substitute(obj))
+    nocando <- "Cannot do graph,"
+    if(!exists(objtxt))return(paste(nocando, "no obj =", objtxt))
     opar <- par(mfrow=mfrow, mgp=c(2.25,.5,0), pty="s",
                 mar=c(3.6,3.6, 2.1, 0.6))
     plot(obj, cex.lab=1.1, cex.caption=0.75)
@@ -259,10 +258,7 @@ function (){
     bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
 }
 
-## ----docheck, eval=TRUE-----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----pkgs-figs4, eval=doFigs, message=FALSE, warning=FALSE------------
+## ----pkgs-figs4, eval=TRUE, message=FALSE, warning=FALSE--------------
 pkgs <- c("DAAG","sp","splines","car","leaps","sp","quantreg")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -270,19 +266,23 @@ if(any(!z)){
   print(paste("The following packages should be installed:", notAvail))
 }
 
-## ----Electricity, eval=doFigs, echo=TRUE------------------------------
+## ----Electricity, eval=TRUE, echo=TRUE--------------------------------
 if(!exists("Electricity")){
-  getElec <- try(data("Electricity", package="Ecdat"))
-  if(getElec != "Electricity") print("Dataset 'Electricity' is not available")
+  msg <- "Cannot locate 'Electricity' or 'Ecdat::Electricity'"
+  if(require("Ecdat")) Electricity <- Ecdat::Electricity else
+    print(msg)
+if(require("sp")){
+  data("meuse", package="sp", envir=environment())  
+  } else print("Package 'sp' is not available")
 }
 
-## ----fig4_1x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"-----
-if(doFigs)fig4.1()
+## ----fig4_1x, eval=TRUE, echo=TRUE, out.width="0.65\\textwidth"-------
+fig4.1()
 
-## ----fig4_2x, eval=doFigs, echo=TRUE, out.width="0.65\\textwidth"-----
-if(doFigs)fig4.2()
+## ----fig4_2x, eval=TRUE, echo=TRUE, out.width="0.65\\textwidth"-------
+fig4.2()
 
-## ----nihillsEtc, eval=doFigs, echo=TRUE-------------------------------
+## ----nihillsEtc, eval=TRUE, echo=TRUE---------------------------------
 nihills[,"gradient"] <- with(nihills, climb/dist)
 lognihills <- log(nihills)
 names(lognihills) <- paste("l", names(nihills), sep="")
@@ -290,58 +290,71 @@ lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
 lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
                     data=lognihills)
 
-## ----fig4_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth"----
-if(doFigs)fig4.3()
+## ----fig4_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth"----
+fig4.3()
 
-## ----fig4_4x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-if(doFigs)fig4.4()
+## ----fig4_4x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+fig4.4()
 
-## ----fig4_5x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-if(doFigs)fig4.5()
+## ----fig4_5x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+fig4.5()
 
-## ----fig4_6x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-if(doFigs)fig4.6()
+## ----fig4_6x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+fig4.6()
 
-## ----fig4_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth"----
-if(doFigs)fig4.7()
+## ----fig4_7x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth"----
+fig4.7()
 
-## ----fig4_8x, eval=doFigs, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth"----
-if(doFigs)fig4.8()
+## ----fig4_8x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth"----
+if (require("DAAG")) fig4.8()
 
-## ----fig4_9x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75----
-if(doFigs)fig4.9()
+## ----fig4_9x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.75------
+if (require("DAAG")) fig4.9()
 
-## ----fig4_10x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth"----
-if(doFigs)if(require(sp)) fig4.10() else print("Required package 'sp' is not available")
+## ----fig4_10x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth"----
+if(require("sp")) {
+  data("meuse.riv", package="sp", envir = environment()) 
+  data("meuse", package="sp", envir = environment()) 
+  } else 
+  print("Cannot find package 'sp' or required data, cannot do graph")
 
-## ----fig4_11x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.7\\textwidth"----
-if(doFigs)fig4.11()
+## ----fig4_11x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.65\\textwidth"----
+if(exists("meuse")){
+  meuse <- as.data.frame(meuse)
+  fig4.11()
+} else print("Cannot find object 'meuse', hence cannot do graph")
 
-## ----fig4_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=1.75----
-if(doFigs)fig4.12()
+## ----fig4_12x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=2.0, out.width="0.98\\textwidth"----
+if(exists("meuse")){
+  meuse <- as.data.frame(meuse)
+  fig4.12()
+} else print("Cannot find object 'meuse', hence cannot do graph")
 
-## ----fig4_13x, eval=doFigs, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
-if(doFigs)if(!exists("Electricity")) print("Dataset 'Electricity' is not available") else {
+## ----fig4_13x, eval=TRUE, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
+if(!exists("Electricity")) print("Cannot locate dataset 'Electricity'") else {
 nsamp80 <- sample(nrow(Electricity),80)
 fig4.13(data=Electricity[nsamp80, ])
 mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
 }
 
-## ----elec-calcs, eval=doFigs, echo=TRUE-------------------------------
+## ----elec-calcs, eval=TRUE, echo=TRUE---------------------------------
 if(exists("Electricity")){
 elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
 elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf, data = Electricity)
 }
 
-## ----fig4_14x, eval=doFigs, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth"----
-if(doFigs)if(exists("Electricity"))fig4.14()
+## ----fig4_14x, eval=TRUE, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth"----
+if(exists("Electricity"))fig4.14() else
+  print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_15x, eval=doFigs, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth"----
-if(doFigs)if(exists("Electricity"))fig4.15()
+## ----fig4_15x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth"----
+if(exists("Electricity"))fig4.15() else
+    print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_16x, eval=doFigs, echo=TRUE, fig.width=7.25, fig.height=1.85----
-if(doFigs)if(exists("Electricity"))fig4.16()
+## ----fig4_16x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+if(exists("Electricity"))fig4.16() else
+    print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_17x, eval=doFigs, echo=TRUE, out.width="0.55\\textwidth"----
-if(doFigs)if(require(DAAG)) fig4.17()
+## ----fig4_17x, eval=TRUE, echo=TRUE, out.width="0.55\\textwidth"------
+if(require(DAAG)) fig4.17()
 

@@ -111,7 +111,8 @@ function (){
 <<fig5_5, eval=TRUE, echo=TRUE>>=
 fig5.5 <-
 function (){
-    if(!require(car))return("'car::spm' is not available; cannot do plot.")
+    msg <- "As 'car::spm' is not available, cannot do plot."
+    if(!require(car))return(msg)
     car::spm(~ . | habitat, data=moths, cex.labels=1.2,
         smooth=FALSE, reg.line=NA, diag="boxplot")
 }
@@ -130,15 +131,8 @@ function ()
 @ %
 
 \section{Show the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
-if(!exists("doFigs")) doFigs <- TRUE
-@ %
-
-<<figs5-pkgs, eval=doFigs, message=FALSE, warning=FALSE>>=
+<<figs5-pkgs, eval=TRUE, message=FALSE, warning=FALSE>>=
 pkgs <- c("DAAG","KernSmooth","car")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -146,33 +140,35 @@ if(any(!z)){
   print(paste("The following packages should be installed:", notAvail))
 }
 if(!exists("bronchit")){
-  getData <- try(data("bronchit", package="SMIR"))
+  if(require("SMIR")) data("bronchit", package="SMIR") else
+    print("Dataset 'bronchit' is not available")
 }
-if(getData != "bronchit") print("Dataset 'bronchit' is not available")
 @ %
 
-<<fig5_1x, eval=doFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, pars=list(mar=c(4,4,2.6,.1)), out.width="0.925\\textwidth">>=
-if(doFigs)if(exists("bronchit"))fig5.1() else return("Data set 'bronchit' is not available")
+<<fig5_1x, eval=TRUE, echo=TRUE, fig.width=6.75, fig.height=4.25, pars=list(mar=c(4,4,2.6,.1)), out.width="0.925\\textwidth">>=
+if(exists("bronchit"))fig5.1() else 
+  return("Cannot locate data set 'bronchit', get from 'SMIR'")
 @ %
 
-<<fig5_2x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth">>=
-if(doFigs)if(exists("bronchit"))fig5.2() else return("Data set 'bronchit' is not available")
+<<fig5_2x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth">>=
+if(exists("bronchit"))fig5.2() else 
+  return("Cannot locate data set 'bronchit', get from 'SMIR'")
 @ %
 
-<<fig5_3x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth">>=
-if(doFigs)fig5.3()
+<<fig5_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth">>=
+fig5.3()
 @ %
 
-<<fig5_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth">>=
-if(doFigs)fig5.4()
+<<fig5_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth">>=
+fig5.4()
 @ %
 
-<<fig5_5x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, pars=list(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0)), out.width="0.97\\textwidth">>=
+<<fig5_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, pars=list(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0)), out.width="0.97\\textwidth">>=
 if(require(DAAG)) fig5.5() else return("Dataset 'moths' is from 'DAAG', not available")
 @ %
 
-<<fig5_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth">>=
-if(doFigs)if(require(DAAG)) fig5.6() else return("Dataset 'moths' is from 'DAAG', not available")
+<<fig5_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth">>=
+if(require(DAAG)) fig5.6() else return("Dataset 'moths' is from 'DAAG', not available")
 @ %
 
 \end{document}

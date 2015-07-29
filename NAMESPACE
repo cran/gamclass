@@ -4,3 +4,10 @@ importFrom(car, scatterplot, spm, scatterplotMatrix)
 importFrom(latticeExtra, layer, layer_, glayer, glayer_, as.layer)
 importFrom(ape, dist.dna)
 importFrom(KernSmooth, bkde2D)
+importFrom("graphics", "lines")
+importFrom("stats", "aggregate", "as.formula", "coef",
+           "complete.cases", "delete.response", "fitted", "formula",
+           "lm", "model.frame", "model.response", "na.omit", "predict",
+           "reformulate", "resid", "residuals", "rnorm", "terms")
+importFrom("utils", "data")
+importFrom("methods", "is")

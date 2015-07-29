@@ -33,14 +33,14 @@ Data frame from which names in formula can be taken
   resample.
 }
 \references{
-\url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \author{
 John Maindonald
 }
 \note{
 Note that \code{bootreg} uses the simplest
-  possible form of boot strap.  For any except very large datasets,
+  possible form of bootstrap.  For any except very large datasets,
   standard errors may be substantial under-estimates
 }
 

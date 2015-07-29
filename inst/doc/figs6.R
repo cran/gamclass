@@ -363,85 +363,74 @@ axis(1, at=atyear, labels=format(year, "%Y"))
 mtext(side=3, line=0.75, "B: Events per week, vs date", adj=0)
 }
 
-## ----docheck, eval=TRUE-----------------------------------------------
-if(!exists("doFigs")) doFigs <- TRUE
-
-## ----pkgs-figs6, eval=doFigs, message=FALSE, warning=FALSE------------
-if(doFigs){
+## ----pkgs-figs6, eval=TRUE, message=FALSE, warning=FALSE--------------
 pkgs <- c("DAAG","mgcv","splines","gamclass")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
   notAvail <- paste(names(z)[!z], collapse=", ")
   print(paste("The following packages require to be installed:", notAvail))
 }
-}
 
-## ----figs6-data, eval=doFigs, message=FALSE, warning=FALSE------------
-if(doFigs){
-    if(!exists('meuse')){
-        cat("Will try to load dataset 'meuse' from package 'sp'")
-        if(!require(sp))stop("Package 'sp' is not installed") else {
-            data(meuse)
-            meuse$ffreq <- factor(meuse$ffreq)
-            meuse$soil <- factor(meuse$soil)
-        }
-}
-    if(!exists('Electricity')){
-        cat("Will try to load dataset 'Electricity' from package 'Ecdat'")
-        if(!require(Ecdat))stop("Package 'Ecdat' is not installed") else {
-            data(Electricity)
-        }
-}
-}
+## ----provide-meuse, eval=TRUE-----------------------------------------
+if(!exists("meuse")){
+    msg <- "Cannot find package 'sp',"
+        if(!require("sp"))
+          return(paste(msg, "cannot do graph."))
+    data("meuse", package="sp", envir = environment()) 
+    }
 
-## ----fig6_1x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.75, out.width="0.725\\textwidth"----
-if(doFigs)fig6.1()
+## ----fig6_1x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.75, out.width="0.725\\textwidth"----
+fig6.1()
 
-## ----fig6_2x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.605\\textwidth"----
-if(doFigs)fig6.2()
+## ----fig6_2x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.605\\textwidth"----
+fig6.2()
 
-## ----fig6_3x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.605\\textwidth"----
-if(doFigs)fig6.3()
+## ----fig6_3x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.605\\textwidth"----
+fig6.3()
 
-## ----fig6_4x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.8\\textwidth"----
-if(doFigs)fig6.4()
+## ----fig6_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.8\\textwidth"----
+fig6.4()
 
-## ----fig6_5x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.625\\textwidth"----
-if(doFigs)fig6.5()
+## ----fig6_5x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.625\\textwidth"----
+fig6.5()
 
-## ----fig6_6x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
-if(doFigs)fig6.6()
+## ----fig6_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
+fig6.6()
 
-## ----fig6_7x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
-if(doFigs)fig6.7()
+## ----fig6_7x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
+fig6.7()
 
-## ----fig6_8x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=5.5, pars=list(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0), oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.8\\textwidth"----
-if(doFigs)fig6.8()
+## ----fig6_8x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=5.5, pars=list(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0), oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.8\\textwidth"----
+if(exists("meuse")) fig6.8() else
+  print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_9x, eval=doFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
-if(doFigs){
+## ----fig6_9x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
+{
 caption <- paste("These are from 25 simulations.",
                  "More usefully, try, eg: fig6.9(nsim=500)")
-fig6.9(nsim=25, caption=caption)
+if(exists("meuse")) fig6.9(nsim=25, caption=caption) else
+  print("Cannot locate data set 'meuse', hence cannot plot")
 }
 
-## ----fig6_10Ax, eval=doFigs, echo=TRUE, fig.width=5, fig.height=4.5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
-if(doFigs)fig6.10A()
+## ----fig6_10Ax, eval=TRUE, echo=TRUE, fig.width=5, fig.height=4.5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
+if(exists("meuse")) fig6.10A() else
+  print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_10Bx, eval=doFigs, echo=TRUE, fig.width=5, fig.height=5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
-if(doFigs)fig6.10B()
+## ----fig6_10Bx, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(1,3)), out.width="0.98\\textwidth"----
+if(exists("meuse")) fig6.10B() else
+  print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_11x, eval=doFigs, echo=TRUE, fig.width=4.5, fig.height=2.75, out.width="0.75\\textwidth"----
-if(doFigs)fig6.11()
+## ----fig6_11x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.75, out.width="0.75\\textwidth"----
+fig6.11()
 
-## ----fig6_12x, eval=doFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
-if(doFigs)fig6.12()
+## ----fig6_12x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
+fig6.12()
 
-## ----fig6_13x, eval=doFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
-if(doFigs)fig6.13()
+## ----fig6_13x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
+fig6.13()
 
-## ----fig6_14x, eval=doFigs, echo=TRUE, fig.width=3.0, fig.height=2.5, out.width="0.47\\textwidth"----
-if(doFigs){
+## ----fig6_14x, eval=TRUE, echo=TRUE, fig.width=3.0, fig.height=2.5, out.width="0.47\\textwidth"----
+{
   fig6.14A(fromDate=as.Date("2010-01-01"), basis.df=50)
   fig6.14B(fromDate=as.Date("2010-01-01"), basis.df=50)
 }

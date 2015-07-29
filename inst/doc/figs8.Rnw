@@ -1,3 +1,4 @@
+
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
@@ -14,7 +15,7 @@ library(knitr)
 options(replace.assign=FALSE,width=72)
 opts_chunk$set(fig.path='figs/tree-', cache.path='cache/tree-',
                fig.align='center', dev='pdf', fig.width=3.5,
-               fig.height=3.5, out.width="0.8\\textwidth", 
+               fig.height=3.5, out.width="0.8\\textwidth",
                fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
 knit_hooks$set(pars=function(before, options, envir){
@@ -56,7 +57,7 @@ plot(Mileage ~ tonsWt, data=Car90)
 wt <- with(Car90, tonsWt)
 hat <- predict(car90.rpart)
 addhlines(wt, hat, lwd=2, col="gray")
-mtext(side=3, line=1.25, "B: Predicted values from tree", adj=0)  
+mtext(side=3, line=1.25, "B: Predicted values from tree", adj=0)
 }
 @ %
 
@@ -74,7 +75,7 @@ fig8.3A <- function(){
 opar <- par(mar=c(4,4,2.6,1.6))
 if(!exists('car90x.rpart'))
   car90x.rpart <- rpart(Mileage ~ tonsWt, data=Car90,
-                        minbucket=5, minsplit=10, 
+                        minbucket=5, minsplit=10,
                         cp=0.001)
 plot(car90x.rpart, uniform=TRUE)
 text(car90x.rpart, digits=3, xpd=TRUE)
@@ -88,7 +89,7 @@ opar <- par(mar=c(4,4,2.6,1.6))
 fig8.3B <- function(){
 if(!exists('car90x.rpart'))
   car90x.rpart <- rpart(Mileage ~ tonsWt, data=Car90,
-                        minbucket=5, minsplit=10, 
+                        minbucket=5, minsplit=10,
                         cp=0.001)
 plot(Mileage ~ tonsWt, data=Car90)
 hat <- predict(car90x.rpart)
@@ -103,7 +104,7 @@ par(opar)
 fig8.4 <- function(){
 if(!exists('car90x.rpart'))
   car90x.rpart <- rpart(Mileage ~ tonsWt, data=Car90,
-                        minbucket=5, minsplit=10, 
+                        minbucket=5, minsplit=10,
                         cp=0.001)
 plotcp(car90x.rpart)
 }
@@ -112,7 +113,7 @@ plotcp(car90x.rpart)
 <<fig8_5, eval=TRUE, echo=TRUE>>=
 fig8.5 <- function(){
 if(!exists('car90.rf'))
-  car90.rf <- randomForest(Mileage ~ tonsWt, 
+  car90.rf <- randomForest(Mileage ~ tonsWt,
                           data=Car90)
 plot(Mileage ~ tonsWt, data=Car90, type="n")
 with(Car90, points(Mileage ~ tonsWt, cex=0.8))
@@ -139,15 +140,8 @@ splom(errsmat,
 @ %
 
 \section{Show the Figures}
-Unless \texttt{doFigs} is found in the workspace and is \texttt{FALSE},
-then subject to checks that all necessary datasets and packages are
-available, the figures are now shown.
 
-<<docheck, eval=TRUE>>=
-if(!exists("doFigs")) doFigs <- TRUE
-@ %
-
-<<pkgs-figs8, eval=doFigs, message=FALSE, warning=FALSE>>=
+<<pkgs-figs8, eval=TRUE, message=FALSE, warning=FALSE>>=
 pkgs <- c("rpart","mgcv","randomForest","gamclass")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -165,12 +159,15 @@ Car90 <- within(Car90, tonsWt <- Weight/2240)
 
 <<meuse>>=
 getmeuse <- function(){
+if(require('sp', quietly=TRUE)){
 data("meuse", package="sp", envir = environment())
 meuse <- within(meuse, {levels(soil) <- c("1","2","2")
                         ffreq <- as.numeric(ffreq)
                         loglead <- log(lead)
                         })
 invisible(meuse)
+} else if(!exists("meuse"))
+  print("Dataset 'meuse' was not found, get from package 'sp'")
 }
 @ %
 
@@ -180,7 +177,7 @@ form1 <- ~ dist + elev + soil + ffreq
 form3 <- ~ s(dist, k=3) + s(elev,k=3) + soil +ffreq
 form3x <- ~ s(dist, k=3) + s(elev,k=3) + s(x, k=3) + soil+ffreq
 form8x <- ~ s(dist, k=8) + s(elev,k=8) + s(x, k=8) + soil+ffreq
-formlist <- list("Hybrid1"=form1, "Hybrid3"=form3, 
+formlist <- list("Hybrid1"=form1, "Hybrid3"=form3,
                  "Hybrid3x"=form3x, "Hybrid8x"=form8x)
 ## ----rfgam-setup----
 rfVars <- c("dist", "elev", "soil", "ffreq", "x", "y")
@@ -191,9 +188,9 @@ for(i in 1:nrep){
 sub <- sample(1:nrow(meuse), n)
 meuseOut <- meuse[-sub,]
 meuseIn <- meuse[sub,]
-errsmat[i, ] <- gamRF(formlist=formlist, yvar="loglead", 
+errsmat[i, ] <- gamRF(formlist=formlist, yvar="loglead",
                       rfVars=rfVars,
-                      data=meuseIn, newdata=meuseOut, 
+                      data=meuseIn, newdata=meuseOut,
                       printit=FALSE)
 }
 invisible(errsmat)
@@ -202,25 +199,23 @@ invisible(errsmat)
 
 \begin{figure}[h]
 <<car90-plot12, fig.width=3.35, fig.height=3, out.width="0.47\\textwidth", echo=FALSE>>=
-if(doFigs){
 fig8.1A()
 fig8.1B()
-}
 @ %
 \caption{Regression tree for predicting \texttt{Mileage} given
 \texttt{Weight}. At each node, observations for which the criterion
 is satisfied take the branch to the left.  Thus at the
-first node, \texttt{tonsWt$\geq$1.218} chooses the branch to the 
-left, while \texttt{tonsWt$<$1.218} chooses the branch to the 
-right.  Panel B plots \texttt{Mileage} versus \texttt{tonsWt}, with 
-fitted values 
+first node, \texttt{tonsWt$\geq$1.218} chooses the branch to the
+left, while \texttt{tonsWt$<$1.218} chooses the branch to the
+right.  Panel B plots \texttt{Mileage} versus \texttt{tonsWt}, with
+fitted values
 from the \texttt{rpart} model shown as horizontal grey lines.}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 \begin{minipage}[c]{0.65\linewidth}
 <<bss-plot, echo=FALSE, fig.width=3.35, fig.height=3, out.width="0.8\\textwidth">>=
-if(doFigs)fig8.2()
+fig8.2()
 @ %
 \end{minipage}
 \hspace*{0.05\linewidth}
@@ -235,14 +230,12 @@ sum of squares.\label{fig:splitbss}}
 
 \begin{figure}[h]
 <<Car90-loosen, echo=FALSE, fig.width=3.5, fig.height=2.75, out.width="0.47\\textwidth">>=
-if(doFigs){
 fig8.3A()
 fig8.3B()
-}
 @ %
-\caption{For the decision tree to which these panels relate, 
+\caption{For the decision tree to which these panels relate,
 the minimum number at each terminal leaf (\texttt{minbucket})
-has been reduced (from 10) to 5, the minimum number to allow 
+has been reduced (from 10) to 5, the minimum number to allow
 further splitting (\texttt{minsplit}) has been reduced (from 20)
 to 10, and the complexity parameter has been reduced to
 \texttt{cp = 0.001} .\label{fig:Car90-loosen}}
@@ -251,16 +244,16 @@ to 10, and the complexity parameter has been reduced to
 \begin{figure}[h]
 \begin{minipage}[c]{0.65\linewidth}
 <<car90x-plotcp, fig.width=4.0, fig.height=3.25, out.width="0.92\\textwidth">>=
-if(doFigs)fig8.4()
+fig8.4()
 @ %
 \end{minipage}
 \hspace*{0.05\linewidth}
 \begin{minipage}[c]{0.28\linewidth}
 \caption{Change in cross-validated error rate, relative
-to baseline error, with successive splits.  Because of the 
+to baseline error, with successive splits.  Because of the
 random element that arises from the cross-validation,
-the tree that is fitted and the pattern of change of 
-cross-validated error will commonly change from one 
+the tree that is fitted and the pattern of change of
+cross-validated error will commonly change from one
 run to the next.\label{fig:ofitx}}
 \end{minipage}
 \end{figure}
@@ -268,7 +261,7 @@ run to the next.\label{fig:ofitx}}
 \begin{figure}[h]
 \begin{minipage}[c]{0.65\linewidth}
 <<Car90-rf, eval=TRUE, echo=FALSE, fig.width=4.0, fig.height=3.5>>=
-if(doFigs)fig8.5()
+fig8.5()
 @ %
 \end{minipage}
 \hspace*{0.05\linewidth}
@@ -281,29 +274,26 @@ as horizontal bars.\label{fig:car90-rf}
 \end{figure}
 
 \begin{figure}
-<<cf-models-rfgam, echo=FALSE, fig.width=7, fig.height=7, out.width="0.92\\textwidth">>=
+<<cf-models-rfgam, echo=FALSE, fig.width=7, fig.height=7, out.width="0.8\\textwidth">>=
 nrep <- NA
-if(doFigs){
 meuse <- getmeuse()
 if(!exists('errsmat'))errsmat <- cfRF(nrep=25)
 fig8.6()
-}
 if(exists('errsmat'))nrep <- nrow(errsmat)
 @ %
-\caption{Scatterplot matrix of accuracies, based on
-\Sexpr{nrep} bootstrap samples, 
+\caption{Scatterplot matrix of accuracies
 for the several models.
-         The line $y=x$ is shown in each panel.
-         Note that rfOOB is out-of-bag accuracy, i.e., 
-         calculated from the set of 95 observations, 
-         and that rfTest is accuracy on the 
-         test data, again for a random forest model 
-         with no preliminary smoothing. Results from 
-         hybrid models are labeled according to
-         the name of the formula for the smooth.   
-         The final accuracy, evaluated on the test 
-         data, is for a random forest model 
-         fitted to residuals from the smooth.
+         Each panel shows the line $y=x$.
+         The label rfOOB is out-of-bag accuracy
+         for the 95 training set observations,
+         while rfTest is test data accuracy,
+         for a random forest model.
+         Other results are test set accuracy from
+         fitting a random forest model to residuals
+         from a preliminary smooth. Labels are
+         the name of the formula for the smooth.
+         Random forest fits were from \Sexpr{nrep}
+         bootstrap samples.
          \label{fig:gamRF}
 }
 \end{figure}

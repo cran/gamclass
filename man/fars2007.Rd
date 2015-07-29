@@ -50,7 +50,7 @@ fars2008
 \url{http://www-fars.nhtsa.dot.gov/Main/index.aspx}
 }
 \references{
-  \url{http:/www.maths.anu.edu.au/~johnm/nzsr/taws.html}
+  \url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 
   Olson CM, Cummings P, Rivara FP. 2006. Association of first- and
   second-generation air bags with front occupant death in car crashes: a

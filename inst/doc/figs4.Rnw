@@ -224,10 +224,15 @@ function (dset=meuse)
     opar <- par(cex=1.25, mar=rep(1.5,4))
     if(!requireNamespace("car"))
         return("Function 'car::spm' is unavailable")
+    if(packageVersion('car') < '3.0.0'){
     spm(~ lead+elev+dist+jitter(unclass(ffreq)) | soil,
         col=adjustcolor(rep("black",3), alpha.f=0.5),
         var.labels=c("lead","elev","dist","jitter(ffreq)"),
-        data=dset, cex.labels=1.5, reg.line=NA)
+        data=dset, cex.labels=1.5, reg.line=NA)} else
+      spm(~ lead+elev+dist+jitter(unclass(ffreq)) | soil,
+        col=adjustcolor(rep("black",3), alpha.f=0.5),
+        var.labels=c("lead","elev","dist","jitter(ffreq)"),
+        data=dset, cex.labels=1.5, regLine=FALSE)    
     par(opar)
 }
 @ %
@@ -249,7 +254,10 @@ function (dset=meuse)
 fig4.13 <-
 function (data)
 {
+      if(packageVersion('car') < '3.0.0'){
     spm(data, smooth=TRUE, reg.line=NA, cex.labels=1.5,
+        col=adjustcolor(rep("black",3), alpha.f=0.4))} else
+          spm(data, smooth=TRUE, regLine=FALSE, cex.labels=1.5,
         col=adjustcolor(rep("black",3), alpha.f=0.4))
 }
 @ %
@@ -260,8 +268,11 @@ function (data=log(Electricity[,1:2]))
 {
     varlabs = c("log(cost)", "log(q)")
     if(!requireNamespace("Ecdat"))return(msg)   
+    if(packageVersion('car') < '3.0.0'){
     spm(data[,1:2], var.labels=varlabs, smooth=TRUE, reg.line=NA,
-        col=adjustcolor(rep("black",3), alpha.f=0.5))
+        col=adjustcolor(rep("black",3), alpha.f=0.5))} else
+    spm(data[,1:2], var.labels=varlabs, smooth=TRUE, regLine=FALSE,
+        col=adjustcolor(rep("black",3), alpha.f=0.5))   
 }
 @ %
 

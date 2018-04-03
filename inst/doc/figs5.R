@@ -87,16 +87,26 @@ function (){
 ## ----fig5_5, eval=TRUE, echo=TRUE-------------------------------------
 fig5.5 <-
 function (){
+  par(mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0), mfrow=c(2,2))
     msg <- "As 'car::spm' is not available, cannot do plot."
     if(!require(car))return(msg)
+    if(packageVersion('car') < '3.0.0'){ diag <- "boxplot" 
     car::spm(~ . | habitat, data=moths, cex.labels=1.2,
-        smooth=FALSE, reg.line=NA, diag="boxplot")
+             col=rep(1,8), var.labels=c("","A","P"), smooth=FALSE, 
+             reg.line=NA, diagonal=diag)
+    } else {
+        diag <- list(method="boxplot")
+        car::spm(~ . | habitat, data=moths, cex.labels=1.2,
+             col=rep(1,8), var.labels=c("","A","P"), smooth=FALSE, 
+             regLine=FALSE, diagonal=diag)
+    }
 }
 
 ## ----fig5_6, eval=TRUE, echo=TRUE-------------------------------------
 fig5.6 <-
 function ()
 {
+  par(mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0), mfrow=c(2,2))
     P.glm <- glm(P ~ habitat + log(meters), data=moths,
                  family=quasipoisson)
     par(mfrow=c(2,2))
@@ -130,7 +140,7 @@ fig5.3()
 ## ----fig5_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth"----
 fig5.4()
 
-## ----fig5_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, pars=list(mfrow=c(1,2), mar=c(3.6,3.6,1.6,0.6), mgp=c(2.25,.5,0)), out.width="0.97\\textwidth"----
+## ----fig5_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
 if(require(DAAG)) fig5.5() else return("Dataset 'moths' is from 'DAAG', not available")
 
 ## ----fig5_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth"----

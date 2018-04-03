@@ -302,9 +302,13 @@ function(dset=mcats, nrepeats=100)
     names(bootdf) <- c("Intercept","Slope")
     colr <- adjustcolor(rep("black",3),
                         alpha.f=0.25)
+    if(packageVersion('car') < '3.0.0'){
     scatterplot(Slope ~ Intercept, col=colr,
                 data=bootdf, boxplots="xy",
-                reg.line=NA, smooth=FALSE)
+                reg.line=NA, smooth=FALSE)} else
+    scatterplot(Slope ~ Intercept, col=colr,
+                data=bootdf, boxplots="xy",
+                regLine=FALSE, smooth=FALSE)
 }
 
 ## ----fig3_16, eval=TRUE, echo=TRUE------------------------------------

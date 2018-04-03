@@ -1,3 +1,13 @@
+                  Changes in gamclass version 0.57
+                  
+Changes in vignettes  
+  o Argument `reg.line=NA`, in  calls to the `car` functions
+    `sp()` and `spm()` has been changed to `regLine=TRUE`, as
+    required in `car` versions >=3.0.0 .
+  o An argument `diag="boxplot"`, in figs5.Rnw in a call to
+    `car::spm()`, becomes `diagonal=list(method="boxplot")`,
+    as required in `car` versions >=3.0.0 .
+
                   Changes in gamclass version 0.53
 
 NEW FEATURES

@@ -14,6 +14,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig6_1, eval=TRUE, echo=TRUE-------------------------------------
 fig6.1 <- function(plotit=TRUE){
     matohms <- data.frame(model.matrix(with(fruitohms, ~ poly(juice, 4))))
@@ -363,75 +370,75 @@ axis(1, at=atyear, labels=format(year, "%Y"))
 mtext(side=3, line=0.75, "B: Events per week, vs date", adj=0)
 }
 
-## ----pkgs-figs6, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("DAAG","mgcv","splines","gamclass")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages require to be installed:", notAvail))
-}
+## ----pkgs-figs6, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("DAAG","mgcv","splines","gamclass")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages require to be installed:", notAvail))
+#  }
 
-## ----provide-meuse, eval=TRUE-----------------------------------------
-if(!exists("meuse")){
-    msg <- "Cannot find package 'sp',"
-        if(!require("sp"))
-          return(paste(msg, "cannot do graph."))
-    data("meuse", package="sp", envir = environment()) 
-    }
+## ----provide-meuse, eval=showFigs-------------------------------------
+#  if(!exists("meuse")){
+#      msg <- "Cannot find package 'sp',"
+#          if(!require("sp"))
+#            return(paste(msg, "cannot do graph."))
+#      data("meuse", package="sp", envir = environment())
+#      }
 
-## ----fig6_1x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.75, out.width="0.725\\textwidth"----
-fig6.1()
+## ----fig6_1x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4.75, out.width="0.725\\textwidth"----
+#  fig6.1()
 
-## ----fig6_2x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.605\\textwidth"----
-fig6.2()
+## ----fig6_2x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.605\\textwidth"----
+#  fig6.2()
 
-## ----fig6_3x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.605\\textwidth"----
-fig6.3()
+## ----fig6_3x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=3, out.width="0.605\\textwidth"----
+#  fig6.3()
 
-## ----fig6_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.8\\textwidth"----
-fig6.4()
+## ----fig6_4x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.8\\textwidth"----
+#  fig6.4()
 
-## ----fig6_5x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.625\\textwidth"----
-fig6.5()
+## ----fig6_5x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.625\\textwidth"----
+#  fig6.5()
 
-## ----fig6_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
-fig6.6()
+## ----fig6_6x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=5.5, out.width="0.8\\textwidth"----
+#  fig6.6()
 
-## ----fig6_7x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
-fig6.7()
+## ----fig6_7x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
+#  fig6.7()
 
-## ----fig6_8x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=5.5, pars=list(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0), oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.8\\textwidth"----
-if(exists("meuse")) fig6.8() else
-  print("Cannot locate data set 'meuse', hence cannot plot")
+## ----fig6_8x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=5.5, pars=list(mar=c(3.6,3.1,2.1, 1.6), mgp=c(2.25, 0.5, 0), oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.8\\textwidth"----
+#  if(exists("meuse")) fig6.8() else
+#    print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_9x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
-{
-caption <- paste("These are from 25 simulations.",
-                 "More usefully, try, eg: fig6.9(nsim=500)")
-if(exists("meuse")) fig6.9(nsim=25, caption=caption) else
-  print("Cannot locate data set 'meuse', hence cannot plot")
-}
+## ----fig6_9x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=3.25, out.width="0.97\\textwidth"----
+#  {
+#  caption <- paste("These are from 25 simulations.",
+#                   "More usefully, try, eg: fig6.9(nsim=500)")
+#  if(exists("meuse")) fig6.9(nsim=25, caption=caption) else
+#    print("Cannot locate data set 'meuse', hence cannot plot")
+#  }
 
-## ----fig6_10Ax, eval=TRUE, echo=TRUE, fig.width=5, fig.height=4.5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
-if(exists("meuse")) fig6.10A() else
-  print("Cannot locate data set 'meuse', hence cannot plot")
+## ----fig6_10Ax, eval=showFigs, echo=TRUE, fig.width=5, fig.height=4.5, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(2,2)), out.width="0.875\\textwidth"----
+#  if(exists("meuse")) fig6.10A() else
+#    print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_10Bx, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(1,3)), out.width="0.98\\textwidth"----
-if(exists("meuse")) fig6.10B() else
-  print("Cannot locate data set 'meuse', hence cannot plot")
+## ----fig6_10Bx, eval=showFigs, echo=TRUE, fig.width=6, fig.height=2.25, pars=list(mar=c(4.1,4.1,2.1, 1.6), mex=0.8, oma=c(0,0,2.1,0), mfrow=c(1,3)), out.width="0.98\\textwidth"----
+#  if(exists("meuse")) fig6.10B() else
+#    print("Cannot locate data set 'meuse', hence cannot plot")
 
-## ----fig6_11x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.75, out.width="0.75\\textwidth"----
-fig6.11()
+## ----fig6_11x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.75, out.width="0.75\\textwidth"----
+#  fig6.11()
 
-## ----fig6_12x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
-fig6.12()
+## ----fig6_12x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
+#  fig6.12()
 
-## ----fig6_13x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
-fig6.13()
+## ----fig6_13x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=3.25, out.width="0.75\\textwidth"----
+#  fig6.13()
 
-## ----fig6_14x, eval=TRUE, echo=TRUE, fig.width=3.0, fig.height=2.5, out.width="0.47\\textwidth"----
-{
-  fig6.14A(fromDate=as.Date("2010-01-01"), basis.df=50)
-  fig6.14B(fromDate=as.Date("2010-01-01"), basis.df=50)
-}
+## ----fig6_14x, eval=showFigs, echo=TRUE, fig.width=3.0, fig.height=2.5, out.width="0.47\\textwidth"----
+#  {
+#    fig6.14A(fromDate=as.Date("2010-01-01"), basis.df=50)
+#    fig6.14B(fromDate=as.Date("2010-01-01"), basis.df=50)
+#  }
 

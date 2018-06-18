@@ -16,6 +16,13 @@ if(require("lattice", quietly=TRUE))
 lattice::trellis.par.set(par.main.text=list(font=1))
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig2_1, eval=TRUE, echo=TRUE-------------------------------------
 fig2.1 <-
 function (form = speed ~ Year, data = subset(cvalues, Year >=
@@ -199,46 +206,46 @@ if(any(!z)){
   print(paste("The following packages should be installed:", notAvail))
 }
 
-## ----figs2_1x, eval=TRUE, pars=list(mar=c(4,4,2.6,.1), font.main=1), fig.width=4.25, fig.height=3.75, out.width="0.55\\textwidth"----
-fig2.1()
-title(main="2.1B: Light speed estimates (line is silly)", 
-      line=1.75, cex.main=1.1)
-mtext(side=3, line=0.5, "For 2.1A, type: fig2.1(data=cvalues)")
+## ----figs2_1x, eval=showFigs, pars=list(mar=c(4,4,2.6,.1), font.main=1), fig.width=4.25, fig.height=3.75, out.width="0.55\\textwidth"----
+#  fig2.1()
+#  title(main="2.1B: Light speed estimates (line is silly)",
+#        line=1.75, cex.main=1.1)
+#  mtext(side=3, line=0.5, "For 2.1A, type: fig2.1(data=cvalues)")
 
-## ----fig2_2x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.6\\textwidth"----
-gph <- fig2.2()
-update(gph, main = list("2.2: Wage data, broken down by worker", 
-                        fontface="plain", lineheight=0.25, 
-                        just=c("left","top"),
-                        x = grid::unit(12, "mm")))
+## ----fig2_2x, eval=showFigs, echo=TRUE, fig.width=4.25, fig.height=4.25, out.width="0.6\\textwidth"----
+#  gph <- fig2.2()
+#  update(gph, main = list("2.2: Wage data, broken down by worker",
+#                          fontface="plain", lineheight=0.25,
+#                          just=c("left","top"),
+#                          x = grid::unit(12, "mm")))
 
-## ----fig2_3x, eval=TRUE, echo=TRUE, , fig.width=4.25, fig.height=3.5, out.width="0.6\\textwidth"----
-gph <- fig2.3()
-update(gph, main=list("2.3: Corn harvest weight by site", 
-                      lineheight=0.75, fontface="plain"))
+## ----fig2_3x, eval=showFigs, echo=TRUE, , fig.width=4.25, fig.height=3.5, out.width="0.6\\textwidth"----
+#  gph <- fig2.3()
+#  update(gph, main=list("2.3: Corn harvest weight by site",
+#                        lineheight=0.75, fontface="plain"))
 
-## ----fig2_4x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"--------
-gph <- fig2.4()
-trellis.par.set(clip=list(panel="off",strip="on"))
-print(update(gph, main=list("2.4: World records, field vs track", fontface="plain")),  
-      position = c(0.05, 0, 1, 0.95))
-trellis.par.set(clip=list(panel="on",strip="on"))
+## ----fig2_4x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
+#  gph <- fig2.4()
+#  trellis.par.set(clip=list(panel="off",strip="on"))
+#  print(update(gph, main=list("2.4: World records, field vs track", fontface="plain")),
+#        position = c(0.05, 0, 1, 0.95))
+#  trellis.par.set(clip=list(panel="on",strip="on"))
 
-## ----fig2_5x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.5\\textwidth"----
-gphs <- fig2.5(printit=FALSE)
-print(gphs[["upper"]], position=c(0, 0.415, 1,1)) 
-print(gphs[["lower"]], position=c(0, 0, 1,0.585), newpage=FALSE) 
+## ----fig2_5x, eval=showFigs, echo=TRUE, fig.width=3.5, fig.height=4, out.width="0.5\\textwidth"----
+#  gphs <- fig2.5(printit=FALSE)
+#  print(gphs[["upper"]], position=c(0, 0.415, 1,1))
+#  print(gphs[["lower"]], position=c(0, 0, 1,0.585), newpage=FALSE)
 
-## ----fig2_6x, eval=TRUE, echo=TRUE, fig.width=5, pars=list(mar=c(3.1,3.1,4.1,0.6)), out.width="0.65\\textwidth"----
-fig2.6()
-title1 <- expression("2.6: Annual global temperature anomalies, in 0.01" *
-        degree * "C,")
-title(main = title1, line = 2.1, cex=1.2)
-title2 <- expression("from the average (" %~~% 14 * degree *
-        "C), 1951 to 1980 inclusive")
-title(main = title2, line = 0.8, cex=1.2)
+## ----fig2_6x, eval=showFigs, echo=TRUE, fig.width=5, pars=list(mar=c(3.1,3.1,4.1,0.6)), out.width="0.65\\textwidth"----
+#  fig2.6()
+#  title1 <- expression("2.6: Annual global temperature anomalies, in 0.01" *
+#          degree * "C,")
+#  title(main = title1, line = 2.1, cex=1.2)
+#  title2 <- expression("from the average (" %~~% 14 * degree *
+#          "C), 1951 to 1980 inclusive")
+#  title(main = title2, line = 0.8, cex=1.2)
 
-## ----fig2_7x, eval=TRUE, echo=TRUE, fig.width=5, out.width="0.6\\textwidth"----
-gph <- fig2.7()
-update(gph, main=list("2.7: Death rate ratios", fontface="plain"))
+## ----fig2_7x, eval=showFigs, echo=TRUE, fig.width=5, out.width="0.6\\textwidth"----
+#  gph <- fig2.7()
+#  update(gph, main=list("2.7: Death rate ratios", fontface="plain"))
 

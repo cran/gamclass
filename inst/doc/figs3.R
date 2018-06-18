@@ -14,6 +14,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig3_1, eval=TRUE, echo=TRUE-------------------------------------
 fig3.1 <-
 function (x=fCatBwt){
@@ -359,68 +366,68 @@ if(requireNamespace("DAAG"))cuckoos <- DAAG::cuckoos else
           print(msg)
       }    
 
-## ----fig3_1x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
-if(exists('fCatBwt'))fig3.1() else
-    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
+## ----fig3_1x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
+#  if(exists('fCatBwt'))fig3.1() else
+#      print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_2x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.8\\textwidth"----
-if(exists('fCatBwt'))fig3.2() else
-    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
+## ----fig3_2x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.8\\textwidth"----
+#  if(exists('fCatBwt'))fig3.2() else
+#      print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
-if(exists('fCatBwt'))fig3.3() else
-    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
+## ----fig3_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+#  if(exists('fCatBwt'))fig3.3() else
+#      print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
-if(exists('fCatBwt'))fig3.4() else
-    print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
+## ----fig3_4x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3, out.width="0.8\\textwidth"----
+#  if(exists('fCatBwt'))fig3.4() else
+#      print("Object 'fCatBwt' is not available; get from 'MASS::cats'")
 
-## ----fig3_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth"----
-fig3.5()
+## ----fig3_5x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth"----
+#  fig3.5()
 
-## ----fig3_6x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=3.5, out.width="0.55\\textwidth"----
-fig3.6()
+## ----fig3_6x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=3.5, out.width="0.55\\textwidth"----
+#  fig3.6()
 
-## ----fig3_7x, eval=TRUE, echo=TRUE, out.width="0.5\\textwidth"--------
-if(exists("fCatBwt"))fig3.7() else
-    print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
+## ----fig3_7x, eval=showFigs, echo=TRUE, out.width="0.5\\textwidth"----
+#  if(exists("fCatBwt"))fig3.7() else
+#      print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
 
-## ----fig3_8x, eval=TRUE, echo=TRUE, fig.width=8, fig.height=3.5, out.width="0.98\\textwidth"----
-if(exists("fCatBwt"))fig3.8() else
-    print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
+## ----fig3_8x, eval=showFigs, echo=TRUE, fig.width=8, fig.height=3.5, out.width="0.98\\textwidth"----
+#  if(exists("fCatBwt"))fig3.8() else
+#      print("Object 'fCatBwt' was not found; get from 'MASS::cats'")
 
-## ----fig3_9x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=3, out.width="0.6\\textwidth"----
-fig3.9()
+## ----fig3_9x, eval=showFigs, echo=TRUE, fig.width=4, fig.height=3, out.width="0.6\\textwidth"----
+#  fig3.9()
 
-## ----fig3_10x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth"----
-if(exists("cuckoos"))fig3.10() else
-    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
+## ----fig3_10x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.97\\textwidth"----
+#  if(exists("cuckoos"))fig3.10() else
+#      print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")
 
-## ----fig3_11x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-if(exists("cuckoos"))fig3.11() else
-    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
+## ----fig3_11x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
+#  if(exists("cuckoos"))fig3.11() else
+#      print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")
 
-## ----fig3_12x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
-if(exists("cuckoos"))fig3.12() else
-    print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")  
+## ----fig3_12x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.6\\textwidth"----
+#  if(exists("cuckoos"))fig3.12() else
+#      print("Object 'cuckoos' was not found; get 'DAAG::cuckoos'")
 
-## ----fig3_13x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=4, out.width="0.55\\textwidth"----
-if(exists('mcats'))fig3.13() else
-    print("Object 'mcats' was not found; subset from 'MASS::cats'")
+## ----fig3_13x, eval=showFigs, echo=TRUE, fig.width=4, fig.height=4, out.width="0.55\\textwidth"----
+#  if(exists('mcats'))fig3.13() else
+#      print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_14x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=3, out.width="0.5\\textwidth"----
-if(exists('mcats'))fig3.14() else
-    print("Object 'mcats' was not found; subset from 'MASS::cats'")
+## ----fig3_14x, eval=showFigs, echo=TRUE, fig.width=3.5, fig.height=3, out.width="0.5\\textwidth"----
+#  if(exists('mcats'))fig3.14() else
+#      print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_15x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
-if(!require(car)){
-    print("Figure 3.15 requires the 'car' package")
-    return("The 'car' package needs to be installed.")
-}
-if(exists("mcats"))fig3.15(nrepeats=100) else
-    print("Object 'mcats' was not found; subset from 'MASS::cats'")
+## ----fig3_15x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
+#  if(!require(car)){
+#      print("Figure 3.15 requires the 'car' package")
+#      return("The 'car' package needs to be installed.")
+#  }
+#  if(exists("mcats"))fig3.15(nrepeats=100) else
+#      print("Object 'mcats' was not found; subset from 'MASS::cats'")
 
-## ----fig3_16x, eval=TRUE, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth"----
-if(exists('mcats'))fig3.16() else
-    print("Object 'mcats' was not found; subset from 'MASS::cats'")
+## ----fig3_16x, eval=showFigs, echo=TRUE, fig.width=6.5, fig.height=3.25, out.width="0.97\\textwidth"----
+#  if(exists('mcats'))fig3.16() else
+#      print("Object 'mcats' was not found; subset from 'MASS::cats'")
 

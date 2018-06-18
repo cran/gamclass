@@ -37,6 +37,14 @@ from an ordination in 2 or 3 dimensions may provide useful visual clues
 on clusters in the data and on outliers.  The methods described
 heere all use some form of multi-dimensional scaling (MDS)
 
+<<figControl>>=
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+@ %
+
 \section{Code for the Figures}
 
 <<fig11_1, eval=TRUE, echo=TRUE>>=
@@ -161,7 +169,7 @@ fig11.4 <- function(){
 
 \section{Show the Figures}
 
-<<pkgs-figs9, eval=TRUE, message=FALSE, warning=FALSE>>=
+<<pkgs-figs9, eval=showFigs, message=FALSE, warning=FALSE>>=
 pkgs <- c("DAAG","DAAGbio","MASS","oz","ape")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -170,24 +178,24 @@ if(any(!z)){
 }
 @ %
 
-<<fig11_1x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5>>=
+<<fig11_1x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=5>>=
 fig11.1()
 @ %
 
-<<aupoints, eval=TRUE>>=
+<<aupoints, eval=showFigs>>=
 if(!exists("aupoints")) 
 aupoints <- cmdscale(audists)
 @ %
 
-<<fig11_2x, eval=TRUE, echo=TRUE, pars=list(mfrow=c(1,2), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.485\\textwidth">>=
+<<fig11_2x, eval=showFigs, echo=TRUE, pars=list(mfrow=c(1,2), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.485\\textwidth">>=
 fig11.2()
 @ %
 
-<<fig11_3x, eval=TRUE, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth">>=
+<<fig11_3x, eval=showFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth">>=
 fig11.3()
 @ %
 
-<<fig11_4x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=4.25>>=
+<<fig11_4x, eval=showFigs, echo=TRUE, fig.width=4, fig.height=4.25>>=
 fig11.4()
 @ %
 \end{document}

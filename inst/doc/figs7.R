@@ -14,6 +14,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig7_1, eval=TRUE, echo=TRUE-------------------------------------
 fig7.1 <- function(){
 Erie <- greatLakes[,"Erie"]
@@ -76,29 +83,29 @@ fig7.6 <- function(){
     plot(mdbRain.gam, residuals=TRUE, se=2, pch=1, cex=0.5, select=2)
 }
 
-## ----figs7-do, eval=TRUE, message=FALSE, warning=FALSE----------------
-pkgs <- c("DAAG","mgcv","splines","forecast")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages require to be installed:", notAvail))
-}
+## ----figs7-do, eval=showFigs, message=FALSE, warning=FALSE------------
+#  pkgs <- c("DAAG","mgcv","splines","forecast")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages require to be installed:", notAvail))
+#  }
 
-## ----fig7_1x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
-fig7.1()
+## ----fig7_1x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.5, out.width="0.75\\textwidth"----
+#  fig7.1()
 
-## ----fig7_2x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
-fig7.2()
+## ----fig7_2x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4.5, out.width="0.75\\textwidth"----
+#  fig7.2()
 
-## ----fig7_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
-fig7.3()
+## ----fig7_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.5, out.width="0.75\\textwidth"----
+#  fig7.3()
 
-## ----fig7_4x, eval=TRUE, echo=TRUE, fig.width=4.5, fig.height=2.25, out.width="0.75\\textwidth"----
-fig7.4()
+## ----fig7_4x, eval=showFigs, echo=TRUE, fig.width=4.5, fig.height=2.25, out.width="0.75\\textwidth"----
+#  fig7.4()
 
-## ----fig7_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
-fig7.5()
+## ----fig7_5x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.75, out.width="0.75\\textwidth"----
+#  fig7.5()
 
-## ----fig7_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.25, pars=list(mfrow=c(1,2)), out.width="0.8\\textwidth"----
-fig7.6()
+## ----fig7_6x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.25, pars=list(mfrow=c(1,2)), out.width="0.8\\textwidth"----
+#  fig7.6()
 

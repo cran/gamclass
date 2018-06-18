@@ -14,6 +14,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig4_1, eval=TRUE, echo=TRUE-------------------------------------
 fig4.1 <-
 function (){
@@ -269,103 +276,103 @@ function (){
     bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
 }
 
-## ----pkgs-figs4, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("DAAG","sp","splines","car","leaps","sp","quantreg")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages should be installed:", notAvail))
-}
+## ----pkgs-figs4, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("DAAG","sp","splines","car","leaps","sp","quantreg")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages should be installed:", notAvail))
+#  }
 
-## ----Electricity, eval=TRUE, echo=TRUE--------------------------------
-if(!exists("Electricity")){
-  msg <- "Cannot locate 'Electricity' or 'Ecdat::Electricity'"
-  if(require("Ecdat")) Electricity <- Ecdat::Electricity else
-    print(msg)
-if(require("sp")){
-  data("meuse", package="sp", envir=environment())  
-  } else print("Package 'sp' is not available")
-}
+## ----Electricity, eval=showFigs, echo=TRUE----------------------------
+#  if(!exists("Electricity")){
+#    msg <- "Cannot locate 'Electricity' or 'Ecdat::Electricity'"
+#    if(require("Ecdat")) Electricity <- Ecdat::Electricity else
+#      print(msg)
+#  if(require("sp")){
+#    data("meuse", package="sp", envir=environment())
+#    } else print("Package 'sp' is not available")
+#  }
 
-## ----fig4_1x, eval=TRUE, echo=TRUE, out.width="0.65\\textwidth"-------
-fig4.1()
+## ----fig4_1x, eval=showFigs, echo=TRUE, out.width="0.65\\textwidth"----
+#  fig4.1()
 
-## ----fig4_2x, eval=TRUE, echo=TRUE, out.width="0.65\\textwidth"-------
-fig4.2()
+## ----fig4_2x, eval=showFigs, echo=TRUE, out.width="0.65\\textwidth"----
+#  fig4.2()
 
-## ----nihillsEtc, eval=TRUE, echo=TRUE---------------------------------
-nihills[,"gradient"] <- with(nihills, climb/dist)
-lognihills <- log(nihills)
-names(lognihills) <- paste("l", names(nihills), sep="")
-lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
-lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
-                    data=lognihills)
+## ----nihillsEtc, eval=showFigs, echo=TRUE-----------------------------
+#  nihills[,"gradient"] <- with(nihills, climb/dist)
+#  lognihills <- log(nihills)
+#  names(lognihills) <- paste("l", names(nihills), sep="")
+#  lognigrad.lm <- lm(ltime ~ ldist + lgradient, data=lognihills)
+#  lognigrad.lm2 <- lm(ltime ~ poly(ldist, 2, raw=TRUE) + lgradient,
+#                      data=lognihills)
 
-## ----fig4_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth"----
-fig4.3()
+## ----fig4_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.25, out.width="0.85\\textwidth"----
+#  fig4.3()
 
-## ----fig4_4x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
-fig4.4()
+## ----fig4_4x, eval=showFigs, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+#  fig4.4()
 
-## ----fig4_5x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
-fig4.5()
+## ----fig4_5x, eval=showFigs, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+#  fig4.5()
 
-## ----fig4_6x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
-fig4.6()
+## ----fig4_6x, eval=showFigs, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+#  fig4.6()
 
-## ----fig4_7x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth"----
-fig4.7()
+## ----fig4_7x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=2.25, out.width="0.9\\textwidth"----
+#  fig4.7()
 
-## ----fig4_8x, eval=TRUE, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth"----
-if (require("DAAG")) fig4.8()
+## ----fig4_8x, eval=showFigs, echo=TRUE, fig.width=3.5, fig.height=3.25, out.width="0.5\\textwidth"----
+#  if (require("DAAG")) fig4.8()
 
-## ----fig4_9x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.75------
-if (require("DAAG")) fig4.9()
+## ----fig4_9x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.75----
+#  if (require("DAAG")) fig4.9()
 
-## ----fig4_10x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth"----
-if(require("sp")) {
-  data("meuse.riv", package="sp", envir = environment()) 
-  data("meuse", package="sp", envir = environment()) 
-  } else 
-  print("Cannot find package 'sp' or required data, cannot do graph")
+## ----fig4_10x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=5.5, out.width="0.65\\textwidth"----
+#  if(require("sp")) {
+#    data("meuse.riv", package="sp", envir = environment())
+#    data("meuse", package="sp", envir = environment())
+#    } else
+#    print("Cannot find package 'sp' or required data, cannot do graph")
 
-## ----fig4_11x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.65\\textwidth"----
-if(exists("meuse")){
-  meuse <- as.data.frame(meuse)
-  fig4.11()
-} else print("Cannot find object 'meuse', hence cannot do graph")
+## ----fig4_11x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=5.5, out.width="0.65\\textwidth"----
+#  if(exists("meuse")){
+#    meuse <- as.data.frame(meuse)
+#    fig4.11()
+#  } else print("Cannot find object 'meuse', hence cannot do graph")
 
-## ----fig4_12x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=2.0, out.width="0.98\\textwidth"----
-if(exists("meuse")){
-  meuse <- as.data.frame(meuse)
-  fig4.12()
-} else print("Cannot find object 'meuse', hence cannot do graph")
+## ----fig4_12x, eval=showFigs, echo=TRUE, fig.width=7.25, fig.height=2.0, out.width="0.98\\textwidth"----
+#  if(exists("meuse")){
+#    meuse <- as.data.frame(meuse)
+#    fig4.12()
+#  } else print("Cannot find object 'meuse', hence cannot do graph")
 
-## ----fig4_13x, eval=TRUE, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
-if(!exists("Electricity")) print("Cannot locate dataset 'Electricity'") else {
-nsamp80 <- sample(nrow(Electricity),80)
-fig4.13(data=Electricity[nsamp80, ])
-mtext(side=3,line=2, paste("4.13: Shows 80 randomly sampled rows"), adj=0)
-}
+## ----fig4_13x, eval=showFigs, echo=TRUE, pars=list(oma=c(0,0,2,0)), fig.width=6, fig.height=6, out.width="0.97\\textwidth", fig.cap="For a more ideal plot, repeat with all rows of data"----
+#  if(!exists("Electricity")) print("Cannot locate dataset 'Electricity'") else {
+#  nsamp20 <- sample(nrow(Electricity),20)
+#  fig4.13(data=Electricity[nsamp20, ])
+#  mtext(side=3,line=2, paste("4.13: Plot has been limited to 20 randomly sampled rows"), adj=0)
+#  }
 
-## ----elec-calcs, eval=TRUE, echo=TRUE---------------------------------
-if(exists("Electricity")){
-elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
-elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf, data = Electricity)
-}
+## ----elec-calcs, eval=showFigs, echo=TRUE-----------------------------
+#  if(exists("Electricity")){
+#  elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf, data=Electricity)
+#  elec2xx.lm <- lm(log(cost) ~ log(q) * (pl + sl) + pf, data = Electricity)
+#  }
 
-## ----fig4_14x, eval=TRUE, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth"----
-if(exists("Electricity"))fig4.14() else
-  print("Cannot locate dataset 'Electricity'; graph unavailable")
+## ----fig4_14x, eval=showFigs, echo=TRUE, fig.width=6.5, fig.height=6.5, out.width="0.5\\textwidth"----
+#  if(exists("Electricity"))fig4.14() else
+#    print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_15x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth"----
-if(exists("Electricity"))fig4.15() else
-    print("Cannot locate dataset 'Electricity'; graph unavailable")
+## ----fig4_15x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.75, out.width="0.925\\textwidth"----
+#  if(exists("Electricity"))fig4.15() else
+#      print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_16x, eval=TRUE, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
-if(exists("Electricity"))fig4.16() else
-    print("Cannot locate dataset 'Electricity'; graph unavailable")
+## ----fig4_16x, eval=showFigs, echo=TRUE, fig.width=7.25, fig.height=1.85, out.width="0.98\\textwidth"----
+#  if(exists("Electricity"))fig4.16() else
+#      print("Cannot locate dataset 'Electricity'; graph unavailable")
 
-## ----fig4_17x, eval=TRUE, echo=TRUE, out.width="0.55\\textwidth"------
-if(require(DAAG)) fig4.17()
+## ----fig4_17x, eval=showFigs, echo=TRUE, out.width="0.55\\textwidth"----
+#  if(require(DAAG)) fig4.17()
 

@@ -15,6 +15,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig11_1, eval=TRUE, echo=TRUE------------------------------------
 fig11.1 <- function(){
   opar <- par(xpd=TRUE)
@@ -127,27 +134,27 @@ fig11.4 <- function(){
     plot(pacific.mds$points)
 }
 
-## ----pkgs-figs9, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("DAAG","DAAGbio","MASS","oz","ape")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages should be installed:", notAvail))
-}
+## ----pkgs-figs9, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("DAAG","DAAGbio","MASS","oz","ape")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages should be installed:", notAvail))
+#  }
 
-## ----fig11_1x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5--------
-fig11.1()
+## ----fig11_1x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=5----
+#  fig11.1()
 
-## ----aupoints, eval=TRUE----------------------------------------------
-if(!exists("aupoints")) 
-aupoints <- cmdscale(audists)
+## ----aupoints, eval=showFigs------------------------------------------
+#  if(!exists("aupoints"))
+#  aupoints <- cmdscale(audists)
 
-## ----fig11_2x, eval=TRUE, echo=TRUE, pars=list(mfrow=c(1,2), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.485\\textwidth"----
-fig11.2()
+## ----fig11_2x, eval=showFigs, echo=TRUE, pars=list(mfrow=c(1,2), mar=rep(1.6,4)), fig.width=5, fig.height=8, out.width="0.485\\textwidth"----
+#  fig11.2()
 
-## ----fig11_3x, eval=TRUE, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth"----
-fig11.3()
+## ----fig11_3x, eval=showFigs, echo=TRUE, fig.width=7.5, fig.height=4, out.width="0.97\\textwidth"----
+#  fig11.3()
 
-## ----fig11_4x, eval=TRUE, echo=TRUE, fig.width=4, fig.height=4.25-----
-fig11.4()
+## ----fig11_4x, eval=showFigs, echo=TRUE, fig.width=4, fig.height=4.25----
+#  fig11.4()
 

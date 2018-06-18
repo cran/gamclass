@@ -12,6 +12,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# In later vignettes, we will set `showFigs <- FALSE`,  
+# in order to keep the size of the package within the
+# 5MB limit.
+#
+showFigs <- TRUE
+
 ## ----fig1_1, eval=TRUE, echo=TRUE-------------------------------------
 fig1.1 <-
 function (form = depression ~ weight, data = roller, ...)
@@ -285,71 +292,71 @@ fig1.20 <- function(){
     gph
 }
 
-## ----figs1-setup, eval=TRUE, warn.conflicts=FALSE---------------------
+## ----figs1-setup, eval=showFigs, warn.conflicts=FALSE-----------------
 library("DAAG")
 mftime.lm <- lm(timef ~ time, data=nihills)
 
-## ----fig1_1x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_1x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.1()
 
-## ----fig1_2x, eval=TRUE, echo=TRUE------------------------------------
+## ----fig1_2x, eval=showFigs, echo=TRUE--------------------------------
 fig1.2()
 
-## ----fig1_2ABx, eval=TRUE, echo=TRUE, out.width="0.47\\textwidth"-----
+## ----fig1_2ABx, eval=showFigs, echo=TRUE, out.width="0.47\\textwidth"----
 fig1.2A()
 fig1.2B()
 
-## ----fig1_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.6\\textwidth"----
+## ----fig1_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.6\\textwidth"----
 fig1.3()
 
-## ----fig1_4x, eval=TRUE, echo=TRUE, , fig.width=5, fig.height=5.5, out.width="0.75\\textwidth"----
+## ----fig1_4x, eval=showFigs, echo=TRUE, , fig.width=5, fig.height=5.5, out.width="0.75\\textwidth"----
 fig1.4()
 
-## ----fig1_5x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_5x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.5()
 
-## ----fig1_6x, eval=TRUE, echo=TRUE, fig.width=3.8, fig.height=4, out.width="0.65\\textwidth"----
+## ----fig1_6x, eval=showFigs, echo=TRUE, fig.width=3.8, fig.height=4, out.width="0.65\\textwidth"----
 fig1.6()
 
-## ----fig1_7x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.5-------
+## ----fig1_7x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.7()
 
-## ----fig1_8x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"--------
+## ----fig1_8x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.8()
 
-## ----fig1_9x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.5-------
+## ----fig1_9x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.9()
 
-## ----fig1_10x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_10x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.10()
 
-## ----fig1_11x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.5------
+## ----fig1_11x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.11()
 
-## ----fig1_12x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_12x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.12()
 
-## ----fig1_13x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.5------
+## ----fig1_13x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.13()
 
-## ----fig1_14x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_14x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.14()
 
-## ----fig1_15x, eval=TRUE, echo=TRUE, fig.width=7, fig.height=3.5------
+## ----fig1_15x, eval=showFigs, echo=TRUE, fig.width=7, fig.height=3.5----
 fig1.15()
 
-## ----fig1_16x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_16x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.16()
 
-## ----fig1_17x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_17x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.17()
 
-## ----fig1_18x, eval=TRUE, echo=TRUE, out.width="0.6\\textwidth"-------
+## ----fig1_18x, eval=showFigs, echo=TRUE, out.width="0.6\\textwidth"----
 fig1.18()
 
-## ----fig1_19x, eval=TRUE, echo=TRUE, fig.width=6.5, fig.height=2------
+## ----fig1_19x, eval=showFigs, echo=TRUE, fig.width=6.5, fig.height=2----
 fig1.19()
 
-## ----fig1_20x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.65\\textwidth"----
+## ----fig1_20x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=3.5, out.width="0.65\\textwidth"----
 fig1.20()
 

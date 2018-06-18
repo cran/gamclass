@@ -35,6 +35,13 @@ criterion is named \texttt{Anova}.  (To explicitly request use of this
 criterion, specify \texttt{method="anova"} in the call to
 \texttt{rpart()}.)
 
+<<figControl>>=
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+@ %
 
 \section{Code for the Figures}
 
@@ -140,7 +147,7 @@ splom(errsmat,
 
 \section{Show the Figures}
 
-<<pkgs-figs8, eval=TRUE, message=FALSE, warning=FALSE>>=
+<<pkgs-figs8, eval=showFigs, message=FALSE, warning=FALSE>>=
 pkgs <- c("rpart","mgcv","randomForest","gamclass")
 z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
 if(any(!z)){
@@ -149,7 +156,7 @@ if(any(!z)){
 }
 @ %
 
-<<Car90>>=
+<<Car90, eval=showFigs>>=
 if(!exists('Car90'))
 Car90 <- na.omit(car90[, c("Mileage","Weight")])
 ## Express weight in metric tonnes
@@ -197,7 +204,7 @@ invisible(errsmat)
 @ %
 
 \begin{figure}[h]
-<<car90-plot12, fig.width=3.35, fig.height=3, out.width="0.47\\textwidth", echo=FALSE>>=
+<<car90-plot12, fig.width=3.35, fig.height=3, out.width="0.47\\textwidth", eval=showFigs, echo=FALSE>>=
 fig8.1A()
 fig8.1B()
 @ %
@@ -213,7 +220,7 @@ from the \texttt{rpart} model shown as horizontal grey lines.}
 
 \begin{figure}
 \begin{minipage}[c]{0.65\linewidth}
-<<bss-plot, echo=FALSE, fig.width=3.35, fig.height=3, out.width="0.8\\textwidth">>=
+<<bss-plot, echo=FALSE, , eval=showFigs, fig.width=3.35, fig.height=3, out.width="0.8\\textwidth">>=
 fig8.2()
 @ %
 \end{minipage}
@@ -228,7 +235,7 @@ sum of squares.\label{fig:splitbss}}
 \end{figure}
 
 \begin{figure}[h]
-<<Car90-loosen, echo=FALSE, fig.width=3.5, fig.height=2.75, out.width="0.47\\textwidth">>=
+<<Car90-loosen, echo=FALSE, eval=showFigs, fig.width=3.5, fig.height=2.75, out.width="0.47\\textwidth">>=
 fig8.3A()
 fig8.3B()
 @ %
@@ -242,7 +249,7 @@ to 10, and the complexity parameter has been reduced to
 
 \begin{figure}[h]
 \begin{minipage}[c]{0.65\linewidth}
-<<car90x-plotcp, fig.width=4.0, fig.height=3.25, out.width="0.92\\textwidth">>=
+<<car90x-plotcp, eval=showFigs, fig.width=4.0, fig.height=3.25, out.width="0.92\\textwidth">>=
 fig8.4()
 @ %
 \end{minipage}
@@ -259,7 +266,7 @@ run to the next.\label{fig:ofitx}}
 
 \begin{figure}[h]
 \begin{minipage}[c]{0.65\linewidth}
-<<Car90-rf, eval=TRUE, echo=FALSE, fig.width=4.0, fig.height=3.5>>=
+<<Car90-rf, eval=showFigs, echo=FALSE, fig.width=4.0, fig.height=3.5>>=
 fig8.5()
 @ %
 \end{minipage}
@@ -272,13 +279,17 @@ as horizontal bars.\label{fig:car90-rf}
 \end{minipage}
 \end{figure}
 
+<<errsmat, eval=showFigs>>=
+if(exists('errsmat'))nrep <- nrow(errsmat) else {
+  nrep <- 25
+  errsmat <- cfRF(nrep=nrep)
+}
+@ %
+
 \begin{figure}
-<<cf-models-rfgam, echo=FALSE, fig.width=7, fig.height=7, out.width="0.8\\textwidth">>=
-nrep <- NA
+<<cf-models-rfgam, echo=FALSE, eval=showFigs, fig.width=7, fig.height=7, out.width="0.8\\textwidth">>=
 meuse <- getmeuse()
-if(!exists('errsmat'))errsmat <- cfRF(nrep=25)
 fig8.6()
-if(exists('errsmat'))nrep <- nrow(errsmat)
 @ %
 \caption{Scatterplot matrix of accuracies
 for the several models.
@@ -291,7 +302,7 @@ for the several models.
          fitting a random forest model to residuals
          from a preliminary smooth. Labels are
          the name of the formula for the smooth.
-         Random forest fits were from \Sexpr{nrep}
+         Random forest fits were from \Sexpr{if(exists('nrep'))nrep else NA}
          bootstrap samples.
          \label{fig:gamRF}
 }

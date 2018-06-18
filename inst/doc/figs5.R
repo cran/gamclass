@@ -14,13 +14,20 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig5_1, eval=TRUE, echo=TRUE-------------------------------------
 fig5.1 <-
 function (){
-    ylim <- range(bronchit$poll)+c(0,2.5)
+    ylim <- range(bronchitis$poll)+c(0,2.5)
     par(fig=c(0,.525, 0,1))
     plot(xlab="# cigarettes per day", ylab="Pollution", poll ~ cig,
-         col=c(2,4)[r+1], pch=(3:2)[r+1], data=bronchit, ylim=ylim)
+         col=c(2,4)[r+1], pch=(3:2)[r+1], data=bronchitis, ylim=ylim)
     legend(x="topleft", legend=c("Non-sufferer","Sufferer"), ncol=2,
            pch=c(3,2), col=c(2,4))
     mtext(side=3, line=1.0,
@@ -29,9 +36,9 @@ function (){
     par(fig=c(.475,1, 0,1), new=TRUE)
     plot(poll ~ log(cig+1), col=c(2,4)[r+1], pch=(3:2)[r+1],
          xlab="log(# cigarettes per day + 1)", ylab="",
-         data=bronchit, ylim=ylim)
-    xy1 <- with(subset(bronchit, r==0), cbind(x=log(cig+1), y=poll))
-    xy2 <- with(subset(bronchit, r==1), cbind(x=log(cig+1), y=poll))
+         data=bronchitis, ylim=ylim)
+    xy1 <- with(subset(bronchitis, r==0), cbind(x=log(cig+1), y=poll))
+    xy2 <- with(subset(bronchitis, r==1), cbind(x=log(cig+1), y=poll))
     est1 <- bkde2D(xy1, bandwidth=c(0.7, 3))
     est2 <- bkde2D(xy2, bandwidth=c(0.7, 3))
     lev <- pretty(c(est1$fhat, est2$fhat),4)
@@ -52,7 +59,7 @@ function (plotit=TRUE)
 {
     par(mfrow=c(1,2))
     cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial,
-                    data=bronchit)
+                    data=bronchitis)
     termplot(cig2.glm, se=TRUE, ylim=c(-2,4))
     par(mfrow=c(1,1))
 }
@@ -114,35 +121,29 @@ function ()
     par(mfrow=c(1,1))
 }
 
-## ----figs5-pkgs, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("DAAG","KernSmooth","car")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages should be installed:", notAvail))
-}
-if(!exists("bronchit")){
-  if(require("SMIR")) data("bronchit", package="SMIR") else
-    print("Dataset 'bronchit' is not available")
-}
+## ----figs5-pkgs, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("DAAG","KernSmooth","car")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages should be installed:", notAvail))
+#  }
 
-## ----fig5_1x, eval=TRUE, echo=TRUE, fig.width=6.75, fig.height=4.25, pars=list(mar=c(4,4,2.6,.1)), out.width="0.925\\textwidth"----
-if(exists("bronchit"))fig5.1() else 
-  return("Cannot locate data set 'bronchit', get from 'SMIR'")
+## ----fig5_1x, eval=showFigs, echo=TRUE, fig.width=6.75, fig.height=4.25, pars=list(mar=c(4,4,2.6,.1)), out.width="0.925\\textwidth"----
+#  fig5.1()
 
-## ----fig5_2x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
-if(exists("bronchit"))fig5.2() else 
-  return("Cannot locate data set 'bronchit', get from 'SMIR'")
+## ----fig5_2x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
+#  fig5.2()
 
-## ----fig5_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
-fig5.3()
+## ----fig5_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.35, out.width="0.675\\textwidth"----
+#  fig5.3()
 
-## ----fig5_4x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth"----
-fig5.4()
+## ----fig5_4x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=3.5, pars=list(mfrow=c(1,2)), out.width="0.75\\textwidth"----
+#  fig5.4()
 
-## ----fig5_5x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
-if(require(DAAG)) fig5.5() else return("Dataset 'moths' is from 'DAAG', not available")
+## ----fig5_5x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.97\\textwidth"----
+#  if(require(DAAG)) fig5.5() else return("Dataset 'moths' is from 'DAAG', not available")
 
-## ----fig5_6x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth"----
-if(require(DAAG)) fig5.6() else return("Dataset 'moths' is from 'DAAG', not available")
+## ----fig5_6x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=6, out.width="0.75\\textwidth"----
+#  if(require(DAAG)) fig5.6() else return("Dataset 'moths' is from 'DAAG', not available")
 

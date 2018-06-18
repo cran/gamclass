@@ -15,6 +15,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig8_1A, eval=TRUE, echo=TRUE------------------------------------
 fig8.1A <- function(){
   if(!exists('car90.rpart'))
@@ -107,19 +114,19 @@ splom(errsmat,
 )
 }
 
-## ----pkgs-figs8, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("rpart","mgcv","randomForest","gamclass")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages should be installed:", notAvail))
-}
+## ----pkgs-figs8, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("rpart","mgcv","randomForest","gamclass")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages should be installed:", notAvail))
+#  }
 
-## ----Car90------------------------------------------------------------
-if(!exists('Car90'))
-Car90 <- na.omit(car90[, c("Mileage","Weight")])
-## Express weight in metric tonnes
-Car90 <- within(Car90, tonsWt <- Weight/2240)
+## ----Car90, eval=showFigs---------------------------------------------
+#  if(!exists('Car90'))
+#  Car90 <- na.omit(car90[, c("Mileage","Weight")])
+#  ## Express weight in metric tonnes
+#  Car90 <- within(Car90, tonsWt <- Weight/2240)
 
 ## ----meuse------------------------------------------------------------
 getmeuse <- function(){
@@ -159,27 +166,30 @@ errsmat[i, ] <- gamRF(formlist=formlist, yvar="loglead",
 invisible(errsmat)
 }
 
-## ----car90-plot12, fig.width=3.35, fig.height=3, out.width="0.47\\textwidth", echo=FALSE----
-fig8.1A()
-fig8.1B()
+## ----car90-plot12, fig.width=3.35, fig.height=3, out.width="0.47\\textwidth", eval=showFigs, echo=FALSE----
+#  fig8.1A()
+#  fig8.1B()
 
-## ----bss-plot, echo=FALSE, fig.width=3.35, fig.height=3, out.width="0.8\\textwidth"----
-fig8.2()
+## ----bss-plot, echo=FALSE, , eval=showFigs, fig.width=3.35, fig.height=3, out.width="0.8\\textwidth"----
+#  fig8.2()
 
-## ----Car90-loosen, echo=FALSE, fig.width=3.5, fig.height=2.75, out.width="0.47\\textwidth"----
-fig8.3A()
-fig8.3B()
+## ----Car90-loosen, echo=FALSE, eval=showFigs, fig.width=3.5, fig.height=2.75, out.width="0.47\\textwidth"----
+#  fig8.3A()
+#  fig8.3B()
 
-## ----car90x-plotcp, fig.width=4.0, fig.height=3.25, out.width="0.92\\textwidth"----
-fig8.4()
+## ----car90x-plotcp, eval=showFigs, fig.width=4.0, fig.height=3.25, out.width="0.92\\textwidth"----
+#  fig8.4()
 
-## ----Car90-rf, eval=TRUE, echo=FALSE, fig.width=4.0, fig.height=3.5----
-fig8.5()
+## ----Car90-rf, eval=showFigs, echo=FALSE, fig.width=4.0, fig.height=3.5----
+#  fig8.5()
 
-## ----cf-models-rfgam, echo=FALSE, fig.width=7, fig.height=7, out.width="0.8\\textwidth"----
-nrep <- NA
-meuse <- getmeuse()
-if(!exists('errsmat'))errsmat <- cfRF(nrep=25)
-fig8.6()
-if(exists('errsmat'))nrep <- nrow(errsmat)
+## ----errsmat, eval=showFigs-------------------------------------------
+#  if(exists('errsmat'))nrep <- nrow(errsmat) else {
+#    nrep <- 25
+#    errsmat <- cfRF(nrep=nrep)
+#  }
+
+## ----cf-models-rfgam, echo=FALSE, eval=showFigs, fig.width=7, fig.height=7, out.width="0.8\\textwidth"----
+#  meuse <- getmeuse()
+#  fig8.6()
 

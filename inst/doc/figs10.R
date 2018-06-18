@@ -15,6 +15,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig10_1, eval=TRUE, echo=TRUE------------------------------------
 fig10.1 <- function(){
  ## ---- xWITHerr ----
@@ -46,19 +53,19 @@ set.seed(31)         # Reproduce graph shown
 errorsINx(gpdiff=4, timesSDx=1.25, SDyerr=2.5, n=80, plotit=FALSE)[["gph"]]
 }
 
-## ----pkgs-figs10, eval=TRUE, message=FALSE, warning=FALSE-------------
-pkgs <- c("latticeExtra", "DAAG")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following package requires to be installed:", notAvail))
-}
+## ----pkgs-figs10, eval=showFigs, message=FALSE, warning=FALSE---------
+#  pkgs <- c("latticeExtra", "DAAG")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following package requires to be installed:", notAvail))
+#  }
 
-## ----fig10_1x, eval=TRUE, echo=TRUE, fig.width=6.75, fig.height=5-----
-if(require('latticeExtra')) fig10.1() else
-  print("Package 'latticeExtra' is not available, cannot do graph")
+## ----fig10_1x, eval=showFigs, echo=TRUE, fig.width=6.75, fig.height=5----
+#  if(require('latticeExtra')) fig10.1() else
+#    print("Package 'latticeExtra' is not available, cannot do graph")
 
-## ----fig10_2x, eval=TRUE, echo=TRUE,  fig.width=6.0, fig.height=3.5----
-if(require('latticeExtra')&require('DAAG')) fig10.2() else
-  print("Packages 'latticeExtra' &/or 'DAAG' is/are not available, cannot do graph")
+## ----fig10_2x, eval=showFigs, echo=TRUE,  fig.width=6.0, fig.height=3.5----
+#  if(require('latticeExtra')&require('DAAG')) fig10.2() else
+#    print("Packages 'latticeExtra' &/or 'DAAG' is/are not available, cannot do graph")
 

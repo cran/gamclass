@@ -15,6 +15,13 @@ if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 
+## ----figControl-------------------------------------------------------
+# To include the figures, change `showFigs <- FALSE`  
+# to `showFigs <- TRUE` in the source `.Rnw` file,
+# and regenerate the PDF.
+#
+showFigs <- FALSE
+
 ## ----fig9_1, eval=TRUE, echo=TRUE-------------------------------------
 fig9.1 <- function(plotit=TRUE){
     fgl.lda <- lda(type ~ ., data=fgl)
@@ -77,7 +84,7 @@ fig9.3 <- function(){
 fig9.4 <- function(seed=47){
   opar <- par(xpd=TRUE)
   ## xpd=TRUE allows labels to extend outside of figure region
-    b.rpart <- rpart(rfac ~ cig+poll, data=bronchit)
+    b.rpart <- rpart(rfac ~ cig+poll, data=bronchitis)
     plot(b.rpart, uniform=TRUE)
     text(b.rpart)
   par(opar)
@@ -86,7 +93,7 @@ fig9.4 <- function(seed=47){
 ## ----fig9_5, eval=TRUE, echo=TRUE-------------------------------------
 fig9.5 <- function(){
     b001.rpart <- rpart(rfac ~ cig+poll, cp=0.001, minsplit=15,
-                    data=bronchit)
+                    data=bronchitis)
     plotcp(b001.rpart)
 }
 
@@ -123,10 +130,10 @@ function ()
 {
     set.seed(31)   # Reproduce the trees shown
     opar <- par(mfrow=c(3,3), xpd=TRUE)
-    num <- 1:nrow(bronchit)
+    num <- 1:nrow(bronchitis)
     for(i in 1:9){
         useobs <- sample(num, replace=TRUE)
-        dset <- bronchit[useobs, ]
+        dset <- bronchitis[useobs, ]
         b.rpart <- rpart(rfac ~ cig+poll, data=dset,
                          control=rpart.control(maxdepth=2))
         plot(b.rpart, uniform=TRUE)
@@ -138,14 +145,14 @@ function ()
 
 ## ----fig9_8, eval=TRUE, echo=TRUE-------------------------------------
 fig9.8 <- function(){
-    bronchit <-
-      within(bronchit,
+    bronchitis <-
+      within(bronchitis,
              rfac <- factor(r, labels=c("abs","pres")))
     parset <- simpleTheme(pch=1:2)
-    bronchit.rf <- randomForest(rfac ~ cig+poll, proximity=TRUE,
-                                data=bronchit)
-    points <- cmdscale(1-bronchit.rf$proximity)
-    gph <- xyplot(points[,2] ~ points[,1], groups=bronchit$rfac,
+    bronchitis.rf <- randomForest(rfac ~ cig+poll, proximity=TRUE,
+                                data=bronchitis)
+    points <- cmdscale(1-bronchitis.rf$proximity)
+    gph <- xyplot(points[,2] ~ points[,1], groups=bronchitis$rfac,
                   xlab="Axis 1", ylab="Axis 2",
                   par.settings=parset, aspect=1,
                   auto.key=list(columns=2))
@@ -330,91 +337,70 @@ gph <- bwplot(formula(paste("Class", form)),
 gph
 }
 
-## ----pkgs-figs9, eval=TRUE, message=FALSE, warning=FALSE--------------
-pkgs <- c("DAAG","rpart","randomForest","MASS","mgcv","kernlab","mlbench")
-z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
-if(any(!z)){
-  notAvail <- paste(names(z)[!z], collapse=", ")
-  print(paste("The following packages need to be installed:", notAvail))
-}
+## ----pkgs-figs9, eval=showFigs, message=FALSE, warning=FALSE----------
+#  pkgs <- c("DAAG","rpart","randomForest","MASS","mgcv","kernlab","mlbench")
+#  z <- sapply(pkgs, require, character.only=TRUE, warn.conflicts=FALSE)
+#  if(any(!z)){
+#    notAvail <- paste(names(z)[!z], collapse=", ")
+#    print(paste("The following packages need to be installed:", notAvail))
+#  }
 
-## ----bronchit, eval=TRUE, echo=TRUE-----------------------------------
-getbronchit <- function(){
-if(!exists("bronchit")){
-  if(require("SMIR")) data("bronchit", package="SMIR") else
-    print("Dataset 'bronchit' is not available")
-}
-if(!exists("bronchit")) 
-  return("Dataset 'bronchit' is not available") else {
-  bronchit <-
-     within(bronchit,
-         rfac <- factor(r, labels=c("abs","pres")))
-}
-bronchit
-}
+## ----fig9_1x, eval=showFigs, fig.width=4.25, fig.height=4.75, echo=TRUE,  out.width="0.55\\textwidth"----
+#  fig9.1()
 
-bronchit <- getbronchit()
+## ----figs9-cuckoos, eval=showFigs-------------------------------------
+#      if(!exists('cuckoos.lda')){
+#          cuckoos <- within(cuckoos,
+#                            levels(species) <- abbreviate(levels(species), 8))
+#          cuckoos.lda <- lda(species ~ length + breadth, data=cuckoos)
+#          cuckoos.qda <- qda(species ~ length + breadth,
+#                             data=cuckoos)
+#      }
 
-## ----fig9_1x, eval=TRUE, fig.width=4.25, fig.height=4.75, echo=TRUE,  out.width="0.55\\textwidth"----
-fig9.1()
+## ----fig9_2x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
+#  fig9.2()
 
-## ----figs9-cuckoos, eval=TRUE-----------------------------------------
-    if(!exists('cuckoos.lda')){
-        cuckoos <- within(cuckoos,
-                          levels(species) <- abbreviate(levels(species), 8))
-        cuckoos.lda <- lda(species ~ length + breadth, data=cuckoos)
-        cuckoos.qda <- qda(species ~ length + breadth,
-                           data=cuckoos)
-    }
+## ----fig9_3x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
+#  fig9.3()
+#  
 
-## ----fig9_2x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
-fig9.2()
+## ----fig9_4x, eval=showFigs, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.65\\textwidth"----
+#  fig9.4()
 
-## ----fig9_3x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=4, out.width="0.85\\textwidth"----
-fig9.3()
+## ----fig9_5x, eval=showFigs, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.55\\textwidth"----
+#  fig9.5()
 
+## ----fig9_6x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
+#  fig9.6()
 
-## ----fig9_4x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.65\\textwidth"----
-if(exists("bronchit")) fig9.4() else
-  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
+## ----fig9_7x, eval=showFigs, echo=TRUE, fig.width=5, fig.height=5-----
+#  fig9.7()
 
-## ----fig9_5x, eval=TRUE, echo=TRUE, fig.width=4.25, fig.height=4.5, out.width="0.55\\textwidth"----
-if(exists("bronchit")) fig9.5() else
-  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
+## ----fig9_8x, eval=showFigs, fig.width=5, fig.height=5, echo=TRUE, out.width="0.6\\textwidth"----
+#  set.seed(31)
+#  fig9.8()
 
-## ----fig9_6x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5-----
-fig9.6()
-
-## ----fig9_7x, eval=TRUE, echo=TRUE, fig.width=5, fig.height=5---------
-if(exists("bronchit")) fig9.7() else
-  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
-
-## ----fig9_8x, eval=TRUE, fig.width=5, fig.height=5, echo=TRUE, out.width="0.6\\textwidth"----
-set.seed(31)
-if(exists("bronchit")) fig9.8() else
-  print("Dataset 'bronchit' was not found; look in SMIR::bronchit")
-
-## ----spam, eval=TRUE, echo=TRUE---------------------------------------
-if(!exists("spam")){
-  if(require("kernlab")) data("spam", package="kernlab") else
-    print("Dataset 'spam' is not available")
-}
-if(exists("spam")){
-nr <- sample(1:nrow(spam))
-spam0 <- spam[nr[1:2601],]      ## Training
-spam1 <- spam[nr[2602:3601],]   ## Holdout
-spam01 <- spam[nr[1:3601],]     ## Use for training,
-                                ## if holdout not needed
-spam2 <- spam[nr[3602:4601],]   ## Test
-spam01.lda <- lda(type~., data=spam01)
-ldaError <- ldaErr()
-set.seed(29)     ## Make results precisely reproducible
-spam01.rp <- rpart(type~., data=spam01, cp=0.0001)
-rpartError <- rpartErr()
-set.seed(29)
-spam01.rf <- randomForest(type ~ ., data=spam01)
-rfError <- rfErr()
-}
+## ----spam, eval=showFigs, echo=TRUE-----------------------------------
+#  if(!exists("spam")){
+#    if(require("kernlab")) data("spam", package="kernlab") else
+#      print("Dataset 'spam' is not available")
+#  }
+#  if(exists("spam")){
+#  nr <- sample(1:nrow(spam))
+#  spam0 <- spam[nr[1:2601],]      ## Training
+#  spam1 <- spam[nr[2602:3601],]   ## Holdout
+#  spam01 <- spam[nr[1:3601],]     ## Use for training,
+#                                  ## if holdout not needed
+#  spam2 <- spam[nr[3602:4601],]   ## Test
+#  spam01.lda <- lda(type~., data=spam01)
+#  ldaError <- ldaErr()
+#  set.seed(29)     ## Make results precisely reproducible
+#  spam01.rp <- rpart(type~., data=spam01, cp=0.0001)
+#  rpartError <- rpartErr()
+#  set.seed(29)
+#  spam01.rf <- randomForest(type ~ ., data=spam01)
+#  rfError <- rfErr()
+#  }
 
 ## ----ticShown, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE-----
 if(!exists('ticShown') | !exists('ticHeld')){
@@ -449,22 +435,22 @@ structure(list(test = c(61, 63, 65, 66, 65, 65, 67, 67, 63, 62,
 4L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("test", 
 "n0", "gp"), row.names = c(NA, -50L), class = "data.frame")
 
-## ----fig9_9x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5-----
-opar <- par(mar=c(4.6,4.6,2.6, 0.6))
-note <- paste("This plots stored results (seed=29), plus one further data point.",
-              "\nType 'fig9.9(seed=31)' for graph shown in the text.")
-oneExtra <- fig9.9(nn0 = 1800, repeats=1, plotit=FALSE)
-df <- rbind(testLong, oneExtra)
-nn0 <- unique(df$n0)
-ndistinct <- length(unique(nn0))
-test.gam <- gam(test ~ s(log(n0), k=min(ndistinct,3)), data=df)
-plot(test.gam, se=T, residuals=T, pch=1, xaxt="n",
-     xlab="n0, in 'sampsize=c(n0, 226)'",
-     ylab="# insurances, best 400 test",
-     shift=mean(fitted(test.gam)))
-axis(1, at=log(nn0), labels=paste(nn0), las=3)
-mtext(side=3, line=0.5, note, col="blue")
-par(opar)
+## ----fig9_9x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
+#  opar <- par(mar=c(4.6,4.6,2.6, 0.6))
+#  note <- paste("This plots stored results (seed=29), plus one further data point.",
+#                "\nType 'fig9.9(seed=31)' for graph shown in the text.")
+#  oneExtra <- fig9.9(nn0 = 1800, repeats=1, plotit=FALSE)
+#  df <- rbind(testLong, oneExtra)
+#  nn0 <- unique(df$n0)
+#  ndistinct <- length(unique(nn0))
+#  test.gam <- gam(test ~ s(log(n0), k=min(ndistinct,3)), data=df)
+#  plot(test.gam, se=T, residuals=T, pch=1, xaxt="n",
+#       xlab="n0, in 'sampsize=c(n0, 226)'",
+#       ylab="# insurances, best 400 test",
+#       shift=mean(fitted(test.gam)))
+#  axis(1, at=log(nn0), labels=paste(nn0), las=3)
+#  mtext(side=3, line=0.5, note, col="blue")
+#  par(opar)
 
 ## ----heldlong, eval=TRUE, echo=TRUE-----------------------------------
 ## Generated with seed=43
@@ -483,22 +469,22 @@ structure(list(insure = c(108, 114, 120, 119, 121, 116, 114,
 5L, 5L, 5L, 5L, 5L, 5L, 5L)), .Names = c("insure", "n0", "gp"
 ), row.names = c(NA, -50L), class = "data.frame")
 
-## ----fig9_10x, eval=TRUE, echo=TRUE, fig.width=5.5, fig.height=3.5----
-opar <- par(mar=c(4.6,4.6,2.6, 0.6))
-note <- paste("This plots stored results (seed=43), plus one further data point.",
-              "\nType 'fig9.10(seed=47)' for graph shown in the text.")
-oneExtra <- fig9.10(nn0 = 1800, repeats=1, plotit=FALSE)
-df <- rbind(heldLong, oneExtra)
-nn0 <- unique(df$n0)
-ndistinct <- length(unique(nn0))
-held.gam <- gam(insure ~ s(log(n0), k=min(ndistinct,3)), data=df)
-plot(held.gam, se=T, residuals=T, pch=1, xaxt="n",
-     xlab="n0, in 'sampsize=c(n0, 226)'",
-     ylab="# insurances, best 400 held",
-     shift=mean(fitted(held.gam)))
-axis(1, at=log(nn0), labels=paste(nn0), las=3)
-mtext(side=3, line=0.5, note, col="blue")
-par(opar)
+## ----fig9_10x, eval=showFigs, echo=TRUE, fig.width=5.5, fig.height=3.5----
+#  opar <- par(mar=c(4.6,4.6,2.6, 0.6))
+#  note <- paste("This plots stored results (seed=43), plus one further data point.",
+#                "\nType 'fig9.10(seed=47)' for graph shown in the text.")
+#  oneExtra <- fig9.10(nn0 = 1800, repeats=1, plotit=FALSE)
+#  df <- rbind(heldLong, oneExtra)
+#  nn0 <- unique(df$n0)
+#  ndistinct <- length(unique(nn0))
+#  held.gam <- gam(insure ~ s(log(n0), k=min(ndistinct,3)), data=df)
+#  plot(held.gam, se=T, residuals=T, pch=1, xaxt="n",
+#       xlab="n0, in 'sampsize=c(n0, 226)'",
+#       ylab="# insurances, best 400 held",
+#       shift=mean(fitted(held.gam)))
+#  axis(1, at=log(nn0), labels=paste(nn0), las=3)
+#  mtext(side=3, line=0.5, note, col="blue")
+#  par(opar)
 
 ## ----Vowel, eval=TRUE-------------------------------------------------
     if(!exists('Vowel')){
@@ -508,6 +494,6 @@ par(opar)
             data("Vowel", package="mlbench", envir=environment())
     }
 
-## ----fig9_11x, eval=TRUE, echo=TRUE, fig.width=6, fig.height=8, out.width="0.875\\textwidth"----
-fig9.11()
+## ----fig9_11x, eval=showFigs, echo=TRUE, fig.width=6, fig.height=8, out.width="0.875\\textwidth"----
+#  fig9.11()
 

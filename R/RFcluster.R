@@ -9,7 +9,6 @@ RFcluster <-
     m <- m[c(1L, mm)]
     if (is.matrix(eval(m$data, parent.frame())))
         m$data <- as.data.frame(data)
-    m$... <- NULL
     m[[1L]] <- as.name("model.frame")
     m[[2]] <- as.formula(paste(deparse(m[[2]]),"-",idnam,sep=""))
     mf <- eval(m, parent.frame())

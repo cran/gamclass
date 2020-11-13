@@ -20,7 +20,7 @@ function (groups, estprobs = list(lda = NULL, rf = NULL),
   df <- data.frame(gp = rep(groups, m), prob = probs, model = rep(models,
                                                         rep(n, m)), obs = factor(rep(1:n, m)))
   if (robust)
-    mod <- rlm(prob ~ model + obs, data = df)
+    mod <- MASS::rlm(prob ~ model + obs, data = df)
   else mod <- lm(prob ~ model + obs, data = df)
   pred <- predict(mod, type = "terms", terms = c("model", "obs"))
   bmod <- pred[match(models, df$model), "model"] + attr(pred,

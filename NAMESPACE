@@ -1,13 +1,10 @@
-export(bootreg,compareModels,CVcluster,CVgam,matchedPairs,plotFars,RFcluster,bootreg,simreg,tabFarsDead,addhlines,gamRF,eventCounts,bssBYcut)
-import(mgcv, DAAG, MASS, rpart, randomForest, lattice)
-importFrom(car, scatterplot, spm, scatterplotMatrix)
+export(bootreg,compareModels,CVcluster,CVgam,confusion,ldaErr,plotFars,rfErr,rpartErr,RFcluster,bootreg,simreg,tabFarsDead,addhlines,gamRF,eventCounts,bssBYcut)
+import(rpart, randomForest, lattice)
 importFrom(latticeExtra, layer, layer_, glayer, glayer_, as.layer)
-importFrom(ape, dist.dna)
-importFrom(KernSmooth, bkde2D)
 importFrom("graphics", "lines")
 importFrom("stats", "aggregate", "as.formula", "coef",
            "complete.cases", "delete.response", "fitted", "formula",
            "lm", "model.frame", "model.response", "na.omit", "predict",
-           "reformulate", "resid", "residuals", "rnorm", "terms")
+           "reformulate", "resid", "residuals", "rnorm", "terms","update")
 importFrom("utils", "data")
 importFrom("methods", "is")

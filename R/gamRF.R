@@ -16,7 +16,7 @@ function (formlist, yvar, data, newdata = NULL, rfVars, method = "GCV.Cp",
     GAMhat <- numeric(nrow(data))
     for(nam in names(formlist)){
       form <- as.formula(paste(c(yvar, paste(formlist[[nam]])), collapse=" "))
-      train.gam <- gam(form, data = data, method = method)
+      train.gam <- mgcv::gam(form, data = data, method = method)
       res <- resid(train.gam)
       cvGAMms <- sum(res^2)/length(res)
       if (!all(rfVars %in% names(newdata))) {

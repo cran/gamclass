@@ -33,7 +33,7 @@ Data frame from which names in formula can be taken
   resample.
 }
 \references{
-\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
+\url{https://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \author{
 John Maindonald

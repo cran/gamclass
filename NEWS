@@ -1,3 +1,27 @@
+                  Changes in gamclass version 0.62
+                  
+NEW FEATURES
+   o The data objects `frontDeaths`, `rearDeaths`, `sideDeaths`,
+   `otherDeaths`, and `relDeaths` have been added.
+   o plotFars() now has an argument `tabDeaths`, which may be 
+   one of `frontDeaths`, or `rearDeaths`, or `sideDeaths`, or
+   `otherDeaths`, as returned by the function `tabFarsDead()`.
+   o The function `tabFarsDead()` has been added.
+   o The data object `FARSmiss` has been omitted.
+   o Records in the dataset `FARS` have been restricted to
+   those that are of interest for analyses such as are 
+   presented in the vignette `AirbagEffectiveness`.
+   o The dataset `bomregions2018` has been added.  This has
+   annual averages of meteorological data (temperature and 
+   rainfall) for Australian regions, plus annual averages 
+   of the Southern Oscillation Index, of CO2 levels, and
+   of the Dipole Mode Index for the Indian Ocean Dipole.
+   o The dataset `coralPval` has been added.  This has
+   P-values were calculated for each of 3072 genes, for 
+   data that compared genetic expression values between 
+   post-settlement coral larvae and pre-settlement coral
+   larvae.
+
                   Changes in gamclass version 0.57
                   
 Changes in vignettes  

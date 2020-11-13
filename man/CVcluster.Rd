@@ -10,7 +10,7 @@ Cross-validation estimate of predictive accuracy for clustered data
   fitting function that accepts a model formula.
 }
 \usage{
-CVcluster(formula, id, data, na.action=na.omit, nfold = 15, FUN = lda,
+CVcluster(formula, id, data, na.action=na.omit, nfold = 15, FUN = MASS::lda,
               predictFUN=function(x, newdata, ...)predict(x, newdata, ...)$class,
               printit = TRUE, cvparts = NULL, seed = 29)
 }
@@ -56,7 +56,7 @@ Set seed, if required, so that results are exactly reproducible
 \item{confusion}{Confusion matrix}
 }
 \references{
-\url{http://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
+\url{https://maths-people.anu.edu.au/~johnm/nzsr/taws.html}
 }
 \author{
 John Maindonald
@@ -71,9 +71,9 @@ John Maindonald
 % %% ~~objects to See Also as \code{\link{help}}, ~~~
 % }
 \examples{
-if(require(mlbench)&require(MASS)){
-data(Vowel)
-acc <- CVcluster(formula=Class ~., id = V1, data = Vowel, nfold = 15, FUN = lda,
+if(requireNamespace('mlbench')&requireNamespace('MASS')){
+data('Vowel',package='mlbench')
+acc <- CVcluster(formula=Class ~., id = V1, data = Vowel, nfold = 15, FUN = MASS::lda,
               predictFUN=function(x, newdata, ...)predict(x, newdata, ...)$class,
                      printit = TRUE, cvparts = NULL, seed = 29)
 }

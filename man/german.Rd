@@ -36,15 +36,17 @@ german
     \item{\code{V21}}{a numeric vector}
   }
 }
-% \details{
-% %%  ~~ If necessary, more details than the __description__ above ~~
-% }
-\source{
-\url{http://archive.ics.uci.edu/ml/datasets.html}
+\details{
+700 good and 300 bad credits with 20 predictor variables. Data from 1973 to 1975. Stratified sample from actual credits with bad credits heavily oversampled. A cost matrix can be used.
 }
-% \references{
-% %%  ~~ possibly secondary sources and usages ~~
-% }
+\source{
+\url{http://archive.ics.uci.edu/ml/index.php}
+}
+\references{
+Grömping, U. (2019). South German Credit Data: Correcting a Widely 
+Used Data Set. Report 4/2019, Reports in Mathematics, Physics and 
+Chemistry, Department II, Beuth University of Applied Sciences Berlin.
+}
 \examples{
 data(german)
 }

@@ -22,7 +22,7 @@ cvalues
 % %%  ~~ If necessary, more details than the __description__ above ~~
 % }
 \source{
-\url{http://en.wikipedia.org/wiki/Speed_of_light} accessed 2011/12/22
+\url{https://en.wikipedia.org/wiki/Speed_of_light} accessed 2011/12/22
 }
 % \references{
 % %%  ~~ possibly secondary sources and usages ~~

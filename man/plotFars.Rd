@@ -1,53 +1,46 @@
 \name{plotFars}
 \alias{plotFars}
 \title{
-  Extract from \code{FARS} data set the ratio of ratios estimate
-  of safety device effectiveness, and return trellis graphics object
+  Plot Protection Device Effectiveness Measure Against Year 
 }
 \description{
-Safety devices may be airbags or seatbelts.  For airbags, alternatives
-are to use \sQuote{airbag installed} or \sQuote{airbag deployed} as the
-criterion. Ratio of driver deaths to passenger deaths are calculated
-for driver with device and for driver without device, in both cases for
-passenger without device.
+Devices may be airbags or seatbelts.  For airbags, alternatives are 
+to use \dQuote{airbag installed} or \dQuote{airbag deployed} as 
+the criterion.  The plot shows, for each of the specified features, 
+the ratio of driver death rate (or other outcome, e.g., death or injury)
+with feature, to rate without feature, in both cases for passenger 
+without feature.
 }
 \usage{
-plotFars(restrict =
-"age>=16&age<998&inimpact\%in\%c(11,12,1)", fatal = 4, statistics =
-c("airbagAvail", "airbagDeploy", "Restraint"))
+plotFars(tabDeaths=gamclass::frontDeaths,
+          statistics = c("airbagAvail", "airbagDeploy", "restraint"))
 }
 \arguments{
-  \item{restrict}{
-text: an expression that restricts observations considered
-}
-  \item{fatal}{
-    numeric: 4 for fatal injury, or \code{c(3,4)} for incxapacitating or
-    fatal injury
-}
+  \item{tabDeaths}{List, containing (as a minimum) three-dimensional arrays
+  with the names specified in the argument \code{statistics}, such as is
+  returned by the function \code{\link{tabFarsDead}}}
   \item{statistics}{
-Vector of character: ratio of ratios variables that wil be plotted
+Vector of character: names of the sublists, which contain information on
+the deathrates
 }
 }
 \details{
-Note that the \sQuote{airbag deployed} statistic is not a useful measure
-of airbag effectiveness.  At its most effective, the airbag will deploy
-only when the accident is sufficiently serious that deployment will
-reduce the risk of serious injury and/or accident. The with/without
-deployment comparison compares, in part, serious accidents with less
-serious accidents.
+The name \code{injury} is used, with \code{frontDeaths} or \code{sideDeaths}
+or \code{rearDeaths} or \code{otherDeaths} as the first argument, to refer to
+deaths.  The function \code{tabFarsDeaths} allows the option of returning an
+object, suitable for using as first argument, that treats \code{injury} as
+death or serious injury.
 }
 \value{
   A graphics object is returned
 }
+\note{Note that the \dQuote{airbag deployed} statistic is not a useful measure
+of airbag effectiveness.  At its most effective, the airbag will deploy
+only when the accident is sufficiently serious that deployment will
+reduce the risk of serious injury and/or accident. The with/without
+deployment comparison compares, in part, serious accidents with less
+serious accidents.}
 \author{
 John Maindonald
 }
-\seealso{
-\code{\link{matchedPairs}}
-}
-\examples{
-\dontrun{
-gphFars <- plotFars()
-}
-}
-\keyword{graphics}
+\keyword{hplot}

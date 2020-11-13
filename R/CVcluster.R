@@ -1,5 +1,5 @@
 CVcluster <-
-    function (formula, id, data, na.action=na.omit, nfold = 15, FUN = lda,
+    function (formula, id, data, na.action=na.omit, nfold = 15, FUN = MASS::lda,
               predictFUN=function(x, newdata, ...)predict(x, newdata, ...)$class,
               printit = TRUE, cvparts = NULL, seed = 29)
 {

@@ -8,11 +8,11 @@ function (formula, data, nfold = 10, debug.level = 0, method = "GCV.Cp",
     }
     folds <- unique(cvparts)
     khat <- hat <- numeric(nrow(data))
-    scale.gam <- summary(gam(formula, data = data, method = method))$scale
+    scale.gam <- summary(mgcv::gam(formula, data = data, method = method))$scale
     for (i in folds) {
         trainrows <- cvparts != i
         testrows <- cvparts == i
-        elev.gam <- gam(formula, data = data[trainrows, ], method = method,
+        elev.gam <- mgcv::gam(formula, data = data[trainrows, ], method = method,
                         gamma = gamma)
         hat[testrows] <- predict(elev.gam, newdata = data[testrows,
                                            ], select = TRUE)

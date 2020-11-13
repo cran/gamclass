@@ -1,0 +1,199 @@
+---
+title: "Effectiveness of Airbags -- 1998 to 2010 in the US"
+author: "John Maindonald, Statistics Research Associates"
+date: '`r format(Sys.Date(),"%d %B %Y")`'
+documentclass: article
+classoption: b5paper
+fontsize: 10pt
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    pandoc_args: NULL
+    base_format: prettydoc::html_pretty
+    link-citations: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Effectiveness of Airbags -- 1998 to 2010 in the US}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+bibliography: mr.bib
+header-includes:
+- \usepackage{amssymb}
+- \usepackage{pifont}
+- \usepackage[T1]{fontenc}
+- \usepackage[utf8]{inputenc}
+- \DeclareUnicodeCharacter{2009}{<}
+---
+
+```{r setup, cache=FALSE, echo=FALSE}
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.align='center', fig.width=6.25,
+               fig.height=4.25, tidy=FALSE, comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,2.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=hook_pdfcrop)
+oldopt <- options(digits=4)
+```
+
+# An analysis based on crashes where there is a harmful event
+
+The US National Highway Traffic Safety Administration (NHTSA)
+collects, using a random sampling method, data from all
+police-reported crashes in which there is a harmful event (people or
+property), and from which at least one vehicle is towed.  The data
+frame \texttt{nassCDS} (\textit{DAAG}) is derived from NHTSA data for
+the years 1997 -- 2002.\footnote{They hold a subset of the columns
+  from a corrected version of the data analyzed in \citet{Meyer_Finney_2005}.
+  See also \texttt{help(nassCDS)}. More complete data are available,
+  in R image file format, from the web page
+  \url{https://maths-people.anu.edu.au/~johnm/datasets/airbags/} (R image
+  file).}
+
+Data collection used a complex sampling scheme in which the sampling
+fraction differs between observations.  Each point has to be
+multiplied by the inverse of the relevant sampling fraction, to get a
+proper estimate of its contribution to the total number of accidents.
+The column \texttt{weight} (\texttt{national} = \textit{national
+  inflation factor} in the original SAS dataset) gives the relevant 
+  multiplier.
+
+\Citet{Meyer_Finney_2005} argue that on balance (over the period when 
+their data were collected), airbags cost lives. After adjustment both 
+for seatbelt use and for speed of impact, airbags appear on balance 
+to be dangerous.  The apparent effects, most serious in high impact
+accidents, are however at the level of statistical error.
+
+Strictly, the conclusion is that, conditional on involvement in an
+accident that was sufficiently serious to be included in the database,
+and conditioning also on \texttt{seatbelt} (seatbelt use or not) and
+\texttt{dvcat} (force of impact) there is a suggestion that airbags
+are harmful.  Conditional on the airbag failing to prevent an outcome
+that is somewhat serious, there is a suggestion that airbags are
+harmful! Additionally, there are other factors on which the effects
+of airbag use could and likely should be conditioned.
+
+Meyer and Finney's analysis is open to serious challenge.  \Citet{Farmer} 
+argues that these data have too many uncertainties and sources of potential
+bias, including issues of what factors should be used for conditioning,
+to give reliable results. 
+
+# The (Fatality Analysis Recording System (FARS) data
+
+Farmer (2006) presented results from a different analysis that used
+used a data series that was designed to record  outcomes from all 
+accidents in which there was at least one fatality. Farmer used
+front seat passenger mortality, in cars without passenger airbags, as
+a standard against which to compare driver mortality.
+Limiting attention to cars with no passenger airbag, the analysis
+compares the ratio of driver mortality to passenger mortality
+between cars with a driver airbag and those without a driver airbag.
+An airbag is counted as available (really, potentially available)
+if a bag had at some previous time been installed.  The breakdown,
+based on `availability,' is designed to check the effectiveness 
+of installing airbags into cars.
+
+Annual data may be downloaded from \url{https://www.nhtsa.gov/node/97996/251}.
+The url \url{http://www-fars.nhtsa.dot.gov/Main/index.aspx} gives 
+access to a web-based interface to the data from 2004.  Results for 1998 are:
+
+```{r ratio1998}
+library(gamclass)
+tabAaDeaths <- tabFarsDead(dset=FARS)[['airbagAvail']]["1998", , ]
+round(tabAaDeaths, 3)
+```
+
+One would expect factors such as seatbelt availability and velocity of
+impact to affect passengers and drivers similarly.  The ratio of driver
+deaths to passenger deaths is 0.823 when airbags are fitted, against
+0.940 without airbags.  Airbags appear then to have reduced driver deaths
+from 0.940 of passenger deaths to 0.823 of passenger deaths, i.e., by a
+factor of 0.8755, or a reduction of 12.45\%.
+
+Figure \@ref(fig:plotFars) shows the results graphically, for the years
+1998 - 2010, based on data are taken from the dataset 
+`gamclass::FARS`.  Airbag availability data, which are the more 
+relevant data, were not available for 2009 and 2010.   Data are
+for frontal impact.
+
+```{r cap1}
+cap1 <- 'With/without ratio of the ratio of driver death rates
+  to passenger death rates:
+  (a) w/wo driver airbag (not available for 2009 and 2010); (b) w/wo airbag deployment,
+  (c) w/wo driver restraint (mainly seatbelt).'
+```
+
+```{r plotFars, fig.cap=cap1, out.width='60%', fig.show='hold'}
+plotFars(tabDeaths=gamclass::frontDeaths,
+          statistics = c("airbagAvail", "airbagDeploy", "restraint"))
+```
+
+# Why not compare deployment with non-deployment
+
+Airbags, if properly tuned, will deploy only when the risk of death is 
+high.  Comparison between accidents where bags deploy and accidents 
+where they do not is at the same time, in part, a comparison between a 
+low risk situation and a high risk situation -- not a fair comparison.
+
+# Not all airbags are equal!
+
+Airbags that meet current standards are designed to deploy 
+only in accidents that appear serious enough, as e.g. measured by 
+force of impact, that deployment is likely to do more good than harm.
+The 2008 result, where presence of an airbag gives a much lower ratio
+than deployment, is what might be expected if airbags deploy only in
+the most serious accidents, where the risk of death is anyway high.
+The 2002 and 2006 results may reflects problems with particular
+batches of airbags, such as led to the recall of Takata airbags.
+For the type of bags that have been the main focus of attention,
+long term exposure to heat and humidity could cause the ammonium
+nitrate used as propellant in these bags to explode. See
+https://www.nhtsa.gov/equipment/takata-recall-spotlight
+
+# Other factors
+
+There may of course be effects from other factors on the driver to
+passenger death ratio.  These can be checked -- broad checks should be
+adequate in revealing anything of consequence.
+
+Data for side and rear impact, and for under or over impact, show
+patterns that are much less clear.  The relative death rates for side
+and rear deaths were both under 1.0 in 2008.
+
+# The above analyses make an important point
+
+In Meyer's analysis, there were many factors that could
+influence the risk of death -- so many that the attempt to account for
+them all led to an analysis in which statistical noise made it
+impossible to reach useful conclusions about the parameter of
+interest.  After adjusting for the effect of seatbelts, there
+were a number of other factors whose effects were similar to or greater
+than the airbag effect that was the chief interest of the analysis
+
+A much simpler analysis was however possible, allowing an estimate
+that was pretty much unaffected by the factors that affected the death
+rate itself.  This neatly avoided problems that, in the death count
+summary tables, arose from the need to account for many different
+factors.
+
+Data summarization, or an equivalent use of regression methodology,
+cannot deliver a clear conclusion in cases where there are many
+different possible choices of the regression equation, and where the
+conclusion depends on the equation that is chosen.  If an alternative
+is available that can avoid or largely avoid the need to account for
+many different explanatory variables, this is the preferred strategy.
+
+Changes since 2008 in airbag design and in the mechanisms for
+triggering deployment mean that the results presented in Figure
+\@ref(fig:plotFars) have limited relevance to judging the 
+effectiveness of airbags in use a decade or more later.
+The methodological issues that affect these analyses remain 
+as important as ever.  Papers that assess the impact of changes in 
+airbag design and deployment include @braver2010have and
+@cummings2010accounting.  See also `?gamclass::FARS`.
+
+# References

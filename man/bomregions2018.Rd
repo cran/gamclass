@@ -10,7 +10,8 @@
   rainfall and temperature data are area-weighted averages for the 
   respective regions.  The Southern Oscillation Index (SOI) is the 
   difference in barometric pressure at sea level between Tahiti and Darwin.
-}
+  Data through to 2021, including also the Indian Ocean Dipole, is available in the file \code{DAAG::bomregions2021}
+.}
 \format{
   This data frame contains the following columns:
   \describe{
@@ -59,10 +60,10 @@ Australian Bureau of Meteorology web pages:
 The SOI data are from \url{http://www.bom.gov.au/climate/enso/#tabs=SOI}.
 
 The CO2 series \code{co2law}, for Law Dome ice core data. is from
-\url{https://cdiac.ess-dive.lbl.gov/trends/co2/lawdome.html}.
+\url{https://data.ess-dive.lbl.gov/portals/CDIAC}.
 
 The CO2 series \code{co2mlo} is from Dr. Pieter Tans, NOAA/ESRL
-(\url{https://www.esrl.noaa.gov/gmd/ccgg/trends/})
+(\url{https://gml.noaa.gov/ccgg/trends/})
 
 The series \code{CO2} is a composite series, obtained by adding 0.46 to
 he Law data for 1900 to 1958, then following this with the Moana Loa

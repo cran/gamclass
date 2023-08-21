@@ -40,7 +40,7 @@ german
 700 good and 300 bad credits with 20 predictor variables. Data from 1973 to 1975. Stratified sample from actual credits with bad credits heavily oversampled. A cost matrix can be used.
 }
 \source{
-\url{http://archive.ics.uci.edu/ml/index.php}
+\url{http://archive.ics.uci.edu/datasets}
 }
 \references{
 Grömping, U. (2019). South German Credit Data: Correcting a Widely 

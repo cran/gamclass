@@ -13,7 +13,7 @@ function (data, dateCol="Date", from = NULL, to = NULL,
   }
   date <- data[, dateCol]
   if(!is(date, "Date")){date <- try(as.Date(date), silent=TRUE)
-                     if(class(date)=="try-error")
+                     if(inherits(date,"try-error"))
                        stop(paste("Column", dateCol, "must hold a date object"))
   }
     if (is.null(from))

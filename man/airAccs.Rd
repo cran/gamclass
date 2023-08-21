@@ -23,13 +23,13 @@ Aircraft Crash Data
 }
 \details{
 For details of inclusion criteria, see
-  \url{http://www.planecrashinfo.com/database.htm}
+  \url{https://www.planecrashinfo.com/database.htm}
 }
 \source{
-  \url{http://www.planecrashinfo.com/database.htm}
+  \url{https://www.planecrashinfo.com/database.htm}
 }
 \references{
-\url{http://www.planecrashinfo.com/reference.htm}
+\url{https://www.planecrashinfo.com/reference.htm}
 }
 \examples{
 data(airAccs)

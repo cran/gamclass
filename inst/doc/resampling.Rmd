@@ -698,7 +698,7 @@ is an inherently easier task than prediction for a new speaker.
 The dataset `Vowel` (in the `mlbench` package) has data on 15 different 
 speakers, each tested 6 times on each of 11 different vowels.  
 Information additional to the dataset's help page can be found at
-http://archive.ics.uci.edu/ml/index.php.
+http://archive.ics.uci.edu/datasets.
 
 ```{r data-Vowel}
 data('Vowel', package='mlbench')
